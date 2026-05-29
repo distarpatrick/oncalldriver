@@ -1,0 +1,986 @@
+{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}Site Settings - {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ivory:       #f7f3ed;
+  --ivory-deep:  #ede8df;
+  --parchment:   #e8e0d0;
+  --linen:       #d8cfbf;
+  --stone:       #c4b99e;
+  --taupe:       #9a8e7a;
+  --umber:       #5c5244;
+  --espresso:    #2e2620;
+  --ink:         #1a1410;
+  --copper:      #b8722a;
+  --copper-lt:   #d4924e;
+  --copper-pale: rgba(184,114,42,0.10);
+  --sage:        #4d7358;
+  --sky:         #3a6e9e;
+  --rust:        #b8432a;
+  --border:      rgba(120,100,70,0.14);
+  --border-md:   rgba(120,100,70,0.22);
+  --border-str:  rgba(120,100,70,0.35);
+  --sh-sm:  0 2px 16px rgba(40,25,10,0.07);
+  --sh-md:  0 8px 40px rgba(40,25,10,0.11);
+  --sh-lg:  0 24px 72px rgba(40,25,10,0.16);
+  --r:      16px;
+  --r-sm:   10px;
+  --f-disp: 'Cormorant Garamond', Georgia, serif;
+  --f-body: 'Jost', sans-serif;
+  --f-mono: 'DM Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body {
+  background: var(--ivory);
+  color: var(--espresso);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+  opacity:0.6;
+}
+
+/* ═══ PAGE WRAPPER ═══ */
+.pg-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-md);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.pg-header-left {}
+.pg-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pg-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--copper);
+}
+.pg-title {
+  font-family: var(--f-disp);
+  font-size: 44px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.pg-subtitle {
+  font-size: 14px;
+  color: var(--taupe);
+  margin-top: 8px;
+  font-weight: 400;
+}
+.btn-save-top {
+  background: var(--espresso);
+  color: var(--ivory);
+  border: none;
+  padding: 12px 28px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--f-body);
+  cursor: pointer;
+  transition: all 0.22s;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-save-top:hover { background: var(--copper); transform: translateY(-1px); box-shadow: var(--sh-md); }
+
+/* ═══ LAYOUT ═══ */
+.settings-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ═══ SIDEBAR NAV ═══ */
+.settings-nav {
+  position: sticky;
+  top: 100px;
+  background: #fff;
+  border: 1px solid var(--border-md);
+  border-radius: var(--r);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+}
+.settings-nav-head {
+  background: var(--ivory-deep);
+  border-bottom: 1px solid var(--border-md);
+  padding: 14px 18px;
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--taupe);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--f-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--taupe);
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+.nav-item i { width: 16px; text-align: center; flex-shrink: 0; font-size: 13px; }
+.nav-item:hover { background: var(--ivory); color: var(--espresso); }
+.nav-item.active {
+  background: var(--copper-pale);
+  color: var(--copper);
+  border-left-color: var(--copper);
+  font-weight: 600;
+}
+.nav-item + .nav-item { border-top: 1px solid var(--border); }
+
+/* ═══ CONTENT PANELS ═══ */
+.settings-content {}
+.tab-pane { display: none; animation: riseIn 0.35s ease both; }
+.tab-pane.active { display: block; }
+@keyframes riseIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══ SECTION CARD ═══ */
+.s-card {
+  background: #fff;
+  border: 1px solid var(--border-md);
+  border-radius: var(--r);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.s-card:last-child { margin-bottom: 0; }
+.s-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 26px;
+  background: var(--ivory-deep);
+  border-bottom: 1px solid var(--border-md);
+}
+.s-card-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--copper-pale);
+  border: 1px solid rgba(184,114,42,0.22);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--copper);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.s-card-title {
+  font-family: var(--f-disp);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.s-card-desc {
+  font-size: 12.5px;
+  color: var(--taupe);
+  margin-top: 1px;
+}
+.s-card-body { padding: 28px 26px; }
+
+/* ═══ FORM ELEMENTS ═══ */
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid-1 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--umber);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.form-label i { color: var(--copper); width: 14px; text-align: center; }
+
+/* Override Django form widgets */
+.form-group input[type=text],
+.form-group input[type=email],
+.form-group input[type=url],
+.form-group input[type=number],
+.form-group input[type=tel],
+.form-group textarea,
+.form-group select,
+.form-control {
+  width: 100%;
+  background: var(--ivory);
+  border: 1.5px solid var(--border-md);
+  color: var(--espresso);
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-family: var(--f-body);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus,
+.form-control:focus {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 3px var(--copper-pale);
+  background: #fff;
+}
+.form-group textarea { resize: vertical; min-height: 90px; }
+.help-text {
+  font-size: 11.5px;
+  color: var(--taupe);
+  font-family: var(--f-mono);
+  line-height: 1.5;
+}
+.error-text {
+  font-size: 11.5px;
+  color: var(--rust);
+  font-family: var(--f-mono);
+}
+
+/* ═══ DIVIDER ═══ */
+.s-divider { height: 1px; background: var(--border-md); margin: 24px 0; }
+
+/* ═══ LOGO / IMAGE PREVIEW ═══ */
+.img-preview-box {
+  background: var(--ivory-deep);
+  border: 1.5px dashed var(--border-str);
+  border-radius: var(--r-sm);
+  padding: 20px;
+  text-align: center;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.img-preview-box img {
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.img-preview-box .no-img {
+  color: var(--stone);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.img-preview-box .no-img i { font-size: 28px; margin-bottom: 6px; display: block; opacity: 0.4; }
+
+.btn-remove-img {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid rgba(184,67,42,0.3);
+  color: var(--rust);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--f-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.btn-remove-img:hover { background: rgba(184,67,42,0.07); border-color: var(--rust); }
+
+/* File input styling */
+.file-input-wrap {
+  position: relative;
+}
+.file-input-wrap input[type=file] {
+  width: 100%;
+  background: var(--ivory);
+  border: 1.5px dashed var(--border-str);
+  color: var(--taupe);
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-family: var(--f-body);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.file-input-wrap input[type=file]:hover { border-color: var(--copper); }
+
+/* ═══ INFO BANNER ═══ */
+.info-banner {
+  background: rgba(58,110,158,0.07);
+  border: 1px solid rgba(58,110,158,0.2);
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--sky);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+.info-banner i { margin-top: 1px; flex-shrink: 0; }
+
+/* ═══ SOCIAL ITEM ═══ */
+.social-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.social-item:last-child { border-bottom: none; padding-bottom: 0; }
+.social-item:first-child { padding-top: 0; }
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.si-fb { background: rgba(59,89,152,0.10); color: #3b5998; }
+.si-ig { background: rgba(193,53,132,0.10); color: #c13584; }
+.si-tw { background: rgba(29,161,242,0.10); color: #1da1f2; }
+.si-yt { background: rgba(255,0,0,0.10); color: #ff0000; }
+
+/* ═══ STAT CHIPS ═══ */
+.stat-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.stat-chip {
+  background: #fff;
+  border: 1px solid var(--border-md);
+  border-radius: var(--r-sm);
+  padding: 14px 20px;
+  flex: 1;
+  min-width: 140px;
+  box-shadow: var(--sh-sm);
+}
+.stat-chip-label { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--stone); margin-bottom: 6px; }
+.stat-chip-value { font-family: var(--f-disp); font-size: 26px; font-weight: 700; color: var(--copper); line-height: 1; }
+.stat-chip-unit { font-family: var(--f-mono); font-size: 11px; color: var(--taupe); margin-top: 2px; }
+
+/* ═══ SAVE FOOTER ═══ */
+.save-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 28px;
+  margin-top: 28px;
+  border-top: 1px solid var(--border-md);
+}
+.btn-save {
+  background: var(--espresso);
+  color: var(--ivory);
+  border: none;
+  padding: 13px 32px;
+  border-radius: var(--r-sm);
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: var(--f-body);
+  cursor: pointer;
+  transition: all 0.22s;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  letter-spacing: 0.2px;
+}
+.btn-save:hover { background: var(--copper); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.btn-cancel-note { font-size: 12px; color: var(--stone); font-family: var(--f-mono); }
+
+/* ═══ TOAST ═══ */
+.toast-container { position: fixed; bottom: 28px; right: 28px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: #fff; border: 1px solid var(--border-md); border-radius: var(--r);
+  padding: 15px 20px; display: flex; align-items: center; gap: 13px;
+  min-width: 280px; max-width: 400px; box-shadow: var(--sh-lg); animation: toastIn 0.3s ease;
+}
+@keyframes toastIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
+.toast.success { border-left: 3px solid var(--sage); }
+.toast.error   { border-left: 3px solid var(--rust); }
+.toast-text strong { display: block; font-size: 13px; color: var(--espresso); font-weight: 600; }
+.toast-text span   { font-size: 12px; color: var(--taupe); }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 900px) {
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-nav { position: static; display: flex; overflow-x: auto; border-radius: var(--r); }
+  .settings-nav-head { display: none; }
+  .nav-item { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; justify-content: center; padding: 12px 14px; }
+  .nav-item.active { border-left: none; border-bottom-color: var(--copper); }
+  .nav-item + .nav-item { border-top: none; border-left: 1px solid var(--border); }
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .pg-title { font-size: 32px; }
+}
+@media (max-width: 600px) {
+  .pg-wrap { padding: 28px 16px 60px; }
+  .s-card-body { padding: 20px 18px; }
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ivory); }
+::-webkit-scrollbar-thumb { background: var(--linen); border-radius: 3px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pg-wrap">
+
+  <!-- PAGE HEADER -->
+  <div class="pg-header">
+    <div class="pg-header-left">
+      <div class="pg-eyebrow">Administration</div>
+      <h1 class="pg-title">Site Settings</h1>
+      <p class="pg-subtitle">Manage appearance, contact info, payment details, social links &amp; business rules</p>
+    </div>
+    <button type="submit" form="settingsForm" class="btn-save-top">
+      <i class="fas fa-save" aria-hidden="true"></i> Save Changes
+    </button>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" id="settingsForm">
+    {% csrf_token %}
+
+    <div class="settings-layout">
+
+      <!-- SIDEBAR NAV -->
+      <nav class="settings-nav" aria-label="Settings sections">
+        <div class="settings-nav-head">Navigation</div>
+        <button type="button" class="nav-item active" data-tab="general">
+          <i class="fas fa-globe" aria-hidden="true"></i> General
+        </button>
+        <button type="button" class="nav-item" data-tab="branding">
+          <i class="fas fa-palette" aria-hidden="true"></i> Branding
+        </button>
+        <button type="button" class="nav-item" data-tab="contact">
+          <i class="fas fa-address-card" aria-hidden="true"></i> Contact
+        </button>
+        <button type="button" class="nav-item" data-tab="payment">
+          <i class="fas fa-money-bill-wave" aria-hidden="true"></i> Payment Details
+        </button>
+        <button type="button" class="nav-item" data-tab="social">
+          <i class="fas fa-share-alt" aria-hidden="true"></i> Social Media
+        </button>
+        <button type="button" class="nav-item" data-tab="business">
+          <i class="fas fa-chart-line" aria-hidden="true"></i> Business Rules
+        </button>
+      </nav>
+
+      <!-- CONTENT -->
+      <div class="settings-content">
+
+        <!-- ── GENERAL ── -->
+        <div class="tab-pane active" id="tab-general">
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-globe" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">General Information</div>
+                <div class="s-card-desc">Core identity details shown across the site</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="form-grid-1">
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.site_name.id_for_label }}">
+                    <i class="fas fa-tag" aria-hidden="true"></i> Site Name
+                  </label>
+                  {{ form.site_name }}
+                  {% if form.site_name.errors %}<div class="error-text">{{ form.site_name.errors }}</div>{% endif %}
+                  <div class="help-text">Displayed in the navigation bar and browser tab</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.tagline.id_for_label }}">
+                    <i class="fas fa-quote-right" aria-hidden="true"></i> Tagline
+                  </label>
+                  {{ form.tagline }}
+                  {% if form.tagline.errors %}<div class="error-text">{{ form.tagline.errors }}</div>{% endif %}
+                  <div class="help-text">A short phrase displayed on the hero section and footer</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BRANDING ── -->
+        <div class="tab-pane" id="tab-branding">
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-image" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Site Logo</div>
+                <div class="s-card-desc">The logo mark shown in the navigation bar</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-eye" aria-hidden="true"></i> Current Logo</label>
+                  <div class="img-preview-box">
+                    {% if site_settings.site_logo %}
+                      <img src="{{ site_settings.site_logo.url }}" alt="Current site logo">
+                      <button type="button" class="btn-remove-img" onclick="confirmRemove('logo')">
+                        <i class="fas fa-trash" aria-hidden="true"></i> Remove
+                      </button>
+                    {% else %}
+                      <div class="no-img">
+                        <i class="fas fa-image" aria-hidden="true"></i>
+                        No logo uploaded
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.site_logo.id_for_label }}">
+                    <i class="fas fa-upload" aria-hidden="true"></i> Upload New Logo
+                  </label>
+                  <div class="file-input-wrap">
+                    {{ form.site_logo }}
+                  </div>
+                  {% if form.site_logo.errors %}<div class="error-text">{{ form.site_logo.errors }}</div>{% endif %}
+                  <div class="help-text">{{ form.site_logo.help_text|default:"JPEG, PNG, SVG — max 5MB" }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-tv" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Hero Banner</div>
+                <div class="s-card-desc">The large background image shown on the homepage</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="form-group" style="margin-bottom:20px">
+                <label class="form-label"><i class="fas fa-eye" aria-hidden="true"></i> Current Banner</label>
+                <div class="img-preview-box" style="min-height:180px">
+                  {% if site_settings.hero_banner %}
+                    <img src="{{ site_settings.hero_banner.url }}" alt="Hero banner preview" style="max-height:200px;width:100%;object-fit:cover;border-radius:8px">
+                    <button type="button" class="btn-remove-img" onclick="confirmRemove('banner')">
+                      <i class="fas fa-trash" aria-hidden="true"></i> Remove Banner
+                    </button>
+                  {% else %}
+                    <div class="no-img">
+                      <i class="fas fa-panorama" aria-hidden="true"></i>
+                      No banner uploaded
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="{{ form.hero_banner.id_for_label }}">
+                  <i class="fas fa-upload" aria-hidden="true"></i> Upload Hero Banner
+                </label>
+                <div class="file-input-wrap">{{ form.hero_banner }}</div>
+                {% if form.hero_banner.errors %}<div class="error-text">{{ form.hero_banner.errors }}</div>{% endif %}
+                <div class="help-text">{{ form.hero_banner.help_text|default:"Recommended: 1920×1080px · JPEG or PNG · max 5MB" }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONTACT ── -->
+        <div class="tab-pane" id="tab-contact">
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-phone-alt" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Contact Information</div>
+                <div class="s-card-desc">Details displayed in the footer and contact sections</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.contact_phone.id_for_label }}">
+                    <i class="fas fa-phone" aria-hidden="true"></i> Phone Number
+                  </label>
+                  {{ form.contact_phone }}
+                  {% if form.contact_phone.errors %}<div class="error-text">{{ form.contact_phone.errors }}</div>{% endif %}
+                  <div class="help-text">Main phone number shown on the website</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.whatsapp_number.id_for_label }}">
+                    <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp Number
+                  </label>
+                  {{ form.whatsapp_number }}
+                  {% if form.whatsapp_number.errors %}<div class="error-text">{{ form.whatsapp_number.errors }}</div>{% endif %}
+                  <div class="help-text">{{ form.whatsapp_number.help_text|default:"Include country code, e.g. +250712345678" }}</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.contact_email.id_for_label }}">
+                    <i class="fas fa-envelope" aria-hidden="true"></i> Email Address
+                  </label>
+                  {{ form.contact_email }}
+                  {% if form.contact_email.errors %}<div class="error-text">{{ form.contact_email.errors }}</div>{% endif %}
+                  <div class="help-text">Primary contact email for visitor inquiries</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.address.id_for_label }}">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Physical Address
+                  </label>
+                  {{ form.address }}
+                  {% if form.address.errors %}<div class="error-text">{{ form.address.errors }}</div>{% endif %}
+                  <div class="help-text">Your office or business location</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PAYMENT DETAILS ── -->
+        <div class="tab-pane" id="tab-payment">
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Payment Details</div>
+                <div class="s-card-desc">Shown to customers during booking and visit payments</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              {% if site_settings %}
+              <div class="stat-chips">
+                <div class="stat-chip">
+                  <div class="stat-chip-label">Phone</div>
+                  <div class="stat-chip-value" style="font-size:18px">{{ site_settings.payment_phone|default:"—" }}</div>
+                  <div class="stat-chip-unit">Customer support</div>
+                </div>
+                <div class="stat-chip">
+                  <div class="stat-chip-label">MTN Code</div>
+                  <div class="stat-chip-value" style="font-size:18px">{{ site_settings.payment_mtn_code|default:"—" }}</div>
+                  <div class="stat-chip-unit">Mobile money</div>
+                </div>
+                <div class="stat-chip">
+                  <div class="stat-chip-label">Account</div>
+                  <div class="stat-chip-value" style="font-size:18px">{{ site_settings.payment_account|default:"—" }}</div>
+                  <div class="stat-chip-unit">Payment account</div>
+                </div>
+              </div>
+              {% endif %}
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.payment_phone.id_for_label }}">
+                    <i class="fas fa-phone-alt" aria-hidden="true"></i> Payment Phone
+                  </label>
+                  {{ form.payment_phone }}
+                  {% if form.payment_phone.errors %}<div class="error-text">{{ form.payment_phone.errors }}</div>{% endif %}
+                  <div class="help-text">Phone number customers should use for payment questions</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.payment_mtn_code.id_for_label }}">
+                    <i class="fas fa-hashtag" aria-hidden="true"></i> MTN Code
+                  </label>
+                  {{ form.payment_mtn_code }}
+                  {% if form.payment_mtn_code.errors %}<div class="error-text">{{ form.payment_mtn_code.errors }}</div>{% endif %}
+                  <div class="help-text">Code customers should enter for MTN Mobile Money payments</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.payment_account.id_for_label }}">
+                    <i class="fas fa-university" aria-hidden="true"></i> Account Number
+                  </label>
+                  {{ form.payment_account }}
+                  {% if form.payment_account.errors %}<div class="error-text">{{ form.payment_account.errors }}</div>{% endif %}
+                  <div class="help-text">Account number shown on booking and visit payment forms</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.payment_account_name.id_for_label }}">
+                    <i class="fas fa-user" aria-hidden="true"></i> Account Name
+                  </label>
+                  {{ form.payment_account_name }}
+                  {% if form.payment_account_name.errors %}<div class="error-text">{{ form.payment_account_name.errors }}</div>{% endif %}
+                  <div class="help-text">Registered name tied to the payment account</div>
+                </div>
+              </div>
+
+              <div class="info-banner">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <span>Any change here updates the payment details shown to customers across booking, visit, and car detail pages.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SOCIAL MEDIA ── -->
+        <div class="tab-pane" id="tab-social">
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-share-alt" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Social Media Links</div>
+                <div class="s-card-desc">Profile URLs shown in the footer</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="social-item">
+                <div class="social-icon si-fb"><i class="fab fa-facebook-f" aria-hidden="true"></i></div>
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.facebook_url.id_for_label }}">Facebook</label>
+                  {{ form.facebook_url }}
+                  {% if form.facebook_url.errors %}<div class="error-text">{{ form.facebook_url.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <div class="social-item">
+                <div class="social-icon si-ig"><i class="fab fa-instagram" aria-hidden="true"></i></div>
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.instagram_url.id_for_label }}">Instagram</label>
+                  {{ form.instagram_url }}
+                  {% if form.instagram_url.errors %}<div class="error-text">{{ form.instagram_url.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <div class="social-item">
+                <div class="social-icon si-tw"><i class="fab fa-twitter" aria-hidden="true"></i></div>
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.twitter_url.id_for_label }}">Twitter / X</label>
+                  {{ form.twitter_url }}
+                  {% if form.twitter_url.errors %}<div class="error-text">{{ form.twitter_url.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <div class="social-item">
+                <div class="social-icon si-yt"><i class="fab fa-youtube" aria-hidden="true"></i></div>
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.youtube_url.id_for_label }}">YouTube</label>
+                  {{ form.youtube_url }}
+                  {% if form.youtube_url.errors %}<div class="error-text">{{ form.youtube_url.errors }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BUSINESS RULES ── -->
+        <div class="tab-pane" id="tab-business">
+
+          {% if site_settings %}
+          <div class="stat-chips">
+            <div class="stat-chip">
+              <div class="stat-chip-label">Scheduling Fee</div>
+              <div class="stat-chip-value">{{ site_settings.default_scheduling_fee|default:"—" }}</div>
+              <div class="stat-chip-unit">RWF</div>
+            </div>
+            <div class="stat-chip">
+              <div class="stat-chip-label">Half Payment</div>
+              <div class="stat-chip-value">{{ site_settings.half_payment_percent|default:"—" }}</div>
+              <div class="stat-chip-unit">Percent %</div>
+            </div>
+            <div class="stat-chip">
+              <div class="stat-chip-label">Commission</div>
+              <div class="stat-chip-value">{{ site_settings.commission_rate|default:"—" }}</div>
+              <div class="stat-chip-unit">Percent %</div>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="s-card">
+            <div class="s-card-head">
+              <div class="s-card-icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></div>
+              <div>
+                <div class="s-card-title">Business Rules &amp; Fees</div>
+                <div class="s-card-desc">Affects payment calculations platform-wide</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.default_scheduling_fee.id_for_label }}">
+                    <i class="fas fa-calendar-check" aria-hidden="true"></i> Default Scheduling Fee
+                  </label>
+                  {{ form.default_scheduling_fee }}
+                  {% if form.default_scheduling_fee.errors %}<div class="error-text">{{ form.default_scheduling_fee.errors }}</div>{% endif %}
+                  <div class="help-text">{{ form.default_scheduling_fee.help_text|default:"Amount in RWF charged to confirm a visit slot" }}</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.half_payment_percent.id_for_label }}">
+                    <i class="fas fa-percent" aria-hidden="true"></i> Half Payment Percentage
+                  </label>
+                  {{ form.half_payment_percent }}
+                  {% if form.half_payment_percent.errors %}<div class="error-text">{{ form.half_payment_percent.errors }}</div>{% endif %}
+                  <div class="help-text">{{ form.half_payment_percent.help_text|default:"Percentage of total price required as a deposit" }}</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="{{ form.commission_rate.id_for_label }}">
+                    <i class="fas fa-hand-holding-usd" aria-hidden="true"></i> Company Commission Rate
+                  </label>
+                  {{ form.commission_rate }}
+                  {% if form.commission_rate.errors %}<div class="error-text">{{ form.commission_rate.errors }}</div>{% endif %}
+                  <div class="help-text">{{ form.commission_rate.help_text|default:"Percentage taken as platform commission per sale" }}</div>
+                </div>
+              </div>
+
+              <div class="info-banner">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <span>Changes to these rules apply immediately to all new bookings and scheduling requests. Existing transactions are not retroactively affected.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAVE FOOTER -->
+        <div class="save-footer">
+          <span class="btn-cancel-note">All changes are saved together</span>
+          <button type="submit" class="btn-save">
+            <i class="fas fa-save" aria-hidden="true"></i> Save All Settings
+          </button>
+        </div>
+
+      </div><!-- /settings-content -->
+    </div><!-- /settings-layout -->
+  </form>
+</div><!-- /pg-wrap -->
+
+<div class="toast-container" id="toastContainer"></div>
+{% endblock %}
+
+{% block extra_js %}
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  {% for message in messages %}
+    showToast(
+      '{% if message.tags == "error" %}error{% else %}success{% endif %}',
+      '{{ message|escapejs }}'
+    );
+  {% endfor %}
+});
+</script>
+{% endif %}
+
+<script>
+/* ── Tab Switching ── */
+document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    // Scroll content into view on mobile
+    document.querySelector('.settings-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+/* ── Remove Logo / Banner ── */
+function confirmRemove(type) {
+  const label = type === 'logo' ? 'site logo' : 'hero banner';
+  if (!confirm(`Remove the ${label}? This cannot be undone.`)) return;
+  const url = type === 'logo'
+    ? "{% url 'homepage:site_settings_remove_logo' %}"
+    : "{% url 'homepage:site_settings_remove_banner' %}";
+  fetch(url, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+  }).then(r => { if (r.ok) window.location.reload(); });
+}
+
+/* ── File validation ── */
+document.querySelectorAll('input[type="file"]').forEach(input => {
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('error', 'File too large — maximum 5 MB allowed');
+      this.value = '';
+      return;
+    }
+    const allowed = ['image/jpeg','image/png','image/gif','image/svg+xml','image/webp'];
+    if (!allowed.includes(file.type)) {
+      showToast('error', 'Invalid file type — use JPEG, PNG, GIF, SVG or WebP');
+      this.value = '';
+      return;
+    }
+    showToast('success', `"${file.name}" ready to upload`);
+  });
+});
+
+/* ── Toast ── */
+function showToast(type, title) {
+  const icons = {
+    success: '<i class="fas fa-circle-check"></i>',
+    error:   '<i class="fas fa-circle-xmark"></i>'
+  };
+  const col = { success: 'var(--sage)', error: 'var(--rust)' };
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span style="color:${col[type]};font-size:18px">${icons[type]||icons.success}</span>
+    <div class="toast-text"><strong>${title}</strong></div>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+</script>
+{% endblock %}

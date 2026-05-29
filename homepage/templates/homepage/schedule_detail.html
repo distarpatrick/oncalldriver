@@ -1,0 +1,332 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}Visit {{ schedule.schedule_number }} | {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --bg: #f5f9fb;
+    --card: rgba(255, 255, 255, 0.96);
+    --card-soft: #edf5fb;
+    --border: #d8e4ee;
+    --text: #173042;
+    --muted: #637b8f;
+    --blue: #3188b0;
+    --green: #1f9d76;
+    --gold: #d69433;
+    --red: #cb6464;
+    --radius: 18px;
+  }
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(49, 136, 176, 0.18), transparent 30%),
+      radial-gradient(circle at top right, rgba(31, 157, 118, 0.12), transparent 26%),
+      linear-gradient(135deg, #fbfdff 0%, #eef8f6 100%);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .detail-shell {
+    max-width: 1180px;
+    margin: 104px auto 48px;
+    padding: 0 20px 40px;
+  }
+  .hero, .grid {
+    display: grid;
+    gap: 20px;
+  }
+  .hero {
+    grid-template-columns: 1.5fr 1fr;
+    margin-bottom: 22px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: 0 18px 45px rgba(23, 48, 66, 0.12);
+  }
+  .eyebrow {
+    color: var(--blue);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 10px;
+  }
+  h1 {
+    margin: 0 0 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.06em;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1;
+  }
+  .subline, .muted {
+    color: var(--muted);
+  }
+  .visit-time {
+    margin-top: 14px;
+    color: var(--gold);
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-top: 12px;
+  }
+  .pill.pending, .pill.rescheduled { background: rgba(242, 193, 78, 0.12); color: var(--gold); }
+  .pill.confirmed, .pill.visited, .pill.purchased { background: rgba(53, 201, 138, 0.12); color: var(--green); }
+  .pill.cancelled, .pill.no_show { background: rgba(255, 114, 114, 0.12); color: var(--red); }
+  .section-title {
+    margin: 0 0 14px;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .kv {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(23,48,66,0.08);
+  }
+  .kv:last-child {
+    border-bottom: 0;
+  }
+  .kv dt {
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+  .kv dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .payment-list {
+    display: grid;
+    gap: 14px;
+  }
+  .payment-item {
+    background: var(--card-soft);
+    border: 1px solid rgba(23,48,66,0.08);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .payment-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(49,136,176,0.12);
+    color: var(--blue);
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: #f8fcff;
+  }
+  .btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: rgba(255,255,255,0.65);
+  }
+  .notes {
+    white-space: pre-line;
+    line-height: 1.7;
+  }
+  .empty {
+    color: var(--muted);
+    padding: 18px;
+    border: 1px dashed rgba(23,48,66,0.16);
+    border-radius: 14px;
+  }
+  @media (max-width: 900px) {
+    .hero, .grid {
+      grid-template-columns: 1fr;
+    }
+    .kv {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-shell">
+  <div class="hero">
+    <section class="card">
+      <div class="eyebrow">{% if is_staff_view %}Staff Visit Review{% else %}Visit Schedule{% endif %}</div>
+      <h1>{{ schedule.schedule_number }}</h1>
+      <div class="subline">{{ schedule.car.year }} {{ schedule.car.title }}</div>
+      <div class="visit-time">{{ schedule.visit_date|date:"d F Y" }} at {{ schedule.visit_time|time:"H:i" }}</div>
+      <div class="subline">Created {{ schedule.created_at|date:"d M Y, H:i" }}</div>
+      <div class="pill {{ schedule.status }}">{{ schedule.get_status_display }}</div>
+
+      <div class="actions">
+        {% if is_staff_view %}
+        <a class="btn-link btn-secondary" href="{% url 'homepage:dashboard' %}">Back to Dashboard</a>
+        {% if schedule.car.status != "available" and schedule.car.status != "sold" %}
+        <form method="post" action="{% url 'homepage:return_car_to_platform' schedule.car.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn-link btn-secondary" type="submit">Return Car to Platform</button>
+        </form>
+        {% endif %}
+        {% else %}
+        <a class="btn-link btn-secondary" href="{% url 'homepage:profile' %}">Back to Profile</a>
+        {% endif %}
+        <a class="btn-link btn-primary" href="{% url 'homepage:car_detail' schedule.car.pk %}">View Car</a>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="section-title">Visit Fee</div>
+      <div class="muted">Scheduling fee</div>
+      <div style="font-size:2rem;font-weight:800;color:var(--gold);margin:6px 0 12px;">{{ schedule.scheduling_fee|floatformat:0 }} RWF</div>
+      <dl>
+        <div class="kv">
+          <dt>Fee paid</dt>
+          <dd>{% if schedule.fee_paid %}Yes{% else %}No{% endif %}</dd>
+        </div>
+        <div class="kv">
+          <dt>Confirmed by</dt>
+          <dd>{{ schedule.confirmed_by.full_name|default:"Not confirmed yet" }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Meeting district</dt>
+          <dd>{{ schedule.district }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Visit location</dt>
+          <dd>{{ schedule.location }}</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2 class="section-title">Customer & Schedule</h2>
+      <dl>
+        <div class="kv">
+          <dt>Customer</dt>
+          <dd>{{ schedule.customer.full_name }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Email</dt>
+          <dd>{{ schedule.customer.email|default:"Not provided" }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Phone</dt>
+          <dd>{{ schedule.customer.phone|default:"Not provided" }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Car</dt>
+          <dd>{{ schedule.car.title }}</dd>
+        </div>
+        <div class="kv">
+          <dt>Updated at</dt>
+          <dd>{{ schedule.updated_at|date:"d M Y, H:i" }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Notes</h2>
+      <div class="notes">{{ schedule.notes|default:"No extra notes were added for this visit." }}</div>
+    </section>
+
+    <section class="card" style="grid-column: 1 / -1;">
+      <h2 class="section-title">Payment Records</h2>
+      {% if payments %}
+      <div class="payment-list">
+        {% for p in payments %}
+        <article class="payment-item">
+          <div class="payment-head">
+            <div>
+              <strong>{{ p.payment_number }}</strong>
+              <div class="muted">{{ p.get_payment_method_display }} · {{ p.get_purpose_display }}</div>
+              <span class="tag">{{ p.get_status_display }}</span>
+            </div>
+            <div style="font-size:1.1rem;font-weight:800;color:var(--green);">{{ p.amount|floatformat:0 }} RWF</div>
+          </div>
+          <dl>
+            <div class="kv">
+              <dt>Phone used</dt>
+              <dd>{{ p.phone_number|default:"Not provided" }}</dd>
+            </div>
+            <div class="kv">
+              <dt>Processed by</dt>
+              <dd>{{ p.processed_by.full_name|default:"Pending staff review" }}</dd>
+            </div>
+            <div class="kv">
+              <dt>Created at</dt>
+              <dd>{{ p.created_at|date:"d M Y, H:i" }}</dd>
+            </div>
+            <div class="kv">
+              <dt>Paid at</dt>
+              <dd>{{ p.paid_at|date:"d M Y, H:i"|default:"Not marked as paid yet" }}</dd>
+            </div>
+            <div class="kv">
+              <dt>Receipt</dt>
+              <dd>
+                {% if p.receipt_image %}
+                <a href="{{ p.receipt_image.url }}" target="_blank">Open uploaded receipt</a>
+                {% else %}
+                No receipt uploaded
+                {% endif %}
+              </dd>
+            </div>
+            <div class="kv">
+              <dt>Invoice</dt>
+              <dd>
+                {% if p.invoice %}
+                <a href="{% url 'homepage:download_invoice' p.invoice.pk %}">{{ p.invoice.invoice_number }}</a>
+                {% else %}
+                Invoice not generated yet
+                {% endif %}
+              </dd>
+            </div>
+          </dl>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty">No payment records are linked to this visit schedule yet.</div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

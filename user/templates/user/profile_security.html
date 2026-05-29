@@ -1,0 +1,174 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}{{ site_name }} | Account Security{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --black: #0a0a0a;
+    --off-black: #111113;
+    --card-bg: #141416;
+    --border: #222226;
+    --border-light: #2a2a2f;
+    --text: #f0ede8;
+    --text-muted: #9a9aa5;
+    --text-dim: #62626d;
+    --accent: #e8c84a;
+    --accent-dark: #b89a2a;
+    --red: #ff4d4d;
+    --orange: #ff7a18;
+    --teal: #15a3a3;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #f4f5f7;
+    color: #17171c;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .security-page {
+    width: min(760px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 104px 0 56px;
+  }
+  .security-card {
+    background: #fff;
+    border: 1px solid #e4e7ec;
+    border-radius: 8px;
+    padding: 28px;
+    box-shadow: 0 16px 42px rgba(15, 23, 42, 0.08);
+  }
+  .security-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(135deg, var(--teal), var(--orange));
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  h1 {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 1px;
+  }
+  p {
+    margin: 4px 0 0;
+    color: #747684;
+  }
+  label {
+    display: block;
+    margin: 16px 0 7px;
+    font-weight: 800;
+    font-size: 12px;
+  }
+  input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid #d8dce4;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    outline: none;
+  }
+  input:focus {
+    border-color: var(--accent-dark);
+    box-shadow: 0 0 0 3px rgba(232,200,74,0.18);
+  }
+  .helptext {
+    display: block;
+    margin-top: 7px;
+    color: #747684;
+    font-size: 12px;
+  }
+  ul.errorlist {
+    padding: 0;
+    margin: 8px 0 0;
+    list-style: none;
+    color: var(--red);
+    font-size: 12px;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .btn {
+    min-height: 46px;
+    border-radius: 8px;
+    border: 1px solid #d8dce4;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff;
+    color: #17171c;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn.primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #0a0a0a;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="security-page">
+  <section class="security-card">
+    <div class="security-head">
+      <span class="avatar">
+        {% if profile_photo_url %}
+          <img src="{{ profile_photo_url }}" alt="{{ request.user.full_name }}">
+        {% else %}
+          {{ request.user.full_name|first|upper }}
+        {% endif %}
+      </span>
+      <div>
+        <h1>Account Security</h1>
+        <p>Change your password for {{ request.user.email }}.</p>
+      </div>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <label for="{{ form.old_password.id_for_label }}">Current Password</label>
+      {{ form.old_password }}
+      {{ form.old_password.errors }}
+
+      <label for="{{ form.new_password1.id_for_label }}">New Password</label>
+      {{ form.new_password1 }}
+      {% if form.new_password1.help_text %}<span class="helptext">{{ form.new_password1.help_text }}</span>{% endif %}
+      {{ form.new_password1.errors }}
+
+      <label for="{{ form.new_password2.id_for_label }}">Confirm New Password</label>
+      {{ form.new_password2 }}
+      {{ form.new_password2.errors }}
+
+      <div class="actions">
+        <button class="btn primary" type="submit"><i class="fas fa-shield-halved" aria-hidden="true"></i>Update Password</button>
+        <a class="btn" href="{% url 'homepage:profile' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Profile</a>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}

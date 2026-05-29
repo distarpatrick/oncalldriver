@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ site_name }} — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN SYSTEM — Deep Slate + Amber
+══════════════════════════════════════════════ */
+:root{
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --border:   #21262d;
+  --border2:  #30363d;
+  --txt:      #e6edf3;
+  --muted:    #7d8590;
+  --accent:   #f0a500;
+  --accent2:  #e08e00;
+  --green:    #3fb950;
+  --red:      #f85149;
+  --blue:     #58a6ff;
+  --purple:   #bc8cff;
+  --orange:   #ffa657;
+  --teal:     #39d0c8;
+  --font-head:"Syne",sans-serif;
+  --font-body:"DM Sans",sans-serif;
+  --radius:   10px;
+  --radius-sm:6px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:var(--font-body)}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:0 0 24px
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:10px;
+  padding:20px 20px 18px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--font-head);font-weight:800;font-size:1.05rem
+}
+.brand-icon{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--accent);color:#000;
+  display:grid;place-items:center;font-weight:900;font-size:.8rem;overflow:hidden;flex-shrink:0
+}
+.brand-icon img{width:100%;height:100%;object-fit:cover}
+
+.sidebar-section{padding:18px 12px 4px;font-size:.7rem;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;margin:2px 8px;
+  border-radius:var(--radius-sm);
+  font-size:.87rem;font-weight:500;color:var(--muted);
+  transition:all .15s;cursor:pointer
+}
+.nav-item:hover,.nav-item.active{background:rgba(240,165,0,.1);color:var(--accent)}
+.nav-item svg{flex-shrink:0;opacity:.75}
+.nav-item:hover svg,.nav-item.active svg{opacity:1}
+
+.sidebar-footer{margin-top:auto;padding:12px 20px;border-top:1px solid var(--border)}
+.role-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(240,165,0,.12);color:var(--accent);
+  border:1px solid rgba(240,165,0,.25);
+  padding:5px 10px;border-radius:20px;font-size:.78rem;font-weight:600
+}
+.user-pill{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.84rem}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--accent);color:#000;
+  display:grid;place-items:center;font-weight:800;font-size:.8rem;flex-shrink:0
+}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;overflow:hidden}
+
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 28px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10
+}
+.topbar-left{font-family:var(--font-head);font-size:1.1rem;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:12px}
+
+.notif-btn{
+  position:relative;width:36px;height:36px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border);
+  display:grid;place-items:center;color:var(--muted)
+}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  background:var(--red);border-radius:50%;border:2px solid var(--surface)
+}
+.topbar-link{
+  padding:7px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);font-size:.83rem;color:var(--muted);
+  background:var(--bg);transition:all .15s
+}
+.topbar-link:hover{color:var(--txt);border-color:var(--border2)}
+.topbar-link.accent{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+
+.page-body{padding:24px 28px;overflow-y:auto}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:24px}
+.page-header h1{font-family:var(--font-head);font-size:1.9rem;font-weight:800;line-height:1.1}
+.page-header p{color:var(--muted);margin-top:4px;font-size:.9rem}
+
+/* ══════════════════════════════════════════════
+   COMPONENTS
+══════════════════════════════════════════════ */
+
+/* ── MESSAGES ── */
+.flash-list{list-style:none;margin-bottom:20px;display:grid;gap:8px}
+.flash-list li{
+  padding:11px 14px;border-radius:var(--radius-sm);font-size:.87rem;font-weight:500;
+  background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.25);color:var(--green)
+}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.kpi{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px;position:relative;overflow:hidden
+}
+.kpi::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(240,165,0,.05) 0%,transparent 60%);
+  pointer-events:none
+}
+.kpi-label{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kpi-value{font-family:var(--font-head);font-size:2rem;font-weight:800;margin:6px 0 2px;line-height:1}
+.kpi-sub{font-size:.78rem;color:var(--muted)}
+.kpi-icon{
+  position:absolute;top:14px;right:14px;
+  width:36px;height:36px;border-radius:8px;
+  display:grid;place-items:center;font-size:1.1rem
+}
+.kpi-green .kpi-value{color:var(--green)}  .kpi-green .kpi-icon{background:rgba(63,185,80,.15);color:var(--green)}
+.kpi-amber .kpi-value{color:var(--accent)} .kpi-amber .kpi-icon{background:rgba(240,165,0,.15);color:var(--accent)}
+.kpi-blue  .kpi-value{color:var(--blue)}   .kpi-blue  .kpi-icon{background:rgba(88,166,255,.15);color:var(--blue)}
+.kpi-red   .kpi-value{color:var(--red)}    .kpi-red   .kpi-icon{background:rgba(248,81,73,.15);color:var(--red)}
+.kpi-purple .kpi-value{color:var(--purple)}.kpi-purple .kpi-icon{background:rgba(188,140,255,.15);color:var(--purple)}
+.kpi-teal  .kpi-value{color:var(--teal)}   .kpi-teal  .kpi-icon{background:rgba(57,208,200,.15);color:var(--teal)}
+
+/* ── GRID LAYOUT ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+.grid-left-wide{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;margin-bottom:20px}
+
+/* ── PANEL ── */
+.panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px
+}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.panel-title{font-family:var(--font-head);font-size:1rem;font-weight:700}
+.panel-count{
+  font-size:.75rem;font-weight:700;
+  background:rgba(240,165,0,.15);color:var(--accent);
+  border:1px solid rgba(240,165,0,.2);
+  padding:3px 8px;border-radius:12px
+}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.data-table th{
+  text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);
+  padding:8px 10px;border-bottom:1px solid var(--border)
+}
+.data-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── STATUS BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.74rem;font-weight:700;white-space:nowrap}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge-green{background:rgba(63,185,80,.15);color:var(--green)}
+.badge-amber{background:rgba(240,165,0,.15);color:var(--accent)}
+.badge-red{background:rgba(248,81,73,.15);color:var(--red)}
+.badge-blue{background:rgba(88,166,255,.15);color:var(--blue)}
+.badge-purple{background:rgba(188,140,255,.15);color:var(--purple)}
+.badge-muted{background:rgba(125,133,144,.12);color:var(--muted)}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 13px;border-radius:var(--radius-sm);
+  border:none;font-size:.8rem;font-weight:600;transition:all .15s
+}
+.btn-sm{padding:5px 10px;font-size:.76rem}
+.btn-accent{background:var(--accent);color:#000}
+.btn-accent:hover{background:var(--accent2)}
+.btn-green{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.btn-green:hover{background:rgba(63,185,80,.25)}
+.btn-red{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.25)}
+.btn-red:hover{background:rgba(248,81,73,.22)}
+.btn-blue{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.25)}
+.btn-blue:hover{background:rgba(88,166,255,.22)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--txt);border-color:var(--border2)}
+
+/* ── CAR CARD (small) ── */
+.car-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.car-row[data-detail-url], .data-table tr[data-detail-url]{cursor:pointer}
+.car-row:last-child{border-bottom:none;padding-bottom:0}
+.car-thumb{
+  width:72px;height:52px;border-radius:var(--radius-sm);
+  background:var(--bg);overflow:hidden;flex-shrink:0;display:grid;place-items:center
+}
+.car-thumb img{width:100%;height:100%;object-fit:cover}
+.car-thumb .no-img{color:var(--muted);font-size:.7rem;font-weight:700}
+.car-info strong{display:block;font-size:.85rem;font-weight:600}
+.car-info span{font-size:.77rem;color:var(--muted)}
+.car-row-actions{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
+
+/* ── FORM FIELDS ── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.field-input,.field-select,.field-textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  color:var(--txt);border-radius:var(--radius-sm);
+  padding:9px 12px;font-family:var(--font-body);font-size:.87rem;outline:none;
+  transition:border .15s
+}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--accent)}
+.field-select{cursor:pointer}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-error{color:var(--red);font-size:.76rem;margin-top:5px}
+
+/* ── PERF TABLE ── */
+.perf-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.perf-row:last-child{border-bottom:none}
+.perf-rank{width:24px;height:24px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:.75rem;font-weight:800;color:var(--muted);flex-shrink:0}
+.perf-rank.top{background:rgba(240,165,0,.2);color:var(--accent)}
+.perf-bar-wrap{flex:1;background:var(--bg);border-radius:4px;height:6px;overflow:hidden}
+.perf-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--orange))}
+.perf-val{font-size:.82rem;font-weight:700;color:var(--txt);min-width:32px;text-align:right}
+
+/* ── CHART CANVAS ── */
+.chart-wrap{position:relative;height:220px}
+
+/* ── TICKET CARD ── */
+.ticket-card{
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px;margin-bottom:10px;background:var(--bg)
+}
+.ticket-card:last-child{margin-bottom:0}
+.ticket-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.ticket-body{font-size:.84rem;color:var(--muted);margin-bottom:8px}
+.ticket-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ── REPLY FORM ── */
+.reply-form{margin-top:10px;display:none}
+.reply-form.open{display:block}
+.reply-textarea{
+  width:100%;background:var(--surface);border:1px solid var(--border);
+  color:var(--txt);border-radius:var(--radius-sm);
+  padding:8px;font-family:var(--font-body);font-size:.84rem;outline:none;
+  resize:vertical;min-height:60px
+}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  display:none;align-items:center;justify-content:center;z-index:100
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:28px;width:min(520px,95vw);
+  max-height:90vh;overflow-y:auto
+}
+.modal h2{font-family:var(--font-head);font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.modal p{color:var(--muted);font-size:.87rem;margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:.87rem}
+.empty svg{opacity:.3;margin-bottom:8px}
+
+/* ── DIVIDER ── */
+.section-gap{height:20px}
+
+/* ── SCROLL TABLE WRAP ── */
+.table-wrap{overflow-x:auto}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:18px;width:fit-content}
+.tab-btn{
+  padding:7px 16px;border-radius:6px;border:none;
+  background:transparent;color:var(--muted);font-size:.84rem;font-weight:600;
+  cursor:pointer;transition:all .15s
+}
+.tab-btn.active{background:var(--surface);color:var(--txt);border:1px solid var(--border)}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.stat-item{display:flex;flex-direction:column;gap:2px}
+.stat-item .sv{font-family:var(--font-head);font-size:1.5rem;font-weight:800}
+.stat-item .sl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .grid-3{grid-template-columns:1fr 1fr}
+  .grid-left-wide{grid-template-columns:1fr}
+}
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .grid-2,.grid-3,.grid-left-wide{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .field-grid{grid-template-columns:1fr}
+  .page-body{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      {% if site_logo %}<img src="{{ site_logo }}" alt="">{% else %}OD{% endif %}
+    </div>
+    <span>{{ site_name }}</span>
+  </div>
+
+  <div class="sidebar-section">Navigation</div>
+
+  <a class="nav-item active" href="{% url 'homepage:dashboard' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item" href="{% url 'homepage:car_list' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+    Cars
+  </a>
+  <a class="nav-item" href="{% url 'homepage:profile' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    My Profile
+  </a>
+
+  {% if dashboard_role == "super_admin" or dashboard_role == "admin" or dashboard_role == "marketer" %}
+  <a class="nav-item" href="{% url 'homepage:upload_car' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Upload Car
+  </a>
+  {% endif %}
+
+  <a class="nav-item" href="{% url 'homepage:index' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Public Site
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="role-badge">
+      ● {{ user.get_role_display }}
+    </div>
+    <div class="user-pill">
+      <div class="user-avatar">{{ user.full_name|first|upper }}</div>
+      <div>
+        <div style="font-weight:600;font-size:.83rem">{{ user.full_name }}</div>
+        <div style="color:var(--muted);font-size:.76rem">{{ user.email }}</div>
+      </div>
+    </div>
+    <a href="{% url 'homepage:logout' %}" class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%;justify-content:center">Sign out</a>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════
+     MAIN AREA
+══════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      {% if view == "admin" %}Admin Control Centre
+      {% elif view == "manager" %}Manager Reports & Analytics
+      {% elif view == "marketer" %}Marketer Workspace
+      {% elif view == "sales_agent" %}Sales Agent Hub
+      {% elif view == "accountant" %}Finance & Payments
+      {% elif view == "inventory_manager" %}Inventory Control
+      {% elif view == "customer_support" %}Customer Support Centre
+      {% endif %}
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        {% if unread_notifications %}<span class="notif-dot"></span>{% endif %}
+      </div>
+      <a href="{% url 'homepage:index' %}" class="topbar-link">← Public site</a>
+      <a href="{% url 'homepage:logout' %}" class="topbar-link accent">Logout</a>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <!-- Flash messages -->
+    {% if messages %}
+    <ul class="flash-list">
+      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════════
+         VIEW: ADMIN / SUPER_ADMIN
+    ══════════════════════════════════════════════ -->
+    {% if view == "admin" %}
+    <div class="page-header">
+      <h1>Admin Control Centre</h1>
+      <p>Full platform oversight — users, cars, payments, and audit trail.</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi kpi-blue">
+        <div class="kpi-label">Total Users</div>
+        <div class="kpi-value">{{ total_users }}</div>
+        <div class="kpi-sub">{{ active_users }} active</div>
+        <div class="kpi-icon">👥</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="kpi-label">Live Cars</div>
+        <div class="kpi-value">{{ live_cars }}</div>
+        <div class="kpi-sub">of {{ total_cars }} total</div>
+        <div class="kpi-icon">🚗</div>
+      </div>
+      <div class="kpi kpi-amber">
+        <div class="kpi-label">Month Revenue</div>
+        <div class="kpi-value" style="font-size:1.3rem">{{ month_revenue_fmt }}</div>
+        <div class="kpi-sub">{{ month_bookings }} bookings</div>
+        <div class="kpi-icon">💰</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="kpi-label">Pending Review</div>
+        <div class="kpi-value">{{ pending_cars }}</div>
+        <div class="kpi-sub">cars awaiting approval</div>
+        <div class="kpi-icon">⏳</div>
+      </div>
+      <div class="kpi kpi-purple">
+        <div class="kpi-label">Booked</div>
+        <div class="kpi-value">{{ booked_cars_count }}</div>
+        <div class="kpi-sub">{{ sold_cars }} sold total</div>
+        <div class="kpi-icon">📋</div>
+      </div>
+      <div class="kpi kpi-teal">
+        <div class="kpi-label">Open Tickets</div>
+        <div class="kpi-value">{{ open_tickets }}</div>
+        <div class="kpi-sub">{{ pending_payments }} pending payments</div>
+        <div class="kpi-icon">🎫</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid-left-wide">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Revenue — Last 6 Months</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Booking Status</span></div>
+        <div class="chart-wrap"><canvas id="bookingChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Staff creation + staff list -->
+    {% if can_manage_staff %}
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Create Staff Account</span>
+        </div>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="create_staff" value="1">
+          {% if staff_form.non_field_errors %}
+            {% for e in staff_form.non_field_errors %}<div class="field-error" style="margin-bottom:10px">{{ e }}</div>{% endfor %}
+          {% endif %}
+          <div class="field-grid">
+            <div class="field">
+              <label>Full name</label>
+              <input class="field-input" type="text" name="full_name" value="{{ staff_form.full_name.value|default:'' }}" placeholder="Jane Doe">
+              {% for e in staff_form.full_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input class="field-input" type="email" name="email" value="{{ staff_form.email.value|default:'' }}" placeholder="jane@example.com">
+              {% for e in staff_form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="field">
+              <label>Phone</label>
+              <input class="field-input" type="text" name="phone" value="{{ staff_form.phone.value|default:'' }}" placeholder="+250XXXXXXXXX">
+            </div>
+            <div class="field">
+              <label>Role</label>
+              {{ staff_form.role }}
+              {% for e in staff_form.role.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input class="field-input" type="password" name="password1" placeholder="••••••••">
+            </div>
+            <div class="field">
+              <label>Confirm password</label>
+              <input class="field-input" type="password" name="password2" placeholder="••••••••">
+            </div>
+          </div>
+          <button class="btn btn-accent" type="submit" style="width:100%;justify-content:center;padding:10px">Create Staff Account</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Staff Accounts</span>
+          <span class="panel-count">{{ staff|length }}</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for u in staff %}
+            <tr>
+              <td>
+                <div style="font-weight:600">{{ u.full_name }}</div>
+                <div style="color:var(--muted);font-size:.77rem">{{ u.email }}</div>
+              </td>
+              <td><span class="badge badge-blue">{{ u.get_role_display }}</span></td>
+              <td>
+                {% if u.is_active %}<span class="badge badge-green">Active</span>
+                {% else %}<span class="badge badge-red">Inactive</span>{% endif %}
+              </td>
+              <td>
+                {% if u.is_active %}
+                <form method="post" action="{% url 'homepage:deactivate_user' u.pk %}" style="display:inline">{% csrf_token %}
+                  <button class="btn btn-red btn-sm" onclick="return confirm('Deactivate {{ u.full_name }}?')">Deactivate</button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'homepage:activate_user' u.pk %}" style="display:inline">{% csrf_token %}
+                  <button class="btn btn-green btn-sm">Activate</button>
+                </form>
+                {% endif %}
+                <form method="post" action="{% url 'homepage:delete_user' u.pk %}" style="display:inline">{% csrf_token %}
+                  <button class="btn btn-red btn-sm" onclick="return confirm('Permanently delete {{ u.full_name }}? This cannot be undone.')">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4"><div class="empty">No staff accounts yet.</div></td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Cars -->
+    <div class="grid-3" style="margin-bottom:20px">
+
+      <!-- Pending approval -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Pending Approval</span>
+          <span class="panel-count">{{ pending_cars }}</span>
+        </div>
+        {% for item in pending_car_list %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+          <div class="car-thumb">
+            {% if item.image %}<img src="{{ item.image }}" alt="">{% else %}<span class="no-img">No photo</span>{% endif %}
+          </div>
+          <div class="car-info">
+            <strong>{{ item.car.title|truncatechars:30 }}</strong>
+            <span>{{ item.car.year }} · {{ item.car.registration_plate }}</span>
+          </div>
+          <div class="car-row-actions">
+            <form method="post" action="{% url 'homepage:approve_car' item.car.pk %}">{% csrf_token %}
+              <button class="btn btn-green btn-sm">✓</button>
+            </form>
+            <form method="post" action="{% url 'homepage:reject_car' item.car.pk %}">{% csrf_token %}
+              <button class="btn btn-red btn-sm">✗</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">All clear — no pending cars.</div>{% endfor %}
+      </div>
+
+      <!-- Recent uploads -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Recent Uploads</span></div>
+        {% for item in recent_cars %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+          <div class="car-thumb">
+            {% if item.image %}<img src="{{ item.image }}" alt="">{% else %}<span class="no-img">No photo</span>{% endif %}
+          </div>
+          <div class="car-info">
+            <strong>{{ item.car.title|truncatechars:28 }}</strong>
+            <span>{{ item.car.get_status_display }}</span>
+          </div>
+          <div class="car-row-actions">
+            <form method="post" action="{% url 'homepage:delete_car' item.car.pk %}">{% csrf_token %}
+              <button class="btn btn-red btn-sm" onclick="return confirm('Delete this listing?')">🗑</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No uploads yet.</div>{% endfor %}
+      </div>
+
+      <!-- Booked cars -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Booked Cars</span><span class="panel-count">{{ booked_cars_count }}</span></div>
+        {% for item in booked_car_list %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+          <div class="car-thumb">
+            {% if item.image %}<img src="{{ item.image }}" alt="">{% else %}<span class="no-img">No photo</span>{% endif %}
+          </div>
+          <div class="car-info">
+            <strong>{{ item.car.title|truncatechars:28 }}</strong>
+            <span class="badge badge-amber" style="font-size:.7rem">Booked</span>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No booked cars.</div>{% endfor %}
+      </div>
+    </div>
+
+    <!-- Payments + Refunds -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Pending Payments</span>
+          <span class="panel-count">{{ pending_payments }}</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Customer</th><th>Amount</th><th>Purpose</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for p in recent_payments %}
+            {% if p.status == "pending" %}
+            <tr>
+              <td>{{ p.customer.full_name|truncatechars:20 }}</td>
+              <td style="font-weight:700;color:var(--accent)">{{ p.amount|floatformat:0 }} RWF</td>
+              <td><span class="badge badge-muted">{{ p.get_purpose_display }}</span></td>
+              <td>
+                <form method="post" action="{% url 'homepage:confirm_payment_dashboard' p.pk %}">{% csrf_token %}
+                  <button class="btn btn-green btn-sm">Confirm</button>
+                </form>
+              </td>
+            </tr>
+            {% endif %}
+            {% empty %}<tr><td colspan="4"><div class="empty">No pending payments.</div></td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Pending Refunds</span><span class="panel-count">{{ pending_refunds|length }}</span></div>
+        {% for r in pending_refunds %}
+        <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:600">{{ r.requested_by.full_name }}</div>
+              <div style="color:var(--muted);font-size:.78rem">{{ r.reason|truncatechars:60 }}</div>
+              <div style="color:var(--accent);font-weight:700;font-size:.85rem;margin-top:2px">{{ r.amount|floatformat:0 }} RWF</div>
+            </div>
+            <form method="post" action="{% url 'homepage:approve_refund' r.pk %}">{% csrf_token %}
+              <button class="btn btn-green btn-sm">Approve</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No pending refunds.</div>{% endfor %}
+      </div>
+    </div>
+
+    <!-- Audit log -->
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Audit Trail</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>User</th><th>Action</th><th>Model</th><th>Description</th><th>Time</th></tr></thead>
+          <tbody>
+          {% for log in audit_logs %}
+          <tr>
+            <td style="font-weight:600">{{ log.user.full_name|default:"System" }}</td>
+            <td><span class="badge {% if log.action == 'deleted' %}badge-red{% elif log.action == 'approved' %}badge-green{% else %}badge-blue{% endif %}">{{ log.action }}</span></td>
+            <td style="color:var(--muted)">{{ log.model_affected }}</td>
+            <td style="color:var(--muted);font-size:.8rem">{{ log.description|truncatechars:60 }}</td>
+            <td style="color:var(--muted);font-size:.78rem;white-space:nowrap">{{ log.timestamp|date:"d M, H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5"><div class="empty">No audit entries yet.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════ MANAGER VIEW ══════ -->
+    {% elif view == "manager" %}
+    <div class="page-header">
+      <h1>Analytics & Reports</h1>
+      <p>Monitor performance, track revenue, and drive strategic decisions.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-amber">
+        <div class="kpi-label">Month Revenue</div>
+        <div class="kpi-value" style="font-size:1.2rem">{{ month_revenue_fmt }}</div>
+        <div class="kpi-sub">{{ month_bookings }} bookings this month</div>
+        <div class="kpi-icon">💰</div>
+      </div>
+      <div class="kpi kpi-blue">
+        <div class="kpi-label">Total Bookings</div>
+        <div class="kpi-value">{{ total_bookings }}</div>
+        <div class="kpi-sub">{{ month_bookings }} this month</div>
+        <div class="kpi-icon">📋</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="kpi-label">Visits This Month</div>
+        <div class="kpi-value">{{ visits_this_month }}</div>
+        <div class="kpi-sub">{{ total_visits }} all-time</div>
+        <div class="kpi-icon">📅</div>
+      </div>
+      <div class="kpi kpi-purple">
+        <div class="kpi-label">Car Views/Month</div>
+        <div class="kpi-value">{{ car_views_this_month }}</div>
+        <div class="kpi-sub">platform traffic</div>
+        <div class="kpi-icon">👁</div>
+      </div>
+    </div>
+
+    <div class="grid-left-wide">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Revenue Trend (6 Months)</span></div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Inventory by Status</span></div>
+        <div class="chart-wrap"><canvas id="invChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Marketer Performance</span></div>
+        {% for m in marketer_perf %}
+        <div class="perf-row">
+          <div class="perf-rank {% if forloop.first %}top{% endif %}">{{ forloop.counter }}</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:.87rem">{{ m.full_name }}</div>
+            <div class="perf-bar-wrap"><div class="perf-bar" style="width:{% widthratio m.month_uploads marketer_perf.0.month_uploads 100 %}%"></div></div>
+          </div>
+          <div class="perf-val">{{ m.month_uploads }} <span style="color:var(--muted);font-weight:400">this month</span></div>
+        </div>
+        {% empty %}<div class="empty">No marketers found.</div>{% endfor %}
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Sales Agent Performance</span></div>
+        {% for s in sales_perf %}
+        <div class="perf-row">
+          <div class="perf-rank {% if forloop.first %}top{% endif %}">{{ forloop.counter }}</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:.87rem">{{ s.full_name }}</div>
+            <div style="font-size:.76rem;color:var(--muted)">{{ s.completed_count }} completed · {{ s.confirmed_count }} confirmed</div>
+            <div class="perf-bar-wrap" style="margin-top:4px"><div class="perf-bar" style="width:{% if sales_perf.0.total_handled > 0 %}{% widthratio s.total_handled sales_perf.0.total_handled 100 %}{% else %}0{% endif %}%"></div></div>
+          </div>
+          <div class="perf-val">{{ s.total_handled }}</div>
+        </div>
+        {% empty %}<div class="empty">No sales agents found.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Top Cars by Views</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Car</th><th>Brand</th><th>Status</th><th>Views</th><th>Rating</th><th>Price (RWF)</th></tr></thead>
+          <tbody>
+          {% for item in top_cars %}
+          <tr>
+            <td style="font-weight:600">{{ item.car.title|truncatechars:30 }}</td>
+            <td>{{ item.car.brand.name|default:"—" }}</td>
+            <td><span class="badge {% if item.car.status == 'available' %}badge-green{% elif item.car.status == 'booked' %}badge-amber{% else %}badge-muted{% endif %}">{{ item.car.get_status_display }}</span></td>
+            <td style="color:var(--blue);font-weight:700">{{ item.car.views_count }}</td>
+            <td>⭐ {{ item.car.average_rating }}</td>
+            <td style="font-weight:700">{{ item.car.price|floatformat:0 }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty">No cars yet.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════ MARKETER VIEW ══════ -->
+    {% elif view == "marketer" %}
+    <div class="page-header">
+      <h1>Marketer Workspace</h1>
+      <p>Manage your listings, track performance, and promote cars.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-blue"><div class="kpi-label">My Uploads</div><div class="kpi-value">{{ my_total }}</div><div class="kpi-icon">🚗</div></div>
+      <div class="kpi kpi-green"><div class="kpi-label">Live</div><div class="kpi-value">{{ my_live }}</div><div class="kpi-sub">available & scheduled</div><div class="kpi-icon">✅</div></div>
+      <div class="kpi kpi-amber"><div class="kpi-label">Pending</div><div class="kpi-value">{{ my_pending }}</div><div class="kpi-sub">awaiting approval</div><div class="kpi-icon">⏳</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-label">Booked</div><div class="kpi-value">{{ my_booked }}</div><div class="kpi-icon">📋</div></div>
+      <div class="kpi kpi-teal"><div class="kpi-label">Sold</div><div class="kpi-value">{{ my_sold }}</div><div class="kpi-icon">🏆</div></div>
+      <div class="kpi kpi-blue"><div class="kpi-label">Total Views</div><div class="kpi-value">{{ my_views }}</div><div class="kpi-sub">avg {{ avg_rating }}★ rating</div><div class="kpi-icon">👁</div></div>
+    </div>
+
+    {% if my_rejected %}<div style="background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.2);border-radius:var(--radius);padding:14px;margin-bottom:20px;color:var(--red);font-size:.87rem">
+      ⚠️ <strong>{{ my_rejected }} listing{{ my_rejected|pluralize }} rejected</strong> — please review and re-upload with corrections.
+    </div>{% endif %}
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">My Listings</span><a href="{% url 'homepage:upload_car' %}" class="btn btn-accent btn-sm">+ Upload Car</a></div>
+        {% for item in my_car_list %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+          <div class="car-thumb">{% if item.image %}<img src="{{ item.image }}" alt="">{% else %}<span class="no-img">No photo</span>{% endif %}</div>
+          <div class="car-info">
+            <strong>{{ item.car.title|truncatechars:28 }}</strong>
+            <span>{{ item.car.year }} · {{ item.car.price|floatformat:0 }} RWF</span>
+          </div>
+          <div class="car-row-actions">
+            <span class="badge {% if item.car.status == 'available' %}badge-green{% elif item.car.status == 'pending' %}badge-amber{% elif item.car.status == 'rejected' %}badge-red{% elif item.car.status == 'booked' %}badge-purple{% else %}badge-muted{% endif %}">{{ item.car.get_status_display }}</span>
+          </div>
+        </div>
+        {% empty %}<div class="empty">You haven't uploaded any cars yet.<br><a href="{% url 'homepage:upload_car' %}" class="btn btn-accent btn-sm" style="margin-top:10px">Upload your first car</a></div>{% endfor %}
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Active Promotions</span></div>
+        {% for promo in active_promos %}
+        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:var(--bg)">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <div style="font-weight:700">{{ promo.title }}</div>
+              <div style="color:var(--muted);font-size:.78rem">{{ promo.start_date|date:"d M" }} → {{ promo.end_date|date:"d M Y" }}</div>
+            </div>
+            <span class="badge badge-amber">{{ promo.discount_percent }}% off</span>
+          </div>
+          <div style="color:var(--muted);font-size:.8rem;margin-top:6px">{{ promo.cars.count }} car{{ promo.cars.count|pluralize }} included</div>
+        </div>
+        {% empty %}
+        <div class="empty">No active promotions. Contact admin to create one.</div>
+        {% endfor %}
+
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <div style="font-weight:700;margin-bottom:10px;font-size:.9rem">Quick Upload</div>
+          <a href="{% url 'homepage:upload_car' %}" class="btn btn-accent" style="width:100%;justify-content:center;padding:11px">
+            + Upload New Car Listing
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ SALES AGENT VIEW ══════ -->
+    {% elif view == "sales_agent" %}
+    <div class="page-header">
+      <h1>Sales Agent Hub</h1>
+      <p>Manage bookings, confirm visits, and convert leads to sales.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-blue"><div class="kpi-label">My Bookings</div><div class="kpi-value">{{ my_total }}</div><div class="kpi-icon">📋</div></div>
+      <div class="kpi kpi-amber"><div class="kpi-label">Pending</div><div class="kpi-value">{{ my_pending }}</div><div class="kpi-icon">⏳</div></div>
+      <div class="kpi kpi-green"><div class="kpi-label">Confirmed</div><div class="kpi-value">{{ my_confirmed }}</div><div class="kpi-icon">✅</div></div>
+      <div class="kpi kpi-teal"><div class="kpi-label">Completed</div><div class="kpi-value">{{ my_completed }}</div><div class="kpi-sub">cars sold</div><div class="kpi-icon">🏆</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-label">This Month</div><div class="kpi-value">{{ my_month }}</div><div class="kpi-sub">bookings handled</div><div class="kpi-icon">📅</div></div>
+      <div class="kpi kpi-amber"><div class="kpi-label">Revenue (me)</div><div class="kpi-value" style="font-size:1.1rem">{{ my_revenue_fmt }}</div><div class="kpi-icon">💰</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Unhandled Bookings</span><span class="panel-count">{{ unhandled_bookings|length }}</span></div>
+        {% for b in unhandled_bookings %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' b.car.pk %}">
+          <div class="car-info">
+            <strong>{{ b.booking_number }}</strong>
+            <span>{{ b.customer.full_name }} — {{ b.car.title|truncatechars:25 }}</span>
+            <span style="color:var(--accent)">{{ b.amount_paid|floatformat:0 }} RWF paid</span>
+          </div>
+          <div class="car-row-actions">
+            <form method="post" action="{% url 'homepage:handle_booking' b.pk %}">{% csrf_token %}
+              <button class="btn btn-blue btn-sm">Take it</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No unhandled bookings — great!</div>{% endfor %}
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Upcoming Visits</span><span class="panel-count">{{ pending_visits|length }}</span></div>
+        {% for v in pending_visits %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' v.car.pk %}">
+          <div class="car-info">
+            <strong>{{ v.schedule_number }}</strong>
+            <span>{{ v.customer.full_name }} — {{ v.car.title|truncatechars:22 }}</span>
+            <span style="color:var(--blue)">{{ v.visit_date|date:"d M Y" }} at {{ v.visit_time|time:"H:i" }}</span>
+          </div>
+          <div class="car-row-actions">
+            {% if v.status == "pending" %}
+            <form method="post" action="{% url 'homepage:confirm_visit' v.pk %}">{% csrf_token %}
+              <button class="btn btn-green btn-sm">Confirm</button>
+            </form>
+            {% else %}
+            <span class="badge badge-green">Confirmed</span>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}<div class="empty">No upcoming visits.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">My Recent Bookings</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Customer</th><th>Car</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for b in recent_bookings %}
+          <tr>
+            <td style="font-weight:700;color:var(--muted)">{{ b.booking_number }}</td>
+            <td>{{ b.customer.full_name }}</td>
+            <td>{{ b.car.title|truncatechars:25 }}</td>
+            <td style="font-weight:700;color:var(--accent)">{{ b.amount_paid|floatformat:0 }} RWF</td>
+            <td><span class="badge {% if b.status == 'confirmed' %}badge-green{% elif b.status == 'completed' %}badge-blue{% elif b.status == 'cancelled' %}badge-red{% else %}badge-amber{% endif %}">{{ b.get_status_display }}</span></td>
+            <td>
+              {% if b.status == "confirmed" %}
+              <form method="post" action="{% url 'homepage:complete_booking' b.pk %}">{% csrf_token %}
+                <button class="btn btn-green btn-sm">Mark Sold</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty">No bookings yet.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════ ACCOUNTANT VIEW ══════ -->
+    {% elif view == "accountant" %}
+    <div class="page-header">
+      <h1>Finance & Payments</h1>
+      <p>Verify transactions, manage refunds, and generate financial reports.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-amber"><div class="kpi-label">Total Revenue</div><div class="kpi-value" style="font-size:1.1rem">{{ total_revenue_fmt }}</div><div class="kpi-icon">💰</div></div>
+      <div class="kpi kpi-green"><div class="kpi-label">This Month</div><div class="kpi-value" style="font-size:1.1rem">{{ month_revenue_fmt }}</div><div class="kpi-icon">📈</div></div>
+      <div class="kpi kpi-red"><div class="kpi-label">Pending</div><div class="kpi-value" style="font-size:1.1rem">{{ pending_total_fmt }}</div><div class="kpi-sub">{{ pending_count }} payments</div><div class="kpi-icon">⏳</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-label">Refunded</div><div class="kpi-value" style="font-size:1.1rem">{{ total_refunded_fmt }}</div><div class="kpi-icon">↩️</div></div>
+      <div class="kpi kpi-blue"><div class="kpi-label">Unsent Invoices</div><div class="kpi-value">{{ unsent_invoices }}</div><div class="kpi-icon">📄</div></div>
+      <div class="kpi kpi-teal"><div class="kpi-label">Pending Refunds</div><div class="kpi-value">{{ pending_refunds|length }}</div><div class="kpi-icon">🔄</div></div>
+    </div>
+
+    <div class="grid-left-wide">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Revenue Trend</span></div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">By Payment Method</span></div>
+        {% for m in method_breakdown %}
+        <div class="perf-row">
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:.86rem">{{ m.payment_method|title }}</div>
+            <div class="perf-bar-wrap"><div class="perf-bar" style="width:{% if method_breakdown.0.total %}{% widthratio m.total method_breakdown.0.total 100 %}{% else %}0{% endif %}%"></div></div>
+          </div>
+          <div style="font-size:.83rem;font-weight:700;min-width:80px;text-align:right">{{ m.total|floatformat:0 }} RWF</div>
+        </div>
+        {% empty %}<div class="empty">No payment data.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Pending Payments</span><span class="panel-count">{{ pending_count }}</span></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Ref</th><th>Customer</th><th>Amount</th><th>Method</th><th>Purpose</th><th></th></tr></thead>
+            <tbody>
+            {% for p in pending_payments %}
+            <tr>
+              <td style="font-weight:700;color:var(--muted);font-size:.78rem">{{ p.payment_number }}</td>
+              <td>{{ p.customer.full_name|truncatechars:18 }}</td>
+              <td style="font-weight:700;color:var(--accent)">{{ p.amount|floatformat:0 }}</td>
+              <td style="font-size:.8rem">{{ p.get_payment_method_display }}</td>
+              <td><span class="badge badge-blue">{{ p.get_purpose_display }}</span></td>
+              <td>
+                <form method="post" action="{% url 'homepage:confirm_payment_dashboard' p.pk %}">{% csrf_token %}
+                  <button class="btn btn-green btn-sm">✓ Verify</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6"><div class="empty">All caught up!</div></td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Pending Refunds</span></div>
+        {% for r in pending_refunds %}
+        <div class="ticket-card">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+            <strong>{{ r.requested_by.full_name }}</strong>
+            <span style="color:var(--accent);font-weight:800">{{ r.amount|floatformat:0 }} RWF</span>
+          </div>
+          <div class="ticket-body">{{ r.reason|truncatechars:100 }}</div>
+          <form method="post" action="{% url 'homepage:approve_refund' r.pk %}">{% csrf_token %}
+            <button class="btn btn-green btn-sm">Approve Refund</button>
+          </form>
+        </div>
+        {% empty %}<div class="empty">No pending refunds.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Recent Invoices</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Invoice #</th><th>Issued To</th><th>Amount</th><th>Sent</th><th>Date</th></tr></thead>
+          <tbody>
+          {% for inv in recent_invoices %}
+          <tr>
+            <td style="font-weight:700;color:var(--muted)">{{ inv.invoice_number }}</td>
+            <td>{{ inv.issued_to.full_name }}</td>
+            <td style="font-weight:700">{{ inv.payment.amount|floatformat:0 }} RWF</td>
+            <td>{% if inv.is_sent %}<span class="badge badge-green">Sent</span>{% else %}<span class="badge badge-red">Unsent</span>{% endif %}</td>
+            <td style="color:var(--muted);font-size:.8rem">{{ inv.created_at|date:"d M Y" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5"><div class="empty">No invoices yet.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════ INVENTORY MANAGER VIEW ══════ -->
+    {% elif view == "inventory_manager" %}
+    <div class="page-header">
+      <h1>Inventory Control</h1>
+      <p>Manage car availability, update statuses, and monitor stock.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-green"><div class="kpi-label">Available</div><div class="kpi-value">{{ status_counts.available }}</div><div class="kpi-icon">✅</div></div>
+      <div class="kpi kpi-blue"><div class="kpi-label">Scheduled</div><div class="kpi-value">{{ status_counts.scheduled }}</div><div class="kpi-icon">📅</div></div>
+      <div class="kpi kpi-amber"><div class="kpi-label">Booked</div><div class="kpi-value">{{ status_counts.booked }}</div><div class="kpi-icon">📋</div></div>
+      <div class="kpi kpi-teal"><div class="kpi-label">Sold</div><div class="kpi-value">{{ status_counts.sold }}</div><div class="kpi-icon">🏆</div></div>
+      <div class="kpi kpi-red"><div class="kpi-label">Pending Review</div><div class="kpi-value">{{ status_counts.pending }}</div><div class="kpi-icon">⏳</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-label">Total Stock</div><div class="kpi-value">{{ total_cars }}</div><div class="kpi-icon">🏭</div></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Brand Distribution</span></div>
+        {% for brand in brand_dist %}
+        <div class="perf-row">
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:.86rem">{{ brand.name }}</div>
+            <div class="perf-bar-wrap"><div class="perf-bar" style="width:{% if brand_dist.0.car_count %}{% widthratio brand.car_count brand_dist.0.car_count 100 %}{% else %}0{% endif %}%"></div></div>
+          </div>
+          <div class="perf-val">{{ brand.car_count }}</div>
+        </div>
+        {% empty %}<div class="empty">No brands found.</div>{% endfor %}
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Featured Cars</span></div>
+        {% for item in featured_cars %}
+        <div class="car-row" data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+          <div class="car-thumb">{% if item.image %}<img src="{{ item.image }}" alt="">{% else %}<span class="no-img">—</span>{% endif %}</div>
+          <div class="car-info"><strong>{{ item.car.title|truncatechars:28 }}</strong><span>{{ item.car.district }}</span></div>
+          <span class="badge badge-amber">Featured</span>
+        </div>
+        {% empty %}<div class="empty">No featured cars.</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Full Inventory</span><span class="panel-count">{{ total_cars }}</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Car</th><th>Brand</th><th>Plate</th><th>Price (RWF)</th><th>Status</th><th>Update Status</th></tr></thead>
+          <tbody>
+          {% for item in car_list %}
+          <tr data-detail-url="{% url 'homepage:car_detail' item.car.pk %}">
+            <td style="font-weight:600">{{ item.car.title|truncatechars:28 }}</td>
+            <td>{{ item.car.brand.name|default:"—" }}</td>
+            <td style="font-family:monospace;color:var(--muted)">{{ item.car.registration_plate }}</td>
+            <td style="font-weight:700">{{ item.car.price|floatformat:0 }}</td>
+            <td><span class="badge {% if item.car.status == 'available' %}badge-green{% elif item.car.status == 'booked' %}badge-amber{% elif item.car.status == 'sold' %}badge-blue{% elif item.car.status == 'pending' %}badge-purple{% else %}badge-muted{% endif %}">{{ item.car.get_status_display }}</span></td>
+            <td>
+              <form method="post" action="{% url 'homepage:update_car_status' item.car.pk %}" style="display:flex;gap:6px">
+                {% csrf_token %}
+                <select name="status" class="field-select" style="height:32px;padding:4px 8px;font-size:.8rem;width:140px">
+                  {% for val,lbl in status_choices %}<option value="{{ val }}" {% if val == item.car.status %}selected{% endif %}>{{ lbl }}</option>{% endfor %}
+                </select>
+                <button class="btn btn-accent btn-sm" type="submit">Save</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty">No cars in inventory.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if no_photo_cars %}
+    <div class="panel" style="margin-top:20px;border-color:rgba(248,81,73,.3)">
+      <div class="panel-header"><span class="panel-title" style="color:var(--red)">⚠️ Cars Missing Photos</span></div>
+      {% for car in no_photo_cars %}
+      <div class="car-row" data-detail-url="{% url 'homepage:car_detail' car.pk %}">
+        <div class="car-info"><strong>{{ car.title }}</strong><span>{{ car.registration_plate }}</span></div>
+        <a href="{% url 'homepage:car_detail' car.pk %}" class="btn btn-ghost btn-sm">View</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ══════ CUSTOMER SUPPORT VIEW ══════ -->
+    {% elif view == "customer_support" %}
+    <div class="page-header">
+      <h1>Support Centre</h1>
+      <p>Handle customer inquiries, respond to tickets, and resolve issues.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi-red"><div class="kpi-label">Open Tickets</div><div class="kpi-value">{{ total_open }}</div><div class="kpi-icon">🎫</div></div>
+      <div class="kpi kpi-amber"><div class="kpi-label">My Assigned</div><div class="kpi-value">{{ my_open }}</div><div class="kpi-icon">👤</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-label">Urgent</div><div class="kpi-value">{{ urgent_count }}</div><div class="kpi-icon">🚨</div></div>
+      <div class="kpi kpi-orange" style="--kpi-c:var(--orange)"><div class="kpi-label">High Priority</div><div class="kpi-value" style="color:var(--orange)">{{ high_count }}</div><div class="kpi-icon">🔴</div></div>
+      <div class="kpi kpi-green"><div class="kpi-label">Resolved Today</div><div class="kpi-value">{{ resolved_today }}</div><div class="kpi-icon">✅</div></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Open tickets -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">All Open Tickets</span><span class="panel-count">{{ total_open }}</span></div>
+        {% for ticket in open_tickets %}
+        <div class="ticket-card">
+          <div class="ticket-meta">
+            <span class="badge {% if ticket.priority == 'urgent' %}badge-red{% elif ticket.priority == 'high' %}badge-purple{% elif ticket.priority == 'medium' %}badge-amber{% else %}badge-muted{% endif %}">{{ ticket.get_priority_display }}</span>
+            <span style="color:var(--muted);font-size:.77rem">{{ ticket.ticket_number }}</span>
+            <span style="color:var(--muted);font-size:.77rem">{{ ticket.created_at|date:"d M, H:i" }}</span>
+            {% if ticket.assigned_to %}<span class="badge badge-blue">{{ ticket.assigned_to.full_name }}</span>{% endif %}
+          </div>
+          <div style="font-weight:700;margin-bottom:4px">{{ ticket.subject|truncatechars:60 }}</div>
+          <div class="ticket-body">{{ ticket.message|truncatechars:120 }}</div>
+          <div class="ticket-actions">
+            {% if not ticket.assigned_to %}
+            <form method="post" action="{% url 'homepage:assign_ticket' ticket.pk %}">{% csrf_token %}
+              <button class="btn btn-blue btn-sm">Assign to me</button>
+            </form>
+            {% endif %}
+            <button class="btn btn-ghost btn-sm" onclick="toggleReply('reply-{{ ticket.pk }}')">Reply</button>
+            <form method="post" action="{% url 'homepage:resolve_ticket' ticket.pk %}">{% csrf_token %}
+              <button class="btn btn-green btn-sm">Resolve</button>
+            </form>
+          </div>
+          <div class="reply-form" id="reply-{{ ticket.pk }}">
+            <form method="post" action="{% url 'homepage:reply_ticket' ticket.pk %}">
+              {% csrf_token %}
+              <textarea name="message" class="reply-textarea" placeholder="Type your reply…"></textarea>
+              <button class="btn btn-accent btn-sm" type="submit" style="margin-top:6px">Send Reply</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No open tickets. 🎉</div>{% endfor %}
+      </div>
+
+      <!-- My tickets -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">My Assigned Tickets</span><span class="panel-count">{{ my_open }}</span></div>
+        {% for ticket in my_tickets %}
+        <div class="ticket-card">
+          <div class="ticket-meta">
+            <span class="badge {% if ticket.priority == 'urgent' %}badge-red{% elif ticket.priority == 'high' %}badge-purple{% else %}badge-amber{% endif %}">{{ ticket.get_priority_display }}</span>
+            <span style="color:var(--muted);font-size:.77rem">{{ ticket.ticket_number }}</span>
+          </div>
+          <div style="font-weight:700;margin-bottom:4px">{{ ticket.subject|truncatechars:55 }}</div>
+          <div class="ticket-body">Submitted by {{ ticket.submitted_by.full_name }} · {{ ticket.created_at|timesince }} ago</div>
+          <div class="ticket-actions">
+            <button class="btn btn-ghost btn-sm" onclick="toggleReply('myreply-{{ ticket.pk }}')">Reply</button>
+            <form method="post" action="{% url 'homepage:resolve_ticket' ticket.pk %}">{% csrf_token %}
+              <button class="btn btn-green btn-sm">Resolve</button>
+            </form>
+          </div>
+          <div class="reply-form" id="myreply-{{ ticket.pk }}">
+            <form method="post" action="{% url 'homepage:reply_ticket' ticket.pk %}">
+              {% csrf_token %}
+              <textarea name="message" class="reply-textarea" placeholder="Your reply…"></textarea>
+              <button class="btn btn-accent btn-sm" type="submit" style="margin-top:6px">Send</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}<div class="empty">No tickets assigned to you yet.</div>{% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div><!-- /page-body -->
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ══════════════════════════════════════════════
+     CHART.JS INIT
+══════════════════════════════════════════════ -->
+<script>
+const chartDefaults = {
+  color: '#7d8590',
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#161b22',borderColor:'#30363d',borderWidth:1,padding:10,titleColor:'#e6edf3',bodyColor:'#7d8590'}},
+  scales:{
+    x:{grid:{color:'#21262d'},ticks:{color:'#7d8590',font:{size:11}}},
+    y:{grid:{color:'#21262d'},ticks:{color:'#7d8590',font:{size:11},callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v}}
+  }
+};
+
+{% if chart_data_json %}
+(function(){
+  const data = {{ chart_data_json|safe }};
+  const el = document.getElementById('revChart');
+  if(!el) return;
+  const ctx = el.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,220);
+  grad.addColorStop(0,'rgba(240,165,0,0.25)');
+  grad.addColorStop(1,'rgba(240,165,0,0.02)');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:data.labels,
+      datasets:[{
+        label:'Revenue (RWF)',
+        data:data.values,
+        borderColor:'#f0a500',
+        backgroundColor:grad,
+        borderWidth:2,
+        pointRadius:4,
+        pointBackgroundColor:'#f0a500',
+        tension:0.4,
+        fill:true
+      }]
+    },
+    options:{...chartDefaults,maintainAspectRatio:false}
+  });
+})();
+{% endif %}
+
+{% if booking_status_data %}
+(function(){
+  const data = {{ booking_status_data|safe }};
+  const el = document.getElementById('bookingChart');
+  if(!el) return;
+  new Chart(el.getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:['Confirmed','Pending','Completed','Cancelled'],
+      datasets:[{
+        data:[data.confirmed,data.pending,data.completed,data.cancelled],
+        backgroundColor:['#3fb950','#f0a500','#58a6ff','#f85149'],
+        borderWidth:0
+      }]
+    },
+    options:{
+      maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#7d8590',boxWidth:10,font:{size:11}}},tooltip:{backgroundColor:'#161b22',borderColor:'#30363d',borderWidth:1,titleColor:'#e6edf3',bodyColor:'#7d8590'}}
+    }
+  });
+})();
+{% endif %}
+
+{% if car_status_data %}
+(function(){
+  const data = {{ car_status_data|safe }};
+  const el = document.getElementById('invChart');
+  if(!el) return;
+  new Chart(el.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Available','Scheduled','Booked','Sold','Pending'],
+      datasets:[{
+        data:[data.available,data.scheduled,data.booked,data.sold,data.pending],
+        backgroundColor:['#3fb950','#58a6ff','#f0a500','#bc8cff','#f85149'],
+        borderRadius:6,
+        borderWidth:0
+      }]
+    },
+    options:{...chartDefaults,maintainAspectRatio:false}
+  });
+})();
+{% endif %}
+
+// Reply form toggle
+function toggleReply(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const row = e.target.closest('[data-detail-url]');
+  if (!row || e.target.closest('a, button, input, select, textarea, label, form')) return;
+  window.location.href = row.dataset.detailUrl;
+});
+</script>
+</body>
+</html>

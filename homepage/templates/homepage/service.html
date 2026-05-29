@@ -1,0 +1,1233 @@
+{% extends "homepage/base.html" %}
+{% block title %}{{ site_name }} | Our Services{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --white: #ffffff;
+    --border: #e4e8ef;
+    --text: #111827;
+    --muted: #6b7280;
+    --dim: #9ca3af;
+    --accent: #e8c84a;
+    --accent-dark: #b89a2a;
+    --accent-light: #fefce8;
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --blue-light: #eff6ff;
+    --orange: #f97316;
+    --orange-light: #fff7ed;
+    --teal: #0d9488;
+    --teal-light: #f0fdfa;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --pink: #ec4899;
+    --pink-light: #fdf2f8;
+    --indigo: #6366f1;
+    --indigo-light: #eef2ff;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Hero Section ── */
+  .sv-hero {
+    padding: 120px 20px 80px;
+    text-align: center;
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 45%, #0d3346 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .sv-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,200,74,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .sv-hero::after {
+    content: '';
+    position: absolute; bottom: -1px; left: 0; right: 0;
+    height: 60px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .sv-hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid rgba(232,200,74,0.3);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease both;
+  }
+  .sv-hero-tag i { font-size: 12px; }
+  .sv-hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    letter-spacing: 1px; line-height: 0.9;
+    color: #fff;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.7s ease both 0.1s;
+  }
+  .sv-hero h1 span { color: var(--accent); }
+  .sv-hero p {
+    color: rgba(255,255,255,0.65);
+    font-size: clamp(14px, 2vw, 17px);
+    max-width: 600px; margin: 0 auto 36px; line-height: 1.7;
+    animation: fadeInUp 0.7s ease both 0.2s;
+  }
+  .sv-hero-btns {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.7s ease both 0.3s;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px;
+    background: var(--accent); border: 1px solid var(--accent-dark);
+    font: inherit; font-size: 14px; font-weight: 800; color: #0a0a0a;
+    cursor: pointer; transition: transform .15s, opacity .15s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px;
+    background: transparent; border: 1px solid rgba(255,255,255,0.2);
+    font: inherit; font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+
+  /* ── Hero Stats Strip ── */
+  .sv-stats {
+    display: flex; justify-content: center; gap: 0;
+    max-width: 700px; margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeInUp 0.7s ease both 0.4s;
+    transform: translateY(30px);
+  }
+  .sv-stat {
+    flex: 1;
+    padding: 20px 10px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .sv-stat:last-child { border-right: none; }
+  .sv-stat strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px; color: var(--text);
+    line-height: 1;
+  }
+  .sv-stat span { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+  /* ── Layout container ── */
+  .sv-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Section Title ── */
+  .sv-sec {
+    padding: 80px 20px;
+  }
+  .sv-sec-hd {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .sv-sec-hd .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 14px;
+  }
+  .tag-gold { background: #fef9c3; color: #854d0e; }
+  .tag-blue { background: var(--blue-light); color: #1d4ed8; }
+  .tag-teal { background: var(--teal-light); color: #115e59; }
+  .tag-purple { background: var(--purple-light); color: #5b21b6; }
+  .tag-orange { background: var(--orange-light); color: #9a3412; }
+  .tag-pink { background: var(--pink-light); color: #9d174d; }
+  .tag-green { background: #d1fae5; color: #065f46; }
+  .sv-sec-hd h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: 0.5px; line-height: 1;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .sv-sec-hd h2 em { font-style: normal; color: var(--accent-dark); }
+  .sv-sec-hd p { color: var(--muted); font-size: 15px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+
+  /* ── Core Services Grid ── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .service-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 26px;
+    box-shadow: var(--shadow);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .service-card.c-gold::before { background: linear-gradient(90deg, var(--accent), var(--accent-dark)); }
+  .service-card.c-blue::before { background: var(--blue); }
+  .service-card.c-teal::before { background: var(--teal); }
+  .service-card.c-purple::before { background: var(--purple); }
+  .service-card.c-orange::before { background: var(--orange); }
+  .service-card.c-green::before { background: var(--green); }
+  .service-card.c-pink::before { background: var(--pink); }
+  .service-card.c-indigo::before { background: var(--indigo); }
+  .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #d1d5db; }
+  .sc-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+  .sc-icon.bg-gold { background: var(--accent-light); color: var(--accent-dark); }
+  .sc-icon.bg-blue { background: var(--blue-light); color: var(--blue); }
+  .sc-icon.bg-teal { background: var(--teal-light); color: var(--teal); }
+  .sc-icon.bg-purple { background: var(--purple-light); color: var(--purple); }
+  .sc-icon.bg-orange { background: var(--orange-light); color: var(--orange); }
+  .sc-icon.bg-green { background: #d1fae5; color: var(--green); }
+  .sc-icon.bg-pink { background: var(--pink-light); color: var(--pink); }
+  .sc-icon.bg-indigo { background: var(--indigo-light); color: var(--indigo); }
+  .sc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 0.3px;
+    margin-bottom: 10px; color: var(--text);
+  }
+  .sc-desc { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+  .sc-features { list-style: none; display: grid; gap: 7px; margin-bottom: 20px; }
+  .sc-features li {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 12.5px; color: var(--text);
+  }
+  .sc-features li i { font-size: 13px; color: var(--green); flex-shrink: 0; }
+  .sc-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700;
+    padding: 9px 16px; border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: background .15s, border-color .15s;
+  }
+  .sc-link:hover { background: var(--accent-light); border-color: var(--accent); }
+  .sc-link i { font-size: 12px; }
+  .sc-badge {
+    position: absolute; top: 18px; right: 18px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    font-family: 'DM Mono', monospace; text-transform: uppercase;
+  }
+  .badge-new { background: #d1fae5; color: #065f46; }
+  .badge-popular { background: #fef3c7; color: #92400e; }
+  .badge-free { background: var(--blue-light); color: #1d4ed8; }
+
+  /* ── How It Works ── */
+  .hiw-bg { background: linear-gradient(160deg, #0f172a, #1a2744); }
+  .hiw-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .hiw-steps::before {
+    content: '';
+    position: absolute;
+    top: 38px; left: 15%; right: 15%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(232,200,74,0.4) 0, rgba(232,200,74,0.4) 6px, transparent 6px, transparent 14px);
+  }
+  .hiw-step { text-align: center; padding: 0 16px; }
+  .hiw-num {
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    margin: 0 auto 20px;
+    position: relative;
+    border: 2px solid rgba(232,200,74,0.3);
+    background: rgba(232,200,74,0.06);
+  }
+  .hiw-num i { font-size: 26px; color: var(--accent); }
+  .hiw-step-num {
+    position: absolute; top: -4px; right: -4px;
+    width: 22px; height: 22px;
+    background: var(--accent); border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 700; color: #0a0a0a;
+  }
+  .hiw-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 0.3px;
+    color: #fff; margin-bottom: 8px;
+  }
+  .hiw-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+  /* ── Pricing Plans ── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .pricing-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 26px;
+    box-shadow: var(--shadow);
+    position: relative;
+    transition: transform .2s;
+  }
+  .pricing-card:hover { transform: translateY(-3px); }
+  .pricing-card.featured {
+    background: linear-gradient(160deg, #0f172a, #1a2744);
+    border-color: var(--accent);
+    box-shadow: 0 8px 40px rgba(232,200,74,0.15);
+    transform: scale(1.03);
+  }
+  .pricing-card.featured:hover { transform: scale(1.03) translateY(-3px); }
+  .featured-ribbon {
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    background: var(--accent);
+    padding: 4px 20px; border-radius: 0 0 10px 10px;
+    font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace; color: #0a0a0a;
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 0.3px; margin-bottom: 6px;
+  }
+  .pricing-card.featured .plan-name { color: #fff; }
+  .plan-tagline { font-size: 12.5px; color: var(--muted); margin-bottom: 20px; }
+  .pricing-card.featured .plan-tagline { color: rgba(255,255,255,0.6); }
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; line-height: 1; letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .pricing-card.featured .plan-price { color: var(--accent); }
+  .plan-price sub { font-size: 16px; font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0; }
+  .plan-cycle { font-size: 12px; color: var(--muted); margin-bottom: 24px; font-family: 'DM Mono', monospace; }
+  .pricing-card.featured .plan-cycle { color: rgba(255,255,255,0.4); }
+  .plan-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 20px; }
+  .pricing-card.featured .plan-divider { border-color: rgba(255,255,255,0.1); }
+  .plan-features { list-style: none; display: grid; gap: 10px; margin-bottom: 26px; }
+  .plan-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+  }
+  .pricing-card.featured .plan-features li { color: rgba(255,255,255,0.8); }
+  .plan-features li i { font-size: 14px; flex-shrink: 0; }
+  .plan-features li.has i { color: var(--green); }
+  .plan-features li.no { opacity: 0.45; text-decoration: line-through; }
+  .plan-features li.no i { color: var(--muted); }
+  .plan-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 12px;
+    border-radius: 10px;
+    font: inherit; font-size: 13px; font-weight: 800;
+    cursor: pointer; transition: all .15s;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .plan-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+  .plan-btn.featured { background: var(--accent); border-color: var(--accent-dark); color: #0a0a0a; }
+  .plan-btn.featured:hover { opacity: 0.88; }
+
+  /* ── Vehicle Categories ── */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .cat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform .2s, border-color .2s;
+    cursor: pointer;
+  }
+  .cat-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .cat-icon {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    margin: 0 auto 14px;
+    font-size: 24px;
+  }
+  .cat-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .cat-count { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── Testimonials ── */
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .test-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 22px;
+    box-shadow: var(--shadow);
+  }
+  .test-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+  .test-stars i { color: var(--accent); font-size: 14px; }
+  .test-quote { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 18px; font-style: italic; }
+  .test-author { display: flex; align-items: center; gap: 12px; }
+  .test-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: #fff;
+    flex-shrink: 0;
+  }
+  .test-name { font-weight: 700; font-size: 13.5px; }
+  .test-role { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Feature Highlights ── */
+  .fh-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .fh-visual {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .fh-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 30% 30%, rgba(232,200,74,0.08), transparent 70%);
+  }
+  .fh-visual-icon {
+    position: absolute; top: 40px; left: 40px;
+    font-size: 80px; color: rgba(232,200,74,0.12);
+  }
+  .fh-visual h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; color: #fff;
+    line-height: 1.05; margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .fh-visual h3 span { color: var(--accent); }
+  .fh-visual p { color: rgba(255,255,255,0.6); font-size: 13.5px; line-height: 1.65; position: relative; z-index: 1; }
+  .fh-mini-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-top: 20px; position: relative; z-index: 1;
+  }
+  .fh-mini {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .fh-mini i { font-size: 18px; color: var(--accent); }
+  .fh-mini span { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600; }
+  .fh-content { display: grid; gap: 20px; }
+  .fh-item {
+    display: flex; gap: 16px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 16px;
+    box-shadow: var(--shadow);
+    transition: border-color .15s;
+  }
+  .fh-item:hover { border-color: var(--accent); }
+  .fh-item-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: grid; place-items: center;
+    flex-shrink: 0; font-size: 18px;
+  }
+  .fh-item-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .fh-item-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── FAQ ── */
+  .faq-grid { max-width: 780px; margin: 0 auto; display: grid; gap: 10px; }
+  .faq-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .faq-q {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; cursor: pointer;
+    font-weight: 700; font-size: 14px;
+    transition: background .15s;
+    gap: 12px;
+  }
+  .faq-q:hover { background: var(--accent-light); }
+  .faq-q i { font-size: 18px; color: var(--accent-dark); flex-shrink: 0; transition: transform .25s; }
+  .faq-item.open .faq-q i { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height .3s ease, padding .3s ease;
+    font-size: 13.5px; color: var(--muted); line-height: 1.7;
+    padding: 0 20px;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 20px 16px; }
+
+  /* ── CTA Section ── */
+  .sv-cta {
+    background: linear-gradient(130deg, #111827 60%, #1e293b);
+    border-radius: 24px;
+    padding: 60px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 0 20px 80px;
+    max-width: 1200px;
+    margin-left: auto; margin-right: auto;
+  }
+  .sv-cta::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(232,200,74,0.14), transparent 65%);
+    border-radius: 50%;
+  }
+  .sv-cta::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(13,148,136,0.12), transparent 65%);
+    border-radius: 50%;
+  }
+  .sv-cta h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 60px); letter-spacing: 0.5px; line-height: 1;
+    color: #fff; margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .sv-cta h2 span { color: var(--accent); }
+  .sv-cta p {
+    color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto 32px;
+    font-size: 15px; line-height: 1.7;
+    position: relative; z-index: 1;
+  }
+  .sv-cta-btns {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+
+  /* ── Trust Band ── */
+  .trust-band {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 20px;
+  }
+  .trust-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 700; color: var(--text);
+  }
+  .trust-item i { font-size: 20px; color: var(--accent-dark); }
+
+
+  /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      background: #050609; border-top: 3px solid var(--accent);
+    }
+    .footer-grid {
+      width: min(1180px, calc(100% - 32px)); margin: 0 auto;
+      padding: 60px 0 36px;
+      display: grid; grid-template-columns: 1.2fr repeat(3, 1fr); gap: 32px;
+    }
+    .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px; }
+    .footer p, .footer li { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.9; }
+    .footer h4 { color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; font-family: 'DM Mono', monospace; }
+    .footer ul { list-style: none; padding: 0; margin: 0; }
+    .footer ul a { color: rgba(255,255,255,0.6); font-size: 13px; transition: color 0.2s; }
+    .footer ul a:hover { color: var(--accent); }
+    .socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .socials a {
+      display: inline-grid; place-items: center; min-width: 38px; height: 38px; padding: 0 10px;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7);
+      font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace;
+      transition: all 0.2s;
+    }
+    .socials a:hover { border-color: var(--accent); color: var(--accent); }
+    .copyright {
+      width: min(1180px, calc(100% - 32px)); margin: 0 auto;
+      padding: 18px 0 32px; border-top: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4); font-size: 12px; font-family: 'DM Mono', monospace;
+    }
+
+
+  /* ── Animations ── */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .hiw-steps { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .hiw-steps::before { display: none; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .pricing-card.featured { transform: none; }
+    .pricing-card.featured:hover { transform: translateY(-3px); }
+    .fh-grid { grid-template-columns: 1fr; }
+    .test-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .test-grid { grid-template-columns: 1fr; }
+    .sv-cta { padding: 40px 24px; margin: 0 14px 60px; }
+    .contact-strip { grid-template-columns: 1fr; }
+    .trust-inner { gap: 20px; }
+    .hiw-steps { grid-template-columns: 1fr; }
+    .sv-stats { flex-direction: column; }
+    .sv-stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .sv-stat:last-child { border-bottom: none; }
+  }
+  @media (max-width: 480px) {
+    .sv-hero { padding: 100px 14px 70px; }
+    .sv-sec { padding: 60px 14px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════ HERO ══════════ -->
+<section class="sv-hero">
+  <div class="sv-wrap">
+    <div class="sv-hero-tag">
+      <i class="fas fa-sparkles"></i>
+      Everything You Need to Drive Smarter
+    </div>
+    <h1>Our <span>Services</span></h1>
+    <p>From discovering your perfect vehicle to completing the purchase — {{ site_name }} delivers a seamless, transparent, and fully supported car ownership journey.</p>
+    <div class="sv-hero-btns">
+      <a href="{% url 'homepage:car_list' %}" class="btn-primary">
+        <i class="fas fa-car-side"></i>Browse Cars
+      </a>
+      <a href="{% url 'homepage:make_book_visit' %}" class="btn-outline">
+        <i class="fas fa-circle-info"></i>Book Now Car Is Waiting for You
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Strip -->
+  <div class="sv-wrap" style="margin-top: 56px;">
+    <div class="sv-stats">
+      <div class="sv-stat">
+        <strong>{{ stats.total_cars|default:"500+" }}</strong>
+        <span>Cars Listed</span>
+      </div>
+      <div class="sv-stat">
+        <strong>{{ stats.total_bookings|default:"1,200+" }}</strong>
+        <span>Bookings Made</span>
+      </div>
+      <div class="sv-stat">
+        <strong>{{ stats.total_customers|default:"8,000+" }}</strong>
+        <span>Happy Customers</span>
+      </div>
+      <div class="sv-stat">
+        <strong>{{ stats.provinces|default:"5" }}</strong>
+        <span>Provinces Covered</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CORE SERVICES ══════════ -->
+<section id="services" class="sv-sec" style="background: var(--bg);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-gold"><i class="fas fa-star"></i> Core Services</div>
+      <h2>Everything We <em>Offer</em></h2>
+      <p>A complete suite of automotive services built for Rwanda's roads — from search to sale and beyond.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <!-- 1. Car Listing & Discovery -->
+      <div class="service-card c-gold">
+        <span class="sc-badge badge-popular">Popular</span>
+        <div class="sc-icon bg-gold"><i class="fas fa-magnifying-glass"></i></div>
+        <div class="sc-title">Car Listing & Discovery</div>
+        <p class="sc-desc">Browse hundreds of verified, inspected vehicles with full specs, photos, and pricing. Filter by brand, fuel, transmission, province, and price range.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Advanced multi-filter search</li>
+          <li><i class="fas fa-check-circle"></i> High-res photos & video walkthrough</li>
+          <li><i class="fas fa-check-circle"></i> Verified registration & condition info</li>
+          <li><i class="fas fa-check-circle"></i> Real-time availability status</li>
+        </ul>
+        <a href="{% url 'homepage:car_list' %}" class="sc-link"><i class="fas fa-arrow-right"></i>Browse All Cars</a>
+      </div>
+
+      <!-- 2. Visit Scheduling -->
+      <div class="service-card c-teal">
+        <span class="sc-badge badge-free">Free</span>
+        <div class="sc-icon bg-teal"><i class="fas fa-calendar-check"></i></div>
+        <div class="sc-title">Visit Scheduling</div>
+        <p class="sc-desc">Book a physical inspection at a time and location that works for you. Multiple customers can schedule visits to the same car simultaneously.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Pick your date, time & district</li>
+          <li><i class="fas fa-check-circle"></i> Small scheduling fee applies</li>
+          <li><i class="fas fa-check-circle"></i> Sales agent confirms within hours</li>
+          <li><i class="fas fa-check-circle"></i> Reschedule or cancel anytime</li>
+        </ul>
+        <a href="{% url 'homepage:car_list' %}" class="sc-link"><i class="fas fa-arrow-right"></i>Schedule a Visit</a>
+      </div>
+
+      <!-- 3. Car Booking -->
+      <div class="service-card c-blue">
+        <span class="sc-badge badge-popular">Popular</span>
+        <div class="sc-icon bg-blue"><i class="fas fa-file-contract"></i></div>
+        <div class="sc-title">Car Booking & Purchase</div>
+        <p class="sc-desc">Secure your chosen vehicle with half or full payment through MTN MoMo, Airtel Money, bank transfer, or cash. Accountant-verified for your peace of mind.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Full or 50% deposit option</li>
+          <li><i class="fas fa-check-circle"></i> MTN MoMo & Airtel Money supported</li>
+          <li><i class="fas fa-check-circle"></i> Bank transfer & cash accepted</li>
+          <li><i class="fas fa-check-circle"></i> Instant booking confirmation</li>
+        </ul>
+        <a href="{% url 'homepage:car_list' %}" class="sc-link"><i class="fas fa-arrow-right"></i>Book a Car</a>
+      </div>
+
+      <!-- 4. Citizen Car Consignment -->
+      <div class="service-card c-orange">
+        <span class="sc-badge badge-new">New</span>
+        <div class="sc-icon bg-orange"><i class="fas fa-handshake"></i></div>
+        <div class="sc-title">Citizen Car Consignment</div>
+        <p class="sc-desc">Own a car and want to sell it? Hand it to us. We photograph, list, market, and handle the entire sale for you — earning a transparent commission only on successful sale.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Professional photography & listing</li>
+          <li><i class="fas fa-check-circle"></i> Transparent commission structure</li>
+          <li><i class="fas fa-check-circle"></i> ID-verified owner registration</li>
+          <li><i class="fas fa-check-circle"></i> Regular progress updates</li>
+        </ul>
+        <a href="{% url 'homepage:auth' %}?mode=register" class="sc-link"><i class="fas fa-arrow-right"></i>Submit Your Car</a>
+      </div>
+
+      <!-- 5. Driver Delivery -->
+      <div class="service-card c-purple">
+        <div class="sc-icon bg-purple"><i class="fas fa-route"></i></div>
+        <div class="sc-title">Driver Delivery</div>
+        <p class="sc-desc">Need the car delivered to your location? Request a professional driver at booking time and we'll arrange safe delivery to your door anywhere in Rwanda.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Request at booking checkout</li>
+          <li><i class="fas fa-check-circle"></i> Verified & licensed drivers</li>
+          <li><i class="fas fa-check-circle"></i> All 5 provinces covered</li>
+          <li><i class="fas fa-check-circle"></i> Real-time delivery tracking</li>
+        </ul>
+        <a href="{% url 'homepage:auth' %}?mode=register" class="sc-link"><i class="fas fa-arrow-right"></i>Get a Driver</a>
+      </div>
+
+      <!-- 6. Customer Support -->
+      <div class="service-card c-green">
+        <div class="sc-icon bg-green"><i class="fas fa-headset"></i></div>
+        <div class="sc-title">Dedicated Support</div>
+        <p class="sc-desc">Our customer support team is available to resolve your tickets, answer questions about listings, bookings, payments, and walk you through any issue.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Ticket-based support system</li>
+          <li><i class="fas fa-check-circle"></i> Priority queuing for urgent issues</li>
+          <li><i class="fas fa-check-circle"></i> WhatsApp & email channels</li>
+          <li><i class="fas fa-check-circle"></i> Multi-language team</li>
+        </ul>
+        <a href="#contact" class="sc-link"><i class="fas fa-arrow-right"></i>Contact Support</a>
+      </div>
+
+      <!-- 7. Wishlist & Saved Cars -->
+      <div class="service-card c-pink">
+        <div class="sc-icon bg-pink"><i class="fas fa-heart"></i></div>
+        <div class="sc-title">Wishlist & Saved Cars</div>
+        <p class="sc-desc">Save cars you love and revisit them any time. Your wishlist is synced to your account so you never lose track of vehicles you're considering.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> One-click save from any listing</li>
+          <li><i class="fas fa-check-circle"></i> Manage from your profile</li>
+          <li><i class="fas fa-check-circle"></i> Compare saved vehicles easily</li>
+          <li><i class="fas fa-check-circle"></i> Get notified if price drops</li>
+        </ul>
+        <a href="{% url 'homepage:auth' %}?mode=register" class="sc-link"><i class="fas fa-arrow-right"></i>Create Account</a>
+      </div>
+
+      <!-- 8. Reviews & Ratings -->
+      <div class="service-card c-gold">
+        <div class="sc-icon bg-gold"><i class="fas fa-star-half-stroke"></i></div>
+        <div class="sc-title">Reviews & Ratings</div>
+        <p class="sc-desc">Read verified reviews from real buyers. Leave your own star rating and written review to help future customers make confident decisions.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Star ratings from 1–5</li>
+          <li><i class="fas fa-check-circle"></i> Verified buyer reviews only</li>
+          <li><i class="fas fa-check-circle"></i> Threaded comments & Q&A</li>
+          <li><i class="fas fa-check-circle"></i> Moderated for quality</li>
+        </ul>
+        <a href="{% url 'homepage:car_list' %}" class="sc-link"><i class="fas fa-arrow-right"></i>See Reviewed Cars</a>
+      </div>
+
+      <!-- 9. Invoices & Payment Records -->
+      <div class="service-card c-indigo">
+        <div class="sc-icon bg-indigo"><i class="fas fa-receipt"></i></div>
+        <div class="sc-title">Invoices & Payment History</div>
+        <p class="sc-desc">Every transaction is recorded and accessible from your profile. Download invoices, track payment statuses, and maintain clean financial records for every purchase.</p>
+        <ul class="sc-features">
+          <li><i class="fas fa-check-circle"></i> Auto-generated invoice numbers</li>
+          <li><i class="fas fa-check-circle"></i> Full payment history in profile</li>
+          <li><i class="fas fa-check-circle"></i> Accountant-confirmed receipts</li>
+          <li><i class="fas fa-check-circle"></i> Refund request support</li>
+        </ul>
+        <a href="{% url 'homepage:profile' %}" class="sc-link"><i class="fas fa-arrow-right"></i>View My Payments</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section class="sv-sec hiw-bg" id="how-it-works">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-gold" style="border: 1px solid rgba(232,200,74,0.3); background: rgba(232,200,74,0.08); color: var(--accent);">
+        <i class="fas fa-arrows-spin"></i> The Process
+      </div>
+      <h2 style="color: #fff;">How It <em>Works</em></h2>
+      <p style="color: rgba(255,255,255,0.55);">From browsing to driving — four simple steps to get you behind the wheel of your dream car.</p>
+    </div>
+
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-num">
+          <i class="fas fa-magnifying-glass"></i>
+          <span class="hiw-step-num">1</span>
+        </div>
+        <div class="hiw-title">Browse & Discover</div>
+        <p class="hiw-desc">Explore hundreds of verified listings. Filter by brand, price, location, fuel type, and more. Save favourites to your wishlist.</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">
+          <i class="fas fa-calendar-days"></i>
+          <span class="hiw-step-num">2</span>
+        </div>
+        <div class="hiw-title">Schedule a Visit</div>
+        <p class="hiw-desc">Book a physical inspection at a location convenient for you. Our sales agent confirms and coordinates the visit.</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">
+          <i class="fas fa-mobile-screen-button"></i>
+          <span class="hiw-step-num">3</span>
+        </div>
+        <div class="hiw-title">Pay Securely</div>
+        <p class="hiw-desc">Pay half or in full via MTN MoMo, Airtel Money, bank transfer, or cash. All payments are verified by our accountant team.</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">
+          <i class="fas fa-car-side"></i>
+          <span class="hiw-step-num">4</span>
+        </div>
+        <div class="hiw-title">Drive Away</div>
+        <p class="hiw-desc">Collect your car or request driver delivery. We handle all the paperwork and provide full purchase documentation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ VEHICLE CATEGORIES ══════════ -->
+<section class="sv-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-teal"><i class="fas fa-layer-group"></i> Vehicle Types</div>
+      <h2>Browse by <em>Category</em></h2>
+      <p>We carry vehicles for every lifestyle — from daily commuters to heavy-duty 4WD machines built for Rwanda's terrain.</p>
+    </div>
+
+    <div class="cat-grid">
+      <a href="{% url 'homepage:car_list' %}?fuel=petrol" class="cat-card">
+        <div class="cat-icon bg-gold"><i class="fas fa-car" style="color: var(--accent-dark);"></i></div>
+        <div class="cat-name">Sedans & Saloons</div>
+        <div class="cat-count">{{ category_counts.sedans|default:"40+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?drive=4wd" class="cat-card">
+        <div class="cat-icon" style="background: var(--teal-light);"><i class="fas fa-truck-monster" style="color: var(--teal);"></i></div>
+        <div class="cat-name">SUVs & 4WD</div>
+        <div class="cat-count">{{ category_counts.suvs|default:"80+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?transmission=automatic" class="cat-card">
+        <div class="cat-icon" style="background: var(--blue-light);"><i class="fas fa-van-shuttle" style="color: var(--blue);"></i></div>
+        <div class="cat-name">Vans & Minibuses</div>
+        <div class="cat-count">{{ category_counts.vans|default:"25+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?fuel=hybrid" class="cat-card">
+        <div class="cat-icon" style="background: #d1fae5;"><i class="fas fa-leaf" style="color: var(--green);"></i></div>
+        <div class="cat-name">Hybrids & Electric</div>
+        <div class="cat-count">{{ category_counts.hybrids|default:"30+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?featured=on" class="cat-card">
+        <div class="cat-icon" style="background: var(--purple-light);"><i class="fas fa-gem" style="color: var(--purple);"></i></div>
+        <div class="cat-name">Premium & Luxury</div>
+        <div class="cat-count">{{ category_counts.luxury|default:"15+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?transmission=manual" class="cat-card">
+        <div class="cat-icon" style="background: var(--orange-light);"><i class="fas fa-truck-pickup" style="color: var(--orange);"></i></div>
+        <div class="cat-name">Pickups & Trucks</div>
+        <div class="cat-count">{{ category_counts.trucks|default:"20+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?negotiable=on" class="cat-card">
+        <div class="cat-icon" style="background: var(--pink-light);"><i class="fas fa-tags" style="color: var(--pink);"></i></div>
+        <div class="cat-name">Negotiable Deals</div>
+        <div class="cat-count">{{ category_counts.negotiable|default:"60+" }} Available</div>
+      </a>
+      <a href="{% url 'homepage:car_list' %}?sort=newest" class="cat-card">
+        <div class="cat-icon" style="background: var(--indigo-light);"><i class="fas fa-bolt" style="color: var(--indigo);"></i></div>
+        <div class="cat-name">New Arrivals</div>
+        <div class="cat-count">{{ category_counts.new|default:"12" }} This Week</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY CHOOSE US ══════════ -->
+<section class="sv-sec" style="background: var(--bg);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-purple"><i class="fas fa-shield-halved"></i> Why Choose Us</div>
+      <h2>Built for <em>Trust</em></h2>
+      <p>Everything we do is designed to make travelling a car in Rwanda safer, simpler, and more transparent.</p>
+    </div>
+
+    <div class="fh-grid">
+      <!-- Left visual -->
+      <div class="fh-visual">
+        <i class="fas fa-shield-halved fh-visual-icon"></i>
+        <h3>Rwanda's Most <span>Trusted</span> Car Platform</h3>
+        <p>Built with verified listings, accountant-confirmed payments, and a dedicated support team — every step of your purchase is protected.</p>
+        <div class="fh-mini-cards">
+          <div class="fh-mini"><i class="fas fa-check-double"></i><span>Verified Listings</span></div>
+          <div class="fh-mini"><i class="fas fa-lock"></i><span>Secure Payments</span></div>
+          <div class="fh-mini"><i class="fas fa-headset"></i><span>Live Support</span></div>
+          <div class="fh-mini"><i class="fas fa-file-invoice"></i><span>Full Documentation</span></div>
+        </div>
+      </div>
+
+      <!-- Right feature list -->
+      <div class="fh-content">
+        <div class="fh-item">
+          <div class="fh-item-icon bg-gold"><i class="fas fa-camera" style="font-size:18px; color: var(--accent-dark);"></i></div>
+          <div>
+            <div class="fh-item-title">Professional Photography</div>
+            <p class="fh-item-desc">Every listing includes high-resolution photos taken by our team, plus video walkthroughs — no blurry phone shots.</p>
+          </div>
+        </div>
+        <div class="fh-item">
+          <div class="fh-item-icon bg-teal"><i class="fas fa-user-check" style="font-size:18px; color: var(--teal);"></i></div>
+          <div>
+            <div class="fh-item-title">ID-Verified Sellers</div>
+            <p class="fh-item-desc">All car owners are identity-verified with national ID and documented agreements before their vehicles are listed.</p>
+          </div>
+        </div>
+        <div class="fh-item">
+          <div class="fh-item-icon bg-blue"><i class="fas fa-money-bill-transfer" style="font-size:18px; color: var(--blue);"></i></div>
+          <div>
+            <div class="fh-item-title">Accountant-Confirmed Payments</div>
+            <p class="fh-item-desc">Every payment — whether MoMo, Airtel, bank, or cash — is reviewed and confirmed by our in-house accountant team.</p>
+          </div>
+        </div>
+        <div class="fh-item">
+          <div class="fh-item-icon bg-purple"><i class="fas fa-clock-rotate-left" style="font-size:18px; color: var(--purple);"></i></div>
+          <div>
+            <div class="fh-item-title">Full Audit Trail</div>
+            <p class="fh-item-desc">Every action from listing approval to payment confirmation is logged with timestamps and IP addresses for full transparency.</p>
+          </div>
+        </div>
+        <div class="fh-item">
+          <div class="fh-item-icon bg-green"><i class="fas fa-location-crosshairs" style="font-size:18px; color: var(--green);"></i></div>
+          <div>
+            <div class="fh-item-title">Rwanda-First Platform</div>
+            <p class="fh-item-desc">Built specifically for Rwanda — local registration plates, province/district filtering, RWF pricing, and MoMo payments built in from the start.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRICING PLANS ══════════ -->
+<section id="pricing" class="sv-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-gold"><i class="fas fa-tags"></i> Transparent Pricing</div>
+      <h2>Simple <em>Fee Structure</em></h2>
+      <p>No hidden charges. Know exactly what you'll pay before you commit to anything.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="plan-name">Basic Browsing</div>
+        <div class="plan-tagline">For casual car shoppers</div>
+        <div class="plan-price"><sub>RWF </sub>0</div>
+        <div class="plan-cycle">Always free — no account needed</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li class="has"><i class="fas fa-check-circle"></i> Browse all car listings</li>
+          <li class="has"><i class="fas fa-check-circle"></i> View photos & videos</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Read reviews & comments</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Contact via WhatsApp</li>
+          <li class="no"><i class="fas fa-times-circle"></i> Save to wishlist</li>
+          <li class="no"><i class="fas fa-times-circle"></i> Book or schedule visit</li>
+        </ul>
+        <a href="{% url 'homepage:car_list' %}" class="plan-btn">Browse Cars <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+
+      <!-- Standard (Featured) -->
+      <div class="pricing-card featured">
+        <div class="featured-ribbon">⭐ Most Popular</div>
+        <div class="plan-name">Customer Account</div>
+        <div class="plan-tagline">Full buying experience</div>
+        <div class="plan-price"><sub>RWF </sub>0</div>
+        <div class="plan-cycle">Free registration · Pay only when booking</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li class="has"><i class="fas fa-check-circle"></i> All Basic features included</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Save cars to wishlist</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Schedule visits (small fee applies)</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Book & Get Driver if you don't have one</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Full payment history</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Leave reviews & comments</li>
+        </ul>
+        <a href="{% url 'homepage:auth' %}?mode=register" class="plan-btn featured">Create Free Account <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+
+      <!-- Consignment -->
+      <div class="pricing-card">
+        <div class="plan-name">Car Consignment</div>
+        <div class="plan-tagline">Book your car with us</div>
+        <div class="plan-price"><sub>{{ site.commission_rate|default:"3.6" }}%</sub></div>
+        <div class="plan-cycle">Commission on successful sale only</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li class="has"><i class="fas fa-check-circle"></i> Professional listing & photos</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Active marketing & promotion</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Visit coordination</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Payment handling</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Regular status updates</li>
+          <li class="has"><i class="fas fa-check-circle"></i> Commission only on sale</li>
+        </ul>
+        <a href="?mode=register" class="plan-btn">Contact Us To Make Your Car Profitable <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+    </div>
+
+    <!-- Scheduling fee note -->
+    <div style="text-align: center; margin-top: 28px; padding: 16px 20px; background: var(--accent-light); border-radius: 10px; border: 1px solid rgba(232,200,74,0.4); max-width: 640px; margin-left: auto; margin-right: auto;">
+      <p style="font-size: 13px; color: var(--text);">
+        <i class="fas fa-info-circle" style="color: var(--accent-dark); margin-right: 6px;"></i>
+        <strong>Visit Scheduling Fee:</strong> A small fee default <strong>{{ site.default_scheduling_fee|default:"4,000" }} RWF</strong> may apply when scheduling a car visit. This varies per listing and is clearly shown before you confirm.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section class="sv-sec" style="background: var(--bg);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-green"><i class="fas fa-comments"></i> Testimonials</div>
+      <h2>What Customers <em>Say</em></h2>
+      <p>Real experiences from real buyers across Rwanda who found their car through {{ site_name }}.</p>
+    </div>
+
+    <div class="test-grid">
+      {% if testimonials %}
+        {% for t in testimonials %}
+        <div class="test-card">
+          <div class="test-stars">
+            {% for i in "12345" %}
+              <i class="fas fa-star{% if forloop.counter > t.rating %}-half-stroke{% endif %}"></i>
+            {% endfor %}
+          </div>
+          <p class="test-quote">"{{ t.body }}"</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--teal), var(--blue));">{{ t.customer.full_name|first|upper }}</div>
+            <div>
+              <div class="test-name">{{ t.customer.full_name }}</div>
+              <div class="test-role">Verified Buyer · {{ t.created_at|date:"M Y" }}</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <!-- Placeholder testimonials when none exist yet -->
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="test-quote">"I found my Toyota RAV4 in less than a week. The scheduling was so easy and the sales agent was professional throughout. Payment via MTN MoMo was instant!"</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--teal), var(--blue));">J</div>
+            <div><div class="test-name">DUSHIMIRIIMANA Patrick</div><div class="test-role">Verified Buyer · Kigali</div></div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="test-quote">"The half-payment option made it possible for me. I paid 50% to secure the car and the rest after my bank transfer cleared. Transparent and no surprises."</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--orange), var(--pink));">A</div>
+            <div><div class="test-name">IGIHOZO M Sandrine</div><div class="test-role">Verified Buyer · Huye</div></div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
+          <p class="test-quote">"I handed my Corolla for consignment and within 3 weeks they found a buyer. Commission was exactly as agreed. Would recommend to anyone wanting to sell their car."</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--purple), var(--indigo));">E</div>
+            <div><div class="test-name">HABIMANA Elissa</div><div class="test-role">Consignment Seller · Musanze</div></div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section id="faq" class="sv-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="sv-wrap">
+    <div class="sv-sec-hd">
+      <div class="tag tag-blue"><i class="fas fa-circle-question"></i> FAQ</div>
+      <h2>Common <em>Questions</em></h2>
+      <p>Everything you need to know before making your first booking or consignment.</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>How do I book a car?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Browse our listings, select a car you like, and click "Book Now". Fill in your details, choose full or half payment, select your preferred payment method (MTN MoMo, Airtel Money, bank transfer, or cash), and submit. Your booking number is issued instantly and our team follows up within hours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>What is the scheduling fee?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">A small scheduling fee (typically {{ site.default_scheduling_fee|default:"5,000" }} RWF, though this varies per listing) is charged to confirm a physical car visit. This fee reserves the visit slot and is paid before a sales agent confirms your appointment. The exact fee is shown on each listing page.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>Can I pay in instalments?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Yes. We offer a 50% deposit option on all cars. Pay half to secure the car and remove it from listings, then clear the remaining balance before final collection. Both payments are tracked and confirmed by our accountant team.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>How does car consignment work?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Register an account and contact our team. Our marketers photograph your car, verify ownership documents, create a professional listing, and handle the entire sale including visits and payment collection. We charge a {{ site.commission_rate|default:"5" }}% commission only when the car sells — you pay nothing upfront.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>How long does a booking take to confirm?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Bookings are typically confirmed within 1–2 business hours after payment is submitted. Your accountant will verify the payment and update your booking status. You'll see the change reflected in your profile under "My Bookings".</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>Can I cancel a booking or visit?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Visit schedules can be deleted directly from your profile. For booking cancellations, please contact our support team through the ticket system. Refund eligibility depends on the booking status and payment stage — our team will guide you through the process.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>Which provinces do you cover?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">We list cars from all five provinces of Rwanda: Kigali City, Northern Province, Southern Province, Eastern Province, and Western Province. Use the province filter on the car listing page to find vehicles near you.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span><i class="fas fa-circle-dot" style="color:var(--accent-dark); margin-right:8px;"></i>Is my payment information secure?</span><i class="fas fa-plus"></i></div>
+        <div class="faq-a">Yes. All payments go through verified channels (MTN MoMo, Airtel Money, official bank transfer, or in-person cash). No card details are stored on our platform. Every transaction is reviewed by our accountant team before any booking is confirmed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TRUST BAND ══════════ -->
+<div class="trust-band">
+  <div class="trust-inner">
+    <div class="trust-item"><i class="fas fa-shield-check"></i>ID-Verified Sellers</div>
+    <div class="trust-item"><i class="fas fa-mobile-screen-button"></i>MTN & Airtel MoMo</div>
+    <div class="trust-item"><i class="fas fa-location-dot"></i>All 5 Provinces</div>
+    <div class="trust-item"><i class="fas fa-headset"></i>Dedicated Support</div>
+    <div class="trust-item"><i class="fas fa-file-invoice"></i>Invoices Issued</div>
+    <div class="trust-item"><i class="fas fa-flag"></i>100% Rwanda-Built</div>
+  </div>
+</div>
+
+<!-- ══════════ CTA ══════════ -->
+<section style="padding: 80px 20px 0;">
+  <div class="sv-cta">
+    <h2>Ready to Find Your <span>Next Car?</span></h2>
+    <p>Join hundreds of Rwandans who found their perfect vehicle through {{ site_name }}. It's free to sign up and free to browse.</p>
+    <div class="sv-cta-btns">
+      <a href="{% url 'homepage:car_list' %}" class="btn-primary">
+        <i class="fas fa-car-side"></i>Browse Cars Now
+      </a>
+      {% if not request.user.is_authenticated %}
+      <a href="{% url 'homepage:auth' %}?mode=register" class="btn-outline">
+        <i class="fas fa-user-plus"></i>Create Free Account
+      </a>
+      {% else %}
+      <a href="{% url 'homepage:profile' %}" class="btn-outline">
+        <i class="fas fa-user"></i>My Profile
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% include "homepage/partials/footer.html" %}
+<!-- Bottom padding -->
+
+
+<script>
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+{% endblock %}

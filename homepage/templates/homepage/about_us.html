@@ -1,0 +1,1182 @@
+{% extends "homepage/base.html" %}
+{% block title %}{{ site_name }} | About Us{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --white: #ffffff;
+    --border: #e4e8ef;
+    --text: #111827;
+    --muted: #6b7280;
+    --dim: #9ca3af;
+    --accent: #e8c84a;
+    --accent-dark: #b89a2a;
+    --accent-light: #fefce8;
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --blue-light: #eff6ff;
+    --orange: #f97316;
+    --orange-light: #fff7ed;
+    --teal: #0d9488;
+    --teal-light: #f0fdfa;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --pink: #ec4899;
+    --pink-light: #fdf2f8;
+    --indigo: #6366f1;
+    --indigo-light: #eef2ff;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Hero ── */
+  .ab-hero {
+    padding: 120px 20px 80px;
+    text-align: center;
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 45%, #0d3346 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .ab-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,200,74,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .ab-hero::after {
+    content: '';
+    position: absolute; bottom: -1px; left: 0; right: 0;
+    height: 60px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .ab-hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid rgba(232,200,74,0.3);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease both;
+  }
+  .ab-hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    letter-spacing: 1px; line-height: 0.9;
+    color: #fff;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.7s ease both 0.1s;
+  }
+  .ab-hero h1 span { color: var(--accent); }
+  .ab-hero p {
+    color: rgba(255,255,255,0.65);
+    font-size: clamp(14px, 2vw, 17px);
+    max-width: 600px; margin: 0 auto 36px; line-height: 1.7;
+    animation: fadeInUp 0.7s ease both 0.2s;
+  }
+  .ab-hero-btns {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.7s ease both 0.3s;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px;
+    background: var(--accent); border: 1px solid var(--accent-dark);
+    font: inherit; font-size: 14px; font-weight: 800; color: #0a0a0a;
+    cursor: pointer; transition: transform .15s, opacity .15s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px;
+    background: transparent; border: 1px solid rgba(255,255,255,0.2);
+    font: inherit; font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+
+  /* ── Stats Strip ── */
+  .ab-stats {
+    display: flex; justify-content: center;
+    max-width: 700px; margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeInUp 0.7s ease both 0.4s;
+    transform: translateY(30px);
+  }
+  .ab-stat {
+    flex: 1; padding: 20px 10px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .ab-stat:last-child { border-right: none; }
+  .ab-stat strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px; color: var(--text); line-height: 1;
+  }
+  .ab-stat span { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+  /* ── Layout ── */
+  .ab-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  .ab-sec { padding: 80px 20px; }
+  .ab-sec-hd { text-align: center; margin-bottom: 50px; }
+  .ab-sec-hd .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace; margin-bottom: 14px;
+  }
+  .tag-gold  { background: #fef9c3; color: #854d0e; }
+  .tag-blue  { background: var(--blue-light); color: #1d4ed8; }
+  .tag-teal  { background: var(--teal-light); color: #115e59; }
+  .tag-purple{ background: var(--purple-light); color: #5b21b6; }
+  .tag-orange{ background: var(--orange-light); color: #9a3412; }
+  .tag-green { background: #d1fae5; color: #065f46; }
+  .tag-pink  { background: var(--pink-light); color: #9d174d; }
+  .ab-sec-hd h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: 0.5px; line-height: 1; color: var(--text); margin-bottom: 14px;
+  }
+  .ab-sec-hd h2 em { font-style: normal; color: var(--accent-dark); }
+  .ab-sec-hd p { color: var(--muted); font-size: 15px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+
+  /* ── Story Section ── */
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .story-visual {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    border-radius: var(--radius);
+    padding: 44px 36px;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .story-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 30% 30%, rgba(232,200,74,0.08), transparent 70%);
+  }
+  .story-big-icon {
+    position: absolute; top: 36px; left: 36px;
+    font-size: 90px; color: rgba(232,200,74,0.10);
+  }
+  .story-year-badge {
+    position: absolute; top: 32px; right: 32px;
+    background: var(--accent);
+    border-radius: 12px;
+    padding: 10px 16px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(232,200,74,0.3);
+  }
+  .story-year-badge strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px; color: #0a0a0a; line-height: 1;
+  }
+  .story-year-badge span { font-size: 10px; color: #0a0a0a; font-weight: 700; opacity: 0.7; }
+  .story-visual h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: #fff; line-height: 1.05;
+    margin-bottom: 10px; position: relative; z-index: 1;
+  }
+  .story-visual h3 span { color: var(--accent); }
+  .story-visual p { color: rgba(255,255,255,0.6); font-size: 13.5px; line-height: 1.65; position: relative; z-index: 1; }
+  .story-pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 20px; position: relative; z-index: 1;
+  }
+  .story-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 11.5px; color: rgba(255,255,255,0.75); font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .story-pill i { color: var(--accent); font-size: 12px; }
+
+  .story-content { display: grid; gap: 0; }
+  .story-block {
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .story-block:first-child { padding-top: 0; }
+  .story-block:last-child { border-bottom: none; }
+  .story-block-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .story-block-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: grid; place-items: center; flex-shrink: 0;
+    font-size: 16px;
+  }
+  .story-block-title { font-weight: 800; font-size: 15px; color: var(--text); }
+  .story-block-body { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+  /* ── Mission & Vision ── */
+  .mv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .mv-card {
+    border-radius: var(--radius);
+    padding: 36px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mv-card.mission {
+    background: linear-gradient(135deg, #0f172a, #1a2744);
+    border: 1px solid rgba(232,200,74,0.2);
+  }
+  .mv-card.vision {
+    background: var(--white);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+  }
+  .mv-card::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+  }
+  .mv-card.mission::before { background: radial-gradient(circle, rgba(232,200,74,0.12), transparent 65%); }
+  .mv-card.vision::before  { background: radial-gradient(circle, rgba(13,148,136,0.08), transparent 65%); }
+  .mv-label {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 20px;
+  }
+  .mv-card.mission .mv-label { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .mv-card.vision  .mv-label { background: var(--teal-light); color: var(--teal); }
+  .mv-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .mv-card.mission .mv-icon { color: rgba(232,200,74,0.35); }
+  .mv-card.vision  .mv-icon { color: rgba(13,148,136,0.3); }
+  .mv-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+  .mv-card.mission .mv-title { color: #fff; }
+  .mv-card.vision  .mv-title { color: var(--text); }
+  .mv-body { font-size: 14px; line-height: 1.8; }
+  .mv-card.mission .mv-body { color: rgba(255,255,255,0.65); }
+  .mv-card.vision  .mv-body { color: var(--muted); }
+  .mv-quote-line {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13px; font-style: italic; font-weight: 600;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .mv-card.mission .mv-quote-line { background: rgba(232,200,74,0.08); color: var(--accent); border-left: 3px solid var(--accent); }
+  .mv-card.vision  .mv-quote-line { background: var(--teal-light); color: var(--teal); border-left: 3px solid var(--teal); }
+  .mv-quote-line i { flex-shrink: 0; margin-top: 2px; }
+
+  /* ── Team Section ── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .team-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .team-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .team-card.t-gold::before   { background: linear-gradient(90deg, var(--accent), var(--accent-dark)); }
+  .team-card.t-teal::before   { background: var(--teal); }
+  .team-card.t-blue::before   { background: var(--blue); }
+  .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .team-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    margin: 0 auto 16px;
+    font-size: 30px;
+  }
+  .team-role-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    font-family: 'DM Mono', monospace; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .team-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 0.3px; margin-bottom: 8px;
+  }
+  .team-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .team-skills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    justify-content: center; margin-top: 14px;
+  }
+  .team-skill {
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  /* ── Trust / Why Choose Us ── */
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .trust-item-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 22px 20px;
+    display: flex; gap: 16px;
+    box-shadow: var(--shadow);
+    transition: border-color .15s, transform .2s;
+  }
+  .trust-item-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .trust-icon-wrap {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: grid; place-items: center; flex-shrink: 0; font-size: 20px;
+  }
+  .trust-card-title { font-weight: 800; font-size: 14.5px; margin-bottom: 5px; }
+  .trust-card-body  { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* ── Values Strip ── */
+  .values-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .value-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform .2s, border-color .2s;
+  }
+  .value-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .value-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center; margin: 0 auto 14px; font-size: 22px;
+  }
+  .value-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.3px; margin-bottom: 6px; }
+  .value-text  { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+  /* ── Testimonials ── */
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .test-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 22px;
+    box-shadow: var(--shadow);
+  }
+  .test-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+  .test-stars i { color: var(--accent); font-size: 14px; }
+  .test-quote { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 18px; font-style: italic; }
+  .test-author { display: flex; align-items: center; gap: 12px; }
+  .test-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #fff; flex-shrink: 0;
+  }
+  .test-name { font-weight: 700; font-size: 13.5px; }
+  .test-role { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Contact Form ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .contact-info { display: grid; gap: 16px; }
+  .contact-info-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .contact-info-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: grid; place-items: center; flex-shrink: 0; font-size: 18px;
+  }
+  .contact-info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 3px; }
+  .contact-info-value { font-size: 14px; font-weight: 600; color: var(--text); }
+  .contact-form-wrap {
+    background: rgb(22, 22, 37);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: rgb(234, 226, 226); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .form-control {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid var(--border); border-radius: 9px;
+    background: var(--bg); font: inherit; font-size: 14px; color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,200,74,0.12); }
+  textarea.form-control { resize: vertical; min-height: 110px; }
+  .form-error { font-size: 12px; color: var(--red); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+  .form-submit {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 13px;
+    border-radius: 10px;
+    background: var(--accent); border: 1px solid var(--accent-dark);
+    font: inherit; font-size: 14px; font-weight: 800; color: #0a0a0a;
+    cursor: pointer; transition: opacity .15s, transform .15s;
+    margin-top: 4px;
+  }
+  .form-submit:hover { opacity: 0.88; transform: translateY(-2px); }
+
+  /* ── Dark How It Works variant ── */
+  .hiw-bg { background: linear-gradient(160deg, #0f172a, #1a2744); }
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .timeline-grid::before {
+    content: '';
+    position: absolute;
+    top: 38px; left: 15%; right: 15%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(232,200,74,0.4) 0, rgba(232,200,74,0.4) 6px, transparent 6px, transparent 14px);
+  }
+  .timeline-step { text-align: center; padding: 0 16px; }
+  .timeline-num {
+    width: 76px; height: 76px; border-radius: 50%;
+    display: grid; place-items: center;
+    margin: 0 auto 20px;
+    position: relative;
+    border: 2px solid rgba(232,200,74,0.3);
+    background: rgba(232,200,74,0.06);
+  }
+  .timeline-num i { font-size: 26px; color: var(--accent); }
+  .timeline-step-n {
+    position: absolute; top: -4px; right: -4px;
+    width: 22px; height: 22px;
+    background: var(--accent); border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 700; color: #0a0a0a;
+  }
+  .timeline-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.3px;
+    color: #fff; margin-bottom: 8px;
+  }
+  .timeline-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+  /* ── CTA ── */
+  .ab-cta {
+    background: linear-gradient(130deg, #111827 60%, #1e293b);
+    border-radius: 24px;
+    padding: 60px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 80px;
+    max-width: 1200px;
+  }
+  .ab-cta::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(232,200,74,0.14), transparent 65%);
+    border-radius: 50%;
+  }
+  .ab-cta::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(13,148,136,0.12), transparent 65%);
+    border-radius: 50%;
+  }
+  .ab-cta h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 60px); letter-spacing: 0.5px; line-height: 1;
+    color: #fff; margin-bottom: 14px; position: relative; z-index: 1;
+  }
+  .ab-cta h2 span { color: var(--accent); }
+  .ab-cta p {
+    color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto 32px;
+    font-size: 15px; line-height: 1.7; position: relative; z-index: 1;
+  }
+  .ab-cta-btns {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    flex-wrap: wrap; position: relative; z-index: 1;
+  }
+
+  /* ── Trust Band ── */
+  .trust-band {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 20px;
+  }
+  .trust-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .trust-band-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text); }
+  .trust-band-item i { font-size: 20px; color: var(--accent-dark); }
+
+  /* ── Footer (from services.html) ── */
+  .footer { background: #050609; border-top: 3px solid var(--accent); }
+  .footer-grid {
+    width: min(1180px, calc(100% - 32px)); margin: 0 auto;
+    padding: 60px 0 36px;
+    display: grid; grid-template-columns: 1.2fr repeat(3, 1fr); gap: 32px;
+  }
+  .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px; }
+  .footer p, .footer li { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.9; }
+  .footer h4 { color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; font-family: 'DM Mono', monospace; }
+  .footer ul { list-style: none; padding: 0; margin: 0; }
+  .footer ul a { color: rgba(255,255,255,0.6); font-size: 13px; transition: color 0.2s; }
+  .footer ul a:hover { color: var(--accent); }
+  .socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .socials a {
+    display: inline-grid; place-items: center; min-width: 38px; height: 38px; padding: 0 10px;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7);
+    font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; transition: all 0.2s;
+  }
+  .socials a:hover { border-color: var(--accent); color: var(--accent); }
+  .copyright {
+    width: min(1180px, calc(100% - 32px)); margin: 0 auto;
+    padding: 18px 0 32px; border-top: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.4); font-size: 12px; font-family: 'DM Mono', monospace;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeInDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .story-grid    { grid-template-columns: 1fr; }
+    .mv-grid       { grid-template-columns: 1fr; }
+    .team-grid     { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid    { grid-template-columns: 1fr; }
+    .values-strip  { grid-template-columns: repeat(2, 1fr); }
+    .contact-grid  { grid-template-columns: 1fr; }
+    .timeline-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .timeline-grid::before { display: none; }
+    .test-grid     { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .team-grid    { grid-template-columns: 1fr; }
+    .test-grid    { grid-template-columns: 1fr; }
+    .values-strip { grid-template-columns: repeat(2, 1fr); }
+    .form-row     { grid-template-columns: 1fr; }
+    .ab-cta       { padding: 40px 24px; margin: 0 14px 60px; }
+    .trust-inner  { gap: 20px; }
+    .timeline-grid { grid-template-columns: 1fr; }
+    .ab-stats     { flex-direction: column; }
+    .ab-stat      { border-right: none; border-bottom: 1px solid var(--border); }
+    .ab-stat:last-child { border-bottom: none; }
+    .footer-grid  { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .ab-hero    { padding: 100px 14px 70px; }
+    .ab-sec     { padding: 60px 14px; }
+    .values-strip { grid-template-columns: 1fr; }
+    .footer-grid  { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════ HERO ══════════ -->
+<section class="ab-hero">
+  <div class="ab-wrap">
+    <div class="ab-hero-tag">
+      <i class="fas fa-building"></i>
+      Trusted Since Day One
+    </div>
+    <h1>About <span>OCD LTD</span></h1>
+    <p>Founded on a commitment to safe, reliable, and affordable car rental combined with specialized training for new drivers — we are Rwanda's trusted partner for confident road journeys.</p>
+    <div class="ab-hero-btns">
+      <a href="{% url 'homepage:car_list' %}" class="btn-primary">
+        <i class="fas fa-car-side"></i>Browse Our Cars
+      </a>
+      <a href="#contact" class="btn-outline">
+        <i class="fas fa-envelope"></i>Get in Touch
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Strip -->
+  <div class="ab-wrap" style="margin-top: 56px;">
+    <div class="ab-stats">
+      <div class="ab-stat">
+        <strong>{{ total_cars|default:"500+" }}</strong>
+        <span>Cars in Fleet</span>
+      </div>
+      <div class="ab-stat">
+        <strong>{{ total_customers|default:"800+" }}</strong>
+        <span>Happy Clients</span>
+      </div>
+      <div class="ab-stat">
+        <strong>{{ total_bookings|default:"1,200+" }}</strong>
+        <span>Trips Completed</span>
+      </div>
+      <div class="ab-stat">
+        <strong>{{ avg_rating|default:"4.8" }}★</strong>
+        <span>Average Rating</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ COMPANY STORY ══════════ -->
+<section class="ab-sec" style="background: var(--bg);" id="story">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-gold"><i class="fas fa-book-open"></i> Our Story</div>
+      <h2>How OCD LTD <em>Began</em></h2>
+      <p>From a simple idea to Rwanda's most trusted car rental and driver training company.</p>
+    </div>
+
+    <div class="story-grid">
+      <!-- Visual Panel -->
+      <div class="story-visual">
+        <i class="fas fa-road story-big-icon"></i>
+        <div class="story-year-badge">
+          <strong>OCD</strong>
+          <span>LTD</span>
+        </div>
+        <h3>Built for <span>Rwanda's Roads</span></h3>
+        <p>Every policy, every vehicle, every instructor — chosen with Rwanda's unique road conditions and communities in mind.</p>
+        <div class="story-pills">
+          <div class="story-pill"><i class="fas fa-shield-check"></i>Safety First</div>
+          <div class="story-pill"><i class="fas fa-car-side"></i>Quality Fleet</div>
+          <div class="story-pill"><i class="fas fa-graduation-cap"></i>Driver Training</div>
+          <div class="story-pill"><i class="fas fa-handshake"></i>Trusted by Families</div>
+        </div>
+      </div>
+
+      <!-- Story Blocks -->
+      <div class="story-content">
+        <div class="story-block">
+          <div class="story-block-header">
+            <div class="story-block-icon bg-gold" style="background: var(--accent-light);"><i class="fas fa-lightbulb" style="color: var(--accent-dark);"></i></div>
+            <div class="story-block-title">The Beginning</div>
+          </div>
+          <p class="story-block-body">OCD LTD was founded with a clear commitment: to provide safe, reliable, and affordable car rental services combined with specialized training for new drivers. We saw a gap in the market — quality vehicles alone were not enough. Drivers needed support too.</p>
+        </div>
+        <div class="story-block">
+          <div class="story-block-header">
+            <div class="story-block-icon" style="background: var(--teal-light);"><i class="fas fa-graduation-cap" style="color: var(--teal);"></i></div>
+            <div class="story-block-title">Recognizing the Challenge</div>
+          </div>
+          <p class="story-block-body">New drivers in Rwanda face real challenges on the road. We recognized this early and made driver education a cornerstone of our service — not just renting cars but supporting beginners in gaining real confidence behind the wheel.</p>
+        </div>
+        <div class="story-block">
+          <div class="story-block-header">
+            <div class="story-block-icon" style="background: var(--blue-light);"><i class="fas fa-arrow-trend-up" style="color: var(--blue);"></i></div>
+            <div class="story-block-title">Growth & Trust</div>
+          </div>
+          <p class="story-block-body">Over the years we have grown into a trusted provider known for professionalism and personalized service. Hundreds of satisfied clients across Rwanda are a testament to our dedication to doing things right, every single time.</p>
+        </div>
+        <div class="story-block">
+          <div class="story-block-header">
+            <div class="story-block-icon" style="background: #d1fae5;"><i class="fas fa-flag" style="color: var(--green);"></i></div>
+            <div class="story-block-title">Today & Beyond</div>
+          </div>
+          <p class="story-block-body">Today, On Call Driver LTD stands as a comprehensive platform combining vehicle rental, driver training, and full purchase support — proudly built for Rwandan roads, communities, and the people who drive on them every day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MISSION & VISION ══════════ -->
+<section class="ab-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);" id="mission">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-teal"><i class="fas fa-bullseye"></i> Purpose</div>
+      <h2>Mission &amp; <em>Vision</em></h2>
+      <p>The principles that drive every decision we make and every service we offer.</p>
+    </div>
+
+    <div class="mv-grid">
+      <!-- Mission -->
+      <div class="mv-card mission">
+        <div class="mv-label"><i class="fas fa-crosshairs"></i> Our Mission</div>
+        <i class="fas fa-rocket mv-icon"></i>
+        <div class="mv-title">Empowering Every Driver</div>
+        <p class="mv-body">To empower new drivers with the knowledge, skills, and safe vehicles they need to become responsible and confident road users — while providing accessible and trustworthy car rental solutions for all Rwandans.</p>
+        <div class="mv-quote-line">
+          <i class="fas fa-quote-left"></i>
+          We don't just rent cars. We build confident, responsible drivers.
+        </div>
+      </div>
+
+      <!-- Vision -->
+      <div class="mv-card vision">
+        <div class="mv-label"><i class="fas fa-eye"></i> Our Vision</div>
+        <i class="fas fa-binoculars mv-icon"></i>
+        <div class="mv-title">Leading the Region</div>
+        <p class="mv-body">To be the leading company in the region for combining vehicle rental with driver education — promoting road safety and helping all our clients enjoy the freedom of driving with genuine peace of mind.</p>
+        <div class="mv-quote-line">
+          <i class="fas fa-quote-left"></i>
+          Road safety and freedom of mobility — for every Rwandan.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CORE VALUES ══════════ -->
+<section class="ab-sec" style="background: var(--bg);">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-purple"><i class="fas fa-gem"></i> Core Values</div>
+      <h2>What We <em>Stand For</em></h2>
+      <p>The values that shape our culture, guide our team, and define every interaction with our clients.</p>
+    </div>
+
+    <div class="values-strip">
+      <div class="value-card">
+        <div class="value-icon" style="background: var(--accent-light);"><i class="fas fa-shield-halved" style="color: var(--accent-dark);"></i></div>
+        <div class="value-title">Safety</div>
+        <p class="value-text">Every vehicle is regularly inspected and serviced to the highest standards. Safety is never a compromise.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background: var(--teal-light);"><i class="fas fa-handshake-angle" style="color: var(--teal);"></i></div>
+        <div class="value-title">Integrity</div>
+        <p class="value-text">We are transparent and honest in all our dealings — with clients, partners, and every member of our team.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background: var(--blue-light);"><i class="fas fa-star" style="color: var(--blue);"></i></div>
+        <div class="value-title">Excellence</div>
+        <p class="value-text">We hold ourselves to a high standard in every service — from vehicle cleanliness to instructor professionalism.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon" style="background: #d1fae5;"><i class="fas fa-heart" style="color: var(--green);"></i></div>
+        <div class="value-title">Care</div>
+        <p class="value-text">We genuinely care about the progress and well-being of every client who walks through our doors.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TEAM ══════════ -->
+<section class="ab-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);" id="team">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-orange"><i class="fas fa-users"></i> Our Team</div>
+      <h2>The People <em>Behind OCD</em></h2>
+      <p>Experienced professionals united by a shared passion for road safety and customer satisfaction.</p>
+    </div>
+
+    <div class="team-grid">
+      <!-- Driving Instructors -->
+      <div class="team-card t-gold">
+        <div class="team-avatar" style="background: linear-gradient(135deg, var(--accent), var(--accent-dark));"><i class="fas fa-graduation-cap" style="color: #0a0a0a; font-size: 28px;"></i></div>
+        <div class="team-role-badge" style="background: var(--accent-light); color: var(--accent-dark);">
+          <i class="fas fa-circle-dot"></i> Expert Instructors
+        </div>
+        <div class="team-name">Driving Instructors</div>
+        <p class="team-desc">Our instructors have extensive training in driver education and deeply understand the unique challenges new drivers face on Rwanda's diverse road network.</p>
+        <div class="team-skills">
+          <span class="team-skill">Patient Teaching</span>
+          <span class="team-skill">Defensive Driving</span>
+          <span class="team-skill">Road Safety</span>
+        </div>
+      </div>
+
+      <!-- Maintenance Team -->
+      <div class="team-card t-teal">
+        <div class="team-avatar" style="background: linear-gradient(135deg, var(--teal), #0f5f59);"><i class="fas fa-wrench" style="color: #fff; font-size: 28px;"></i></div>
+        <div class="team-role-badge" style="background: var(--teal-light); color: var(--teal);">
+          <i class="fas fa-circle-dot"></i> Vehicle Specialists
+        </div>
+        <div class="team-name">Maintenance Professionals</div>
+        <p class="team-desc">Our vehicle maintenance team regularly inspects and services each car in our fleet to guarantee consistent safety, reliability, and peak performance at all times.</p>
+        <div class="team-skills">
+          <span class="team-skill">Fleet Inspection</span>
+          <span class="team-skill">Preventive Maintenance</span>
+          <span class="team-skill">Safety Checks</span>
+        </div>
+      </div>
+
+      <!-- Customer Service -->
+      <div class="team-card t-blue">
+        <div class="team-avatar" style="background: linear-gradient(135deg, var(--blue), #1d4ed8);"><i class="fas fa-headset" style="color: #fff; font-size: 28px;"></i></div>
+        <div class="team-role-badge" style="background: var(--blue-light); color: var(--blue);">
+          <i class="fas fa-circle-dot"></i> Client Experience
+        </div>
+        <div class="team-name">Customer Service Staff</div>
+        <p class="team-desc">Dedicated to ensuring every client interaction is smooth, clear, and helpful — from first enquiry to final handover. Our team speaks your language and understands your needs.</p>
+        <div class="team-skills">
+          <span class="team-skill">Multi-language</span>
+          <span class="team-skill">Responsive Support</span>
+          <span class="team-skill">Client Focus</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ HOW WE WORK ══════════ -->
+<section class="ab-sec hiw-bg">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-gold" style="border: 1px solid rgba(232,200,74,0.3); background: rgba(232,200,74,0.08); color: var(--accent);">
+        <i class="fas fa-arrows-spin"></i> Our Process
+      </div>
+      <h2 style="color: #fff;">How We <em>Serve You</em></h2>
+      <p style="color: rgba(255,255,255,0.55);">Four simple steps from first contact to confident driving — backed by professionals at every stage.</p>
+    </div>
+
+    <div class="timeline-grid">
+      <div class="timeline-step">
+        <div class="timeline-num">
+          <i class="fas fa-phone"></i>
+          <span class="timeline-step-n">1</span>
+        </div>
+        <div class="timeline-title">Reach Out</div>
+        <p class="timeline-desc">Contact our team by phone, WhatsApp, or walk in. We'll understand your needs and recommend the right vehicle or training programme.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-num">
+          <i class="fas fa-car-side"></i>
+          <span class="timeline-step-n">2</span>
+        </div>
+        <div class="timeline-title">Choose Your Car</div>
+        <p class="timeline-desc">Browse our inspected fleet and select a vehicle that matches your budget, journey, and driving confidence level.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-num">
+          <i class="fas fa-graduation-cap"></i>
+          <span class="timeline-step-n">3</span>
+        </div>
+        <div class="timeline-title">Train &amp; Prepare</div>
+        <p class="timeline-desc">New drivers receive personalized instruction from our certified instructors — building skills and road confidence at your own pace.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-num">
+          <i class="fas fa-road"></i>
+          <span class="timeline-step-n">4</span>
+        </div>
+        <div class="timeline-title">Drive with Confidence</div>
+        <p class="timeline-desc">Hit the road knowing you are backed by a properly maintained vehicle, proper training, and a team always available if you need support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY TRUST US ══════════ -->
+<section class="ab-sec" style="background: var(--bg);" id="why-us">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-green"><i class="fas fa-shield-halved"></i> Why Choose Us</div>
+      <h2>Reasons to <em>Trust On Call Driver LTD</em></h2>
+      <p>Five pillars of service that make us different from any other provider in Rwanda.</p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: var(--accent-light);"><i class="fas fa-shield-check" style="color: var(--accent-dark);"></i></div>
+        <div>
+          <div class="trust-card-title">Quality &amp; Safety</div>
+          <p class="trust-card-body">We maintain a clean, modern fleet with regular inspections to ensure every vehicle meets high safety standards before it ever reaches a client.</p>
+        </div>
+      </div>
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: var(--teal-light);"><i class="fas fa-chalkboard-teacher" style="color: var(--teal);"></i></div>
+        <div>
+          <div class="trust-card-title">Expert Guidance</div>
+          <p class="trust-card-body">Our skilled instructors provide personalized training tailored to each learner — building confidence and improving driving skills at every level.</p>
+        </div>
+      </div>
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: var(--blue-light);"><i class="fas fa-heart-handshake" style="color: var(--blue);"></i></div>
+        <div>
+          <div class="trust-card-title">Customer Commitment</div>
+          <p class="trust-card-body">We prioritize transparency, honesty, and responsiveness in all interactions — you will always know exactly what to expect from us.</p>
+        </div>
+      </div>
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: var(--purple-light);"><i class="fas fa-medal" style="color: var(--purple);"></i></div>
+        <div>
+          <div class="trust-card-title">Proven Experience</div>
+          <p class="trust-card-body">Years of service and hundreds of satisfied clients across Rwanda showcase our reliability, professionalism, and track record of excellence.</p>
+        </div>
+      </div>
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: #d1fae5;"><i class="fas fa-tags" style="color: var(--green);"></i></div>
+        <div>
+          <div class="trust-card-title">Affordable Pricing</div>
+          <p class="trust-card-body">Competitive and transparent rates make quality car rental and driver training accessible for everyone — no hidden fees, no surprises.</p>
+        </div>
+      </div>
+      <div class="trust-item-card">
+        <div class="trust-icon-wrap" style="background: var(--orange-light);"><i class="fas fa-location-dot" style="color: var(--orange);"></i></div>
+        <div>
+          <div class="trust-card-title">Rwanda-First Focus</div>
+          <p class="trust-card-body">We are built specifically for Rwandan roads, terrain, and communities — with local plate support, province filters, MoMo payments, and a team that knows the roads.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section class="ab-sec" style="background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-pink"><i class="fas fa-comments"></i> Testimonials</div>
+      <h2>What Our <em>Clients Say</em></h2>
+      <p>Real experiences from real people who have driven, trained, and trusted On Call Driver LTD.</p>
+    </div>
+
+    <div class="test-grid">
+      {% if recent_reviews %}
+        {% for r in recent_reviews %}
+        <div class="test-card">
+          <div class="test-stars">
+            {% for i in "12345" %}
+              <i class="fas fa-star{% if forloop.counter > r.rating %}-half-stroke{% endif %}"></i>
+            {% endfor %}
+          </div>
+          <p class="test-quote">"{{ r.body }}"</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--teal), var(--blue));">{{ r.customer.full_name|first|upper }}</div>
+            <div>
+              <div class="test-name">{{ r.customer.full_name }}</div>
+              <div class="test-role">Verified Client · {{ r.created_at|date:"M Y" }}</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="test-quote">"As a new driver, I was nervous. The instructors at OCD LTD were patient, professional, and genuinely cared about helping me improve. I passed my test on the first try!"</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--teal), var(--blue));">A</div>
+            <div><div class="test-name">UWIMANA Amina</div><div class="test-role">Verified Client · Kigali</div></div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="test-quote">"Rented a car for a family trip to Musanze. The vehicle was spotless, well-maintained, and the process was completely transparent. Highly recommend OCD LTD."</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--orange), var(--pink));">J</div>
+            <div><div class="test-name">HABIMANA Jean-Paul</div><div class="test-role">Verified Client · Gasabo</div></div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
+          <p class="test-quote">"Affordable pricing and a great team. The customer service was responsive and the car was delivered on time. Will definitely use OCD LTD again for my next rental."</p>
+          <div class="test-author">
+            <div class="test-avatar" style="background: linear-gradient(135deg, var(--purple), var(--indigo));">E</div>
+            <div><div class="test-name">INGABIRE Elise</div><div class="test-role">Verified Client · Huye</div></div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT FORM ══════════ -->
+<section class="ab-sec" style="background: var(--bg);" id="contact">
+  <div class="ab-wrap">
+    <div class="ab-sec-hd">
+      <div class="tag tag-blue"><i class="fas fa-envelope"></i> Get in Touch</div>
+      <h2>Talk to <em>Our Team</em></h2>
+      <p>Have a question, a booking enquiry, or want to learn more about our training programmes? We'd love to hear from you.</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact Info Cards -->
+      <div class="contact-info">
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background: var(--accent-light);"><i class="fas fa-phone" style="color: var(--accent-dark);"></i></div>
+          <div>
+            <div class="contact-info-label">Phone / WhatsApp</div>
+            <div class="contact-info-value">{{ site.contact_phone|default:"+250 000 000 000" }}</div>
+          </div>
+        </div>
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background: var(--teal-light);"><i class="fas fa-envelope" style="color: var(--teal);"></i></div>
+          <div>
+            <div class="contact-info-label">Email Address</div>
+            <div class="contact-info-value">{{ site.contact_email|default:"info@ocdltd.rw" }}</div>
+          </div>
+        </div>
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background: var(--blue-light);"><i class="fas fa-location-dot" style="color: var(--blue);"></i></div>
+          <div>
+            <div class="contact-info-label">Office Location</div>
+            <div class="contact-info-value">{{ site.address|default:"Kigali, Rwanda" }}</div>
+          </div>
+        </div>
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background: #d1fae5;"><i class="fas fa-clock" style="color: var(--green);"></i></div>
+          <div>
+            <div class="contact-info-label">Working Hours</div>
+            <div class="contact-info-value">Mon – Sat: 8:00 AM – 6:00 PM</div>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <div style="background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; box-shadow: var(--shadow);">
+          <div class="contact-info-label" style="margin-bottom: 12px;">Follow Us</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="{{ site.facebook_url|default:'#' }}" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;color:var(--text);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent-dark)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'"><i class="fab fa-facebook"></i>Facebook</a>
+            <a href="{{ site.instagram_url|default:'#' }}" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;color:var(--text);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent-dark)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'"><i class="fab fa-instagram"></i>Instagram</a>
+            <a href="https://wa.me/{{ site.whatsapp_number|default:'250000000000' }}" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;color:var(--text);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent-dark)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-wrap">
+        <h3 style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.3px; margin-bottom:6px; color:var(--text);">Send Us a Message</h3>
+        <p style="font-size:13.5px; color:whitesmoke; margin-bottom:24px;">We typically respond within a few hours during business hours.</p>
+
+        {% if messages %}
+          {% for message in messages %}
+          <div style="padding:14px 16px; border-radius:10px; background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; font-size:14px; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+            <i class="fas fa-circle-check"></i> {{ message }}
+          </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'homepage:about_us' %}">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" name="name" class="form-control{% if form_errors.name %}" style="border-color:var(--red);{% endif %}" placeholder="Jean-Pierre Uwimana" value="{{ form_data.name|default:'' }}" required>
+              {% if form_errors.name %}<div class="form-error"><i class="fas fa-circle-exclamation"></i>{{ form_errors.name }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <input type="email" name="email" class="form-control{% if form_errors.email %}" style="border-color:var(--red);{% endif %}" placeholder="you@example.com" value="{{ form_data.email|default:'' }}" required>
+              {% if form_errors.email %}<div class="form-error"><i class="fas fa-circle-exclamation"></i>{{ form_errors.email }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="text" name="phone" class="form-control" placeholder="+250 7XX XXX XXX" value="{{ form_data.phone|default:'' }}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" name="subject" class="form-control{% if form_errors.subject %}" style="border-color:var(--red);{% endif %}" placeholder="How can we help?" value="{{ form_data.subject|default:'' }}" required>
+              {% if form_errors.subject %}<div class="form-error"><i class="fas fa-circle-exclamation"></i>{{ form_errors.subject }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message *</label>
+            <textarea name="message" class="form-control{% if form_errors.message %}" style="border-color:var(--red);{% endif %}" placeholder="Tell us what you need — a car rental, training enquiry, or general question…" required>{{ form_data.message|default:'' }}</textarea>
+            {% if form_errors.message %}<div class="form-error"><i class="fas fa-circle-exclamation"></i>{{ form_errors.message }}</div>{% endif %}
+          </div>
+          <button type="submit" class="form-submit">
+            <i class="fas fa-paper-plane"></i>Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TRUST BAND ══════════ -->
+<div class="trust-band">
+  <div class="trust-inner">
+    <div class="trust-band-item"><i class="fas fa-shield-check"></i>Safety Certified Fleet</div>
+    <div class="trust-band-item"><i class="fas fa-graduation-cap"></i>Certified Instructors</div>
+    <div class="trust-band-item"><i class="fas fa-location-dot"></i>All 5 Provinces</div>
+    <div class="trust-band-item"><i class="fas fa-mobile-screen-button"></i>MTN &amp; Airtel MoMo</div>
+    <div class="trust-band-item"><i class="fas fa-headset"></i>Dedicated Support</div>
+    <div class="trust-band-item"><i class="fas fa-flag"></i>100% Rwanda-Built</div>
+  </div>
+</div>
+
+<!-- ══════════ CTA ══════════ -->
+<section style="padding: 80px 20px 0;">
+  <div class="ab-cta">
+    <h2>Ready to Drive with <span>Confidence?</span></h2>
+    <p>Join hundreds of Rwandans who have trusted On Call Driver LTD for safe vehicles, professional training, and a seamless experience from start to finish.</p>
+    <div class="ab-cta-btns">
+      <a href="{% url 'homepage:car_list' %}" class="btn-primary">
+        <i class="fas fa-car-side"></i>Browse Our Cars
+      </a>
+      {% if not request.user.is_authenticated %}
+      <a href="{% url 'homepage:auth' %}?mode=register" class="btn-outline">
+        <i class="fas fa-user-plus"></i>Create Free Account
+      </a>
+      {% else %}
+      <a href="{% url 'homepage:profile' %}" class="btn-outline">
+        <i class="fas fa-user"></i>My Profile
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+{% include "homepage/partials/footer.html" %}
+
+{% endblock %}

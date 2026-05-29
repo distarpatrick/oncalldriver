@@ -1,0 +1,1083 @@
+{% extends "homepage/base.html" %}
+{% block title %}{{ site_name }} | My Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --border: #e4e8ef;
+    --text: #111827;
+    --muted: #6b7280;
+    --dim: #9ca3af;
+    --accent: #e8c84a;
+    --accent-dark: #b89a2a;
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --orange: #f97316;
+    --teal: #0d9488;
+    --purple: #8b5cf6;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Layout ── */
+  .pp { padding: 100px 20px 60px; }
+  .pp-grid {
+    max-width: 1260px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 88px;
+  }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .id-card { padding: 28px 24px; text-align: center; }
+  .avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: grid; place-items: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--teal), var(--orange));
+    overflow: hidden;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .verified-badge {
+    position: absolute; bottom: 2px; right: 2px;
+    width: 24px; height: 24px;
+    background: var(--green);
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: grid; place-items: center;
+    color: #fff; font-size: 10px;
+  }
+  .id-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 0.5px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .role-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    font-family: 'DM Mono', monospace;
+  }
+  .role-super_admin, .role-admin { background: #fef3c7; color: #92400e; }
+  .role-manager { background: #dbeafe; color: #1e40af; }
+  .role-sales_agent { background: #d1fae5; color: #065f46; }
+  .role-marketer { background: #ede9fe; color: #5b21b6; }
+  .role-accountant { background: #fce7f3; color: #9d174d; }
+  .role-inventory_manager { background: #e0f2fe; color: #0c4a6e; }
+  .role-customer_support { background: #fff7ed; color: #9a3412; }
+  .role-customer { background: #f3f4f6; color: #374151; }
+
+  .id-meta { margin-top: 16px; display: grid; gap: 9px; }
+  .id-meta-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--muted); text-align: left;
+  }
+  .id-meta-row i { width: 16px; text-align: center; color: var(--accent-dark); }
+
+  .nav-list { list-style: none; padding: 10px 0; }
+  .nav-item a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 20px;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--muted);
+    transition: all .15s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item a:hover, .nav-item a.active {
+    background: #fefce8;
+    color: var(--text);
+    border-left-color: var(--accent);
+  }
+  .nav-item a i { width: 18px; text-align: center; font-size: 14px; }
+  .nav-divider {
+    margin: 6px 20px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--dim);
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Main Column ── */
+  .main { display: grid; gap: 22px; }
+
+  /* ── Section header ── */
+  .sec-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; padding-bottom: 14px;
+    border-bottom: 2px solid var(--bg);
+  }
+  .sec-hd h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-hd h2 i { font-size: 20px; color: var(--accent-dark); }
+  .sec-hd .badge {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--dim); background: var(--bg);
+    padding: 3px 10px; border-radius: 999px;
+  }
+
+  /* ── Hero banner ── */
+  .hero-card {
+    background: linear-gradient(130deg, #111827 60%, #1e293b);
+    color: #fff;
+    padding: 36px 32px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(232,200,74,0.18), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-card h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 5vw, 68px);
+    letter-spacing: 1px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+  }
+  .hero-card h1 span { color: var(--accent); }
+  .hero-card p { color: rgba(255,255,255,0.65); max-width: 580px; font-size: 14px; line-height: 1.6; }
+
+  /* ── Metrics grid ── */
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .metric {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 18px 16px;
+    box-shadow: var(--shadow);
+    position: relative; overflow: hidden;
+  }
+  .metric::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .metric.c1::after { background: var(--blue); }
+  .metric.c2::after { background: var(--green); }
+  .metric.c3::after { background: var(--orange); }
+  .metric.c4::after { background: var(--purple); }
+  .metric strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif; font-size: 40px;
+    line-height: 1; color: var(--text);
+  }
+  .metric span { display: block; margin-top: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .metric i { position: absolute; top: 16px; right: 16px; font-size: 22px; color: var(--border); }
+
+  /* ── Edit form ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-col-full { grid-column: 1 / -1; }
+  label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #374151; }
+  .fi {
+    width: 100%; min-height: 46px;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; font: inherit; color: var(--text);
+    background: #fff; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .fi:focus { border-color: var(--accent-dark); box-shadow: 0 0 0 3px rgba(232,200,74,0.18); }
+  .fi-file { padding: 8px 12px; cursor: pointer; }
+  .fi-error { margin-top: 5px; font-size: 11.5px; color: var(--red); }
+  .form-nfe { padding: 10px 14px; border-radius: 8px; background: #fee2e2; color: #991b1b; font-size: 13px; margin-bottom: 14px; }
+  .msg-list { list-style: none; margin-bottom: 16px; display: grid; gap: 6px; }
+  .msg-list li {
+    padding: 11px 14px; border-radius: 8px;
+    background: #d1fae5; color: #065f46; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .msg-list li::before { content: '✓'; font-weight: 900; }
+  .btn-save {
+    margin-top: 18px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 8px;
+    background: var(--accent); border: 1px solid var(--accent-dark);
+    font: inherit; font-size: 13px; font-weight: 800; color: #0a0a0a;
+    cursor: pointer; transition: opacity .15s;
+  }
+  .btn-save:hover { opacity: 0.88; }
+
+  /* ── Activity lists ── */
+  .activity-grid { display: grid; gap: 10px; }
+  .act-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    box-shadow: var(--shadow);
+    transition: border-color .15s;
+  }
+  .act-item[data-detail-url] { cursor: pointer; }
+  .act-item:hover { border-color: var(--accent); }
+  .act-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    display: grid; place-items: center; flex-shrink: 0;
+    font-size: 15px;
+  }
+  .act-icon.booking { background: #dbeafe; color: var(--blue); }
+  .act-icon.schedule { background: #d1fae5; color: var(--green); }
+  .act-icon.wish { background: #fce7f3; color: #db2777; }
+  .act-icon.car { background: #ede9fe; color: var(--purple); }
+  .act-icon.payment { background: #fef3c7; color: #92400e; }
+  .act-icon.ticket { background: #fff7ed; color: var(--orange); }
+  .act-icon.log { background: #f3f4f6; color: #374151; }
+  .act-body { flex: 1; min-width: 0; }
+  .act-title { font-size: 13.5px; font-weight: 700; color: var(--text); }
+  .act-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .act-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .act-form {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--bg);
+  }
+  .act-form .form-col-full { grid-column: 1 / -1; }
+  .act-form input, .act-form textarea {
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 12px;
+  }
+  .act-form textarea { resize: vertical; }
+  .btn-link {
+    padding: 8px 12px; border-radius: 8px;
+    font: inherit; font-size: 12px; font-weight: 700;
+    border: 1px solid var(--border); background: #fff;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-link:hover { border-color: var(--accent); background: #fefce8; }
+  .btn-link.danger { color: var(--red); border-color: #fecaca; }
+  .btn-link.success { color: #047857; border-color: #a7f3d0; }
+  .pill {
+    display: inline-block; margin-top: 6px;
+    padding: 3px 9px; border-radius: 999px; font-size: 10.5px;
+    font-family: 'DM Mono', monospace; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .pill.confirmed { background: #d1fae5; color: #065f46; }
+  .pill.pending { background: #fef9c3; color: #854d0e; }
+  .pill.cancelled { background: #fee2e2; color: #991b1b; }
+  .pill.completed { background: #ede9fe; color: #5b21b6; }
+  .pill.available { background: #d1fae5; color: #065f46; }
+  .pill.booked { background: #dbeafe; color: #1e40af; }
+  .pill.sold { background: #f3f4f6; color: #374151; }
+  .pill.scheduled { background: #fef3c7; color: #92400e; }
+  .pill.pending_review { background: #fef9c3; color: #854d0e; }
+  .pill.success { background: #d1fae5; color: #065f46; }
+  .pill.failed { background: #fee2e2; color: #991b1b; }
+  .pill.open { background: #dbeafe; color: #1e40af; }
+  .pill.in_progress { background: #fef3c7; color: #92400e; }
+  .pill.resolved { background: #d1fae5; color: #065f46; }
+  .empty { padding: 32px 0; text-align: center; color: var(--dim); font-size: 13px; }
+  .empty i { font-size: 28px; margin-bottom: 10px; display: block; }
+
+  /* ── Two column activity ── */
+  .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* ── Security panel ── */
+  .security-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--bg);
+  }
+  .security-row:last-child { border: none; }
+  .security-info { display: flex; align-items: center; gap: 12px; }
+  .security-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: grid; place-items: center; font-size: 16px;
+  }
+  .security-icon.green { background: #d1fae5; color: var(--green); }
+  .security-icon.blue { background: #dbeafe; color: var(--blue); }
+  .security-icon.orange { background: #fff7ed; color: var(--orange); }
+  .sec-label { font-weight: 700; font-size: 13.5px; }
+  .sec-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .btn-sm {
+    padding: 8px 16px; border-radius: 8px;
+    font: inherit; font-size: 12px; font-weight: 700;
+    border: 1px solid var(--border); background: #fff;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all .15s;
+  }
+  .btn-sm:hover { border-color: var(--accent); background: #fefce8; }
+  .btn-sm.danger { border-color: #fecaca; color: var(--red); }
+  .btn-sm.danger:hover { background: #fee2e2; }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--bg);
+  }
+  .page-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .page-links a, .page-links span {
+    min-width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 10px;
+  }
+  .page-links a { background: #fff; color: var(--text); }
+  .page-links a:hover { border-color: var(--accent); background: #fefce8; }
+  .page-links .current { background: var(--accent); color: #111; border-color: var(--accent); }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--bg); margin-bottom: 20px; }
+  .tab-btn {
+    padding: 10px 18px; border: none; background: none;
+    font: inherit; font-size: 13px; font-weight: 700; color: var(--muted);
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px;
+    transition: all .15s;
+  }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .pp-grid { grid-template-columns: 260px 1fr; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .pp-grid { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .dual-grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .act-form { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .pp { padding: 84px 14px 48px; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="pp">
+  <div class="pp-grid">
+
+    <!-- ══════════ SIDEBAR ══════════ -->
+    <aside class="sidebar">
+      <!-- Identity Card -->
+      <div class="card id-card">
+        <div class="avatar-wrap">
+          <div class="avatar">
+            {% if profile_photo_url %}
+              <img src="{{ profile_photo_url }}" alt="{{ request.user.full_name }}">
+            {% else %}
+              {{ request.user.full_name|first|upper }}
+            {% endif %}
+          </div>
+          {% if request.user.is_verified %}
+            <span class="verified-badge" title="Verified"><i class="fas fa-check"></i></span>
+          {% endif %}
+        </div>
+
+        <div class="id-name">{{ request.user.full_name }}</div>
+        <span class="role-badge role-{{ request.user.role }}">
+          <i class="fas fa-id-badge"></i>{{ request.user.get_role_display }}
+        </span>
+
+        <div class="id-meta">
+          <div class="id-meta-row"><i class="fas fa-envelope"></i><span>{{ request.user.email }}</span></div>
+          <div class="id-meta-row"><i class="fas fa-phone"></i><span>{{ request.user.phone }}</span></div>
+          {% if request.user.district %}
+          <div class="id-meta-row"><i class="fas fa-location-dot"></i><span>{{ request.user.district }}{% if request.user.province %}, {{ request.user.get_province_display }}{% endif %}</span></div>
+          {% endif %}
+          <div class="id-meta-row"><i class="fas fa-calendar-days"></i><span>Joined {{ request.user.date_joined|date:"N j, Y" }}</span></div>
+          <div class="id-meta-row">
+            <i class="fas fa-circle" style="color:{% if request.user.is_active %}var(--green){% else %}var(--red){% endif %}; font-size:9px"></i>
+            <span>{{ request.user.is_active|yesno:"Active,Inactive" }} account</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="card" style="padding: 4px 0;">
+        <ul class="nav-list">
+          <li class="nav-divider">Profile</li>
+          <li class="nav-item"><a href="#edit" class="active"><i class="fas fa-pen-to-square"></i>Edit Details</a></li>
+          <li class="nav-item"><a href="{% url 'homepage:profile_security' %}"><i class="fas fa-shield-halved"></i>Security & Password</a></li>
+
+          {% if request.user.role == "customer" %}
+          <li class="nav-divider">My Activity</li>
+          <li class="nav-item"><a href="#bookings"><i class="fas fa-calendar-check"></i>My Bookings</a></li>
+          <li class="nav-item"><a href="#visits"><i class="fas fa-eye"></i>Visit Schedules</a></li>
+          <li class="nav-item"><a href="#wishlist"><i class="fas fa-heart"></i>Wishlist</a></li>
+          <li class="nav-item"><a href="#invoices"><i class="fas fa-file-invoice"></i>Invoices</a></li>
+          <li class="nav-item"><a href="#payments"><i class="fas fa-receipt"></i>My Payments</a></li>
+          {% endif %}
+
+          {% if request.user.role == "super_admin" or request.user.role == "admin" or request.user.role == "marketer" %}
+          <li class="nav-divider">Car Management</li>
+          <li class="nav-item"><a href="{% url 'homepage:upload_car' %}"><i class="fas fa-cloud-arrow-up"></i>Upload Car</a></li>
+          <li class="nav-item"><a href="#my-cars"><i class="fas fa-car-side"></i>My Listings</a></li>
+          {% endif %}
+
+          {% if request.user.role == "super_admin" or request.user.role == "admin" or request.user.role == "manager" or request.user.role == "sales_agent" %}
+          <li class="nav-divider">Operations</li>
+          <li class="nav-item"><a href="{% url 'homepage:dashboard' %}"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+          {% endif %}
+
+          {% if request.user.role == "super_admin" or request.user.role == "admin" or request.user.role == "manager" or request.user.role == "sales_agent" %}
+          <li class="nav-item"><a href="#sales"><i class="fas fa-handshake"></i>Handled Bookings</a></li>
+          {% endif %}
+
+          {% if can_review_payments %}
+          <li class="nav-divider">Finance</li>
+          <li class="nav-item"><a href="#payments-work"><i class="fas fa-money-bill-transfer"></i>Payments Made</a></li>
+          {% endif %}
+
+          {% if request.user.role == "customer_support" %}
+          <li class="nav-divider">Support</li>
+          <li class="nav-item"><a href="#tickets"><i class="fas fa-ticket"></i>My Tickets</a></li>
+          {% endif %}
+
+          {% if request.user.role == "super_admin" or request.user.role == "admin" %}
+          <li class="nav-divider">Admin</li>
+          <li class="nav-item"><a href="#audit"><i class="fas fa-clock-rotate-left"></i>Audit Trail</a></li>
+          {% endif %}
+
+          <li class="nav-divider">Account</li>
+          <li class="nav-item"><a href="{% url 'homepage:logout' %}"><i class="fas fa-right-from-bracket"></i>Sign Out</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ══════════ MAIN COLUMN ══════════ -->
+    <div class="main">
+
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <h1>My <span>Profile</span></h1>
+        <p>
+          {% if request.user.role == "customer" %}
+            Track your bookings, visits, wishlist, and payment history — all in one place.
+          {% elif request.user.role in "super_admin,admin" %}
+            Full platform control — manage staff, monitor listings, review audit logs and system health.
+          {% elif request.user.role == "manager" %}
+            Oversee daily operations, monitor sales agents, and keep deals moving forward.
+          {% elif request.user.role == "marketer" %}
+            Manage your car listings and drive buyers to the right vehicles.
+          {% elif request.user.role == "sales_agent" %}
+            Track assigned bookings, confirm visits, and close deals with your customers.
+          {% elif request.user.role == "accountant" %}
+            Process payments, confirm transactions, and maintain clean financial records.
+          {% elif request.user.role == "inventory_manager" %}
+            Monitor stock, update car statuses, and keep the platform inventory accurate.
+          {% elif request.user.role == "customer_support" %}
+            Resolve tickets, assist customers, and ensure a smooth experience for everyone.
+          {% else %}
+            Manage your account settings and personal information.
+          {% endif %}
+        </p>
+      </div>
+
+      <!-- ── Role Metrics ── -->
+      <section class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-chart-bar"></i>Overview</h2>
+          <span class="badge">{{ request.user.get_role_display }}</span>
+        </div>
+        <div class="metrics">
+          {% if request.user.role == "customer" %}
+            <div class="metric c1"><i class="fas fa-calendar-check"></i><strong>{{ customer_stats.Bookings }}</strong><span>Total Bookings</span></div>
+            <div class="metric c2"><i class="fas fa-eye"></i><strong>{{ customer_stats.Visits }}</strong><span>Visit Schedules</span></div>
+            <div class="metric c3"><i class="fas fa-heart"></i><strong>{{ customer_stats.Wishlist }}</strong><span>Saved Cars</span></div>
+            <div class="metric c4"><i class="fas fa-receipt"></i><strong>{{ customer_stats.Payments }}</strong><span>Payments Made</span></div>
+
+          {% elif request.user.role in "super_admin,admin" %}
+            <div class="metric c1"><i class="fas fa-users"></i><strong>{{ admin_stats.Active_Users|default:admin_stats|length }}</strong><span>Active Users</span></div>
+            <div class="metric c2"><i class="fas fa-car-side"></i><strong>{% with admin_stats.items as items %}{% for k,v in items %}{% if k == "Cars Live" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Cars Live</span></div>
+            <div class="metric c3"><i class="fas fa-clock"></i><strong>{% with admin_stats.items as items %}{% for k,v in items %}{% if k == "Pending Cars" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Pending Review</span></div>
+            <div class="metric c4"><i class="fas fa-ticket"></i><strong>{% with admin_stats.items as items %}{% for k,v in items %}{% if k == "Open Tickets" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Open Tickets</span></div>
+
+          {% elif request.user.role == "customer_support" %}
+            <div class="metric c1"><i class="fas fa-ticket"></i><strong>{{ support_stats.My_Tickets|default:"0" }}</strong><span>My Tickets</span></div>
+            <div class="metric c2"><i class="fas fa-circle-dot"></i><strong>{% with support_stats.items as items %}{% for k,v in items %}{% if k == "Open Assigned" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Open Assigned</span></div>
+            <div class="metric c3"><i class="fas fa-users"></i><strong>{% with support_stats.items as items %}{% for k,v in items %}{% if k == "Customer Tickets" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Customer Tickets</span></div>
+            <div class="metric c4"><i class="fas fa-reply"></i><strong>{% with support_stats.items as items %}{% for k,v in items %}{% if k == "Replies" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Replies Sent</span></div>
+
+          {% else %}
+            <div class="metric c1"><i class="fas fa-car-side"></i><strong>{{ staff_stats.Uploaded_Cars|default:"0" }}</strong><span>Uploaded Cars</span></div>
+            <div class="metric c2"><i class="fas fa-calendar-check"></i><strong>{% with staff_stats.items as items %}{% for k,v in items %}{% if k == "Handled Bookings" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Handled Bookings</span></div>
+            <div class="metric c3"><i class="fas fa-eye"></i><strong>{% with staff_stats.items as items %}{% for k,v in items %}{% if k == "Confirmed Visits" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Confirmed Visits</span></div>
+            <div class="metric c4"><i class="fas fa-money-bill"></i><strong>{% with staff_stats.items as items %}{% for k,v in items %}{% if k == "Processed Payments" %}{{ v }}{% endif %}{% endfor %}{% endwith %}</strong><span>Processed Payments</span></div>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- ── Edit Details ── -->
+      <section id="edit" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-pen-to-square"></i>Edit Details</h2>
+          <span class="badge">Account info</span>
+        </div>
+
+        {% if messages %}
+          <ul class="msg-list">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="form-nfe">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+          {% endif %}
+          <div class="form-grid">
+            <div>
+              <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+              {{ form.full_name }}
+              {% for e in form.full_name.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div>
+              <label for="{{ form.email.id_for_label }}">Email Address</label>
+              {{ form.email }}
+              {% for e in form.email.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div>
+              <label for="{{ form.phone.id_for_label }}">Phone (+250...)</label>
+              {{ form.phone }}
+              {% for e in form.phone.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div>
+              <label for="{{ form.province.id_for_label }}">Province</label>
+              {{ form.province }}
+              {% for e in form.province.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div>
+              <label for="{{ form.district.id_for_label }}">District</label>
+              {{ form.district }}
+              {% for e in form.district.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+            <div>
+              <label for="{{ form.profile_photo.id_for_label }}">Profile Photo</label>
+              {{ form.profile_photo }}
+              {% for e in form.profile_photo.errors %}<div class="fi-error">{{ e }}</div>{% endfor %}
+            </div>
+          </div>
+          <button class="btn-save" type="submit"><i class="fas fa-floppy-disk"></i>Save Changes</button>
+        </form>
+      </section>
+
+      <!-- ════════════════════════════════════
+           CUSTOMER SECTIONS
+      ════════════════════════════════════ -->
+      {% if request.user.role == "customer" %}
+
+      <section id="bookings" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-calendar-check"></i>My Bookings</h2>
+          <span class="badge">{{ customer_stats.Bookings }} total</span>
+        </div>
+        <div class="activity-grid">
+          {% for booking in recent_bookings %}
+          <div class="act-item" data-detail-url="{% url 'homepage:booking_detail' booking.pk %}">
+            <div class="act-icon booking"><i class="fas fa-calendar-check"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ booking.booking_number }} — {{ booking.car.title }}</div>
+              <div class="act-sub">
+                Paid {{ booking.amount_paid|floatformat:"0" }} RWF
+                {% if booking.remaining_balance > 0 %} · Balance: {{ booking.remaining_balance|floatformat:"0" }} RWF{% endif %}
+                · {{ booking.created_at|date:"M d, Y" }}
+              </div>
+              <span class="pill {{ booking.status }}">{{ booking.get_status_display }}</span>
+              <div class="act-actions">
+                <a class="btn-link" href="{% url 'homepage:booking_detail' booking.pk %}"><i class="fas fa-eye"></i>View Booking</a>
+                <a class="btn-link" href="{% url 'homepage:car_detail' booking.car.id %}"><i class="fas fa-car"></i>View Car</a>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-calendar-xmark"></i>No bookings yet. <a href="{% url 'homepage:car_list' %}" style="color:var(--blue)">Browse cars →</a></div>
+          {% endfor %}
+        </div>
+        {% if recent_bookings_page.has_other_pages %}
+        <div class="pagination">
+          <span style="color:var(--muted)">{{ recent_bookings_page.start_index }}–{{ recent_bookings_page.end_index }} of {{ recent_bookings_page.paginator.count }}</span>
+          <div class="page-links">
+            {% if recent_bookings_page.has_previous %}<a href="?bp={{ recent_bookings_page.previous_page_number }}#bookings">‹</a>{% endif %}
+            {% for p in recent_bookings_page.paginator.page_range %}{% if p == recent_bookings_page.number %}<span class="current">{{ p }}</span>{% elif p >= recent_bookings_page.number|add:"-2" and p <= recent_bookings_page.number|add:"2" %}<a href="?bp={{ p }}#bookings">{{ p }}</a>{% endif %}{% endfor %}
+            {% if recent_bookings_page.has_next %}<a href="?bp={{ recent_bookings_page.next_page_number }}#bookings">›</a>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </section>
+
+      <section id="visits" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-eye"></i>Visit Schedules</h2>
+          <span class="badge">{{ customer_stats.Visits }} total</span>
+        </div>
+        <div class="activity-grid">
+          {% for sched in recent_schedules %}
+          <div class="act-item" data-detail-url="{% url 'homepage:schedule_detail' sched.pk %}">
+            <div class="act-icon schedule"><i class="fas fa-route"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ sched.schedule_number }} — {{ sched.car.title }}</div>
+              <div class="act-sub">{{ sched.visit_date|date:"D, M d Y" }} at {{ sched.visit_time|time:"H:i" }} · {{ sched.district }}</div>
+              <span class="pill {{ sched.status }}">{{ sched.get_status_display }}</span>
+              <div class="act-actions">
+                <a class="btn-link" href="{% url 'homepage:schedule_detail' sched.pk %}"><i class="fas fa-eye"></i>View Schedule</a>
+                <a class="btn-link" href="{% url 'homepage:car_detail' sched.car.id %}"><i class="fas fa-eye"></i>View Car</a>
+                <form method="post" action="{% url 'homepage:delete_visit_schedule' sched.id %}" onsubmit="return confirm('Delete this visit schedule?');">
+                  {% csrf_token %}
+                  <button class="btn-link danger" type="submit"><i class="fas fa-trash"></i>Delete</button>
+                </form>
+              </div>
+              {% if sched.status == "pending" or sched.status == "confirmed" or sched.status == "rescheduled" %}
+              <form class="act-form" method="post" action="{% url 'homepage:update_visit_schedule' sched.id %}">
+                {% csrf_token %}
+                <div>
+                  <label>Visit Date</label>
+                  <input type="date" name="visit_date" value="{{ sched.visit_date|date:'Y-m-d' }}" required>
+                </div>
+                <div>
+                  <label>Visit Time</label>
+                  <input type="time" name="visit_time" value="{{ sched.visit_time|time:'H:i' }}" required>
+                </div>
+                <div>
+                  <label>District</label>
+                  <input type="text" name="district" value="{{ sched.district }}" required>
+                </div>
+                <div class="form-col-full">
+                  <label>Notes</label>
+                  <textarea name="notes" rows="2">{{ sched.notes }}</textarea>
+                </div>
+                <div class="form-col-full">
+                  <button class="btn-link success" type="submit"><i class="fas fa-floppy-disk"></i>Update Visit</button>
+                </div>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-calendar-days"></i>No visits scheduled yet.</div>
+          {% endfor %}
+        </div>
+        {% if recent_schedules_page.has_other_pages %}
+        <div class="pagination">
+          <span style="color:var(--muted)">{{ recent_schedules_page.start_index }}–{{ recent_schedules_page.end_index }} of {{ recent_schedules_page.paginator.count }}</span>
+          <div class="page-links">
+            {% if recent_schedules_page.has_previous %}<a href="?sp={{ recent_schedules_page.previous_page_number }}#visits">‹</a>{% endif %}
+            {% for p in recent_schedules_page.paginator.page_range %}{% if p == recent_schedules_page.number %}<span class="current">{{ p }}</span>{% elif p >= recent_schedules_page.number|add:"-2" and p <= recent_schedules_page.number|add:"2" %}<a href="?sp={{ p }}#visits">{{ p }}</a>{% endif %}{% endfor %}
+            {% if recent_schedules_page.has_next %}<a href="?sp={{ recent_schedules_page.next_page_number }}#visits">›</a>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+      <div class="dual-grid">
+        <section id="wishlist" class="card" style="padding: 22px 24px;">
+          <div class="sec-hd">
+            <h2><i class="fas fa-heart"></i>Wishlist</h2>
+            <span class="badge">{{ customer_stats.Wishlist }}</span>
+          </div>
+          <div class="activity-grid">
+            {% for w in recent_wishlist %}
+            <div class="act-item" data-detail-url="{% url 'homepage:car_detail' w.car.pk %}">
+              <div class="act-icon wish"><i class="fas fa-heart"></i></div>
+              <div class="act-body">
+                <div class="act-title">{{ w.car.title }}</div>
+                <div class="act-actions">
+                  <a class="btn-link" href="{% url 'homepage:car_detail' w.car.id %}"><i class="fas fa-eye"></i>View</a>
+                  <form method="post" action="{% url 'homepage:delete_wishlist' w.id %}" onsubmit="return confirm('Remove this car from your wishlist?');">
+                    {% csrf_token %}
+                    <button class="btn-link danger" type="submit"><i class="fas fa-trash"></i>Delete</button>
+                  </form>
+                </div>
+                <div class="act-sub">{{ w.car.year }} · {{ w.car.price|floatformat:"0" }} RWF · Saved {{ w.added_at|date:"M d" }}</div>
+              </div>
+            </div>
+            {% empty %}
+            <div class="empty"><i class="fas fa-heart-crack"></i>Nothing saved yet.</div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section id="payments" class="card" style="padding: 22px 24px;">
+          <div class="sec-hd">
+            <h2><i class="fas fa-receipt"></i>Payments</h2>
+            <span class="badge">{{ customer_stats.Payments }}</span>
+          </div>
+          <div class="activity-grid">
+            {% for pay in recent_payments %}
+            <div class="act-item">
+              <div class="act-icon payment"><i class="fas fa-money-bill"></i></div>
+              <div class="act-body">
+                <div class="act-title">{{ pay.payment_number }}</div>
+                <div class="act-sub">{{ pay.amount|floatformat:"0" }} RWF · {{ pay.get_payment_method_display }} · {{ pay.created_at|date:"M d, Y" }}</div>
+                <span class="pill {{ pay.status }}">{{ pay.get_status_display }}</span>
+              </div>
+            </div>
+            {% empty %}
+            <div class="empty"><i class="fas fa-receipt"></i>No payments yet.</div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+
+        {% if recent_payments_page.has_other_pages %}
+        <div class="pagination">
+          <span style="color:var(--muted)">{{ recent_payments_page.start_index }}–{{ recent_payments_page.end_index }} of {{ recent_payments_page.paginator.count }}</span>
+          <div class="page-links">
+            {% if recent_payments_page.has_previous %}<a href="?pp={{ recent_payments_page.previous_page_number }}#payments">‹</a>{% endif %}
+            {% for p in recent_payments_page.paginator.page_range %}{% if p == recent_payments_page.number %}<span class="current">{{ p }}</span>{% elif p >= recent_payments_page.number|add:"-2" and p <= recent_payments_page.number|add:"2" %}<a href="?pp={{ p }}#payments">{{ p }}</a>{% endif %}{% endfor %}
+            {% if recent_payments_page.has_next %}<a href="?pp={{ recent_payments_page.next_page_number }}#payments">›</a>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </section>
+
+      <section id="invoices" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-file-invoice"></i>Invoices</h2>
+          <span class="badge">{{ recent_invoices|length }} recent</span>
+        </div>
+        <div class="activity-grid">
+          {% for inv in recent_invoices %}
+          <div class="act-item">
+            <div class="act-icon payment"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ inv.invoice_number }}</div>
+              <div class="act-sub">
+                {{ inv.payment.amount|floatformat:"0" }} RWF · {{ inv.payment.get_purpose_display }}
+                · Issued {{ inv.created_at|date:"M d, Y" }}
+                {% if inv.issued_by %} · By {{ inv.issued_by.full_name }}{% endif %}
+              </div>
+              <div class="act-actions">
+                {% if inv.payment.booking %}
+                <a class="btn-link" href="{% url 'homepage:booking_detail' inv.payment.booking.pk %}"><i class="fas fa-eye"></i>View Booking</a>
+                {% elif inv.payment.schedule %}
+                <a class="btn-link" href="{% url 'homepage:schedule_detail' inv.payment.schedule.pk %}"><i class="fas fa-eye"></i>View Visit</a>
+                {% endif %}
+                {% if inv.payment.status == "success" %}
+                <a class="btn-link" href="{% url 'homepage:download_invoice' inv.pk %}"><i class="fas fa-download"></i>Download Invoice</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-file-invoice"></i>No invoices yet.</div>
+          {% endfor %}
+        </div>
+        {% if recent_invoices_page.has_other_pages %}
+        <div class="pagination">
+          <span style="color:var(--muted)">{{ recent_invoices_page.start_index }}–{{ recent_invoices_page.end_index }} of {{ recent_invoices_page.paginator.count }}</span>
+          <div class="page-links">
+            {% if recent_invoices_page.has_previous %}<a href="?ip={{ recent_invoices_page.previous_page_number }}#invoices">‹</a>{% endif %}
+            {% for p in recent_invoices_page.paginator.page_range %}{% if p == recent_invoices_page.number %}<span class="current">{{ p }}</span>{% elif p >= recent_invoices_page.number|add:"-2" and p <= recent_invoices_page.number|add:"2" %}<a href="?ip={{ p }}#invoices">{{ p }}</a>{% endif %}{% endfor %}
+            {% if recent_invoices_page.has_next %}<a href="?ip={{ recent_invoices_page.next_page_number }}#invoices">›</a>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </section>
+      {% endif %}
+
+
+      <!-- ════════════════════════════════════
+           MARKETER / ADMIN UPLOADED CARS
+      ════════════════════════════════════ -->
+      {% if request.user.role == "marketer" or request.user.role == "super_admin" or request.user.role == "admin" %}
+      <section id="my-cars" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-car-side"></i>My Car Listings</h2>
+          <span class="badge">{{ recent_uploaded_cars|length }} shown</span>
+        </div>
+        <div class="activity-grid">
+          {% for car in recent_uploaded_cars %}
+          <div class="act-item" data-detail-url="{% url 'homepage:car_detail' car.pk %}">
+            <div class="act-icon car"><i class="fas fa-car"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ car.title }}</div>
+              <div class="act-sub">{{ car.year }} {{ car.model }} · {{ car.price|floatformat:"0" }} RWF · {{ car.district }}, {{ car.province }}</div>
+              <span class="pill {{ car.status }}">{{ car.get_status_display }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-car-burst"></i>No car listings yet. <a href="{% url 'homepage:upload_car' %}" style="color:var(--blue)">Upload one →</a></div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+
+      <!-- ════════════════════════════════════
+           SALES AGENT / MANAGER BOOKINGS
+      ════════════════════════════════════ -->
+      {% if request.user.role == "sales_agent" or request.user.role == "manager" or request.user.role == "super_admin" or request.user.role == "admin" %}
+      <section id="sales" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-handshake"></i>Handled Bookings</h2>
+          <span class="badge">{{ recent_handled_bookings|length }} recent</span>
+        </div>
+        <div class="activity-grid">
+          {% for booking in recent_handled_bookings %}
+          <div class="act-item" data-detail-url="{% url 'homepage:car_detail' booking.car.pk %}">
+            <div class="act-icon booking"><i class="fas fa-calendar-check"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ booking.booking_number }} — {{ booking.customer.full_name }}</div>
+              <div class="act-sub">{{ booking.car.title }} · {{ booking.amount_paid|floatformat:"0" }} / {{ booking.total_price|floatformat:"0" }} RWF</div>
+              <span class="pill {{ booking.status }}">{{ booking.get_status_display }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-handshake-slash"></i>No bookings handled yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+
+      <!-- ════════════════════════════════════
+           ACCOUNTANT PAYMENTS
+      ════════════════════════════════════ -->
+      {% if can_review_payments %}
+      <section id="payments-work" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-money-bill-transfer"></i>Payments Made</h2>
+          <span class="badge">{{ payment_work|length }} recent</span>
+        </div>
+        <div class="activity-grid">
+          {% for pay in payment_work %}
+          <div class="act-item"{% if pay.booking %} data-detail-url="{% url 'homepage:car_detail' pay.booking.car.pk %}"{% elif pay.schedule %} data-detail-url="{% url 'homepage:car_detail' pay.schedule.car.pk %}"{% endif %}>
+            <div class="act-icon payment"><i class="fas fa-money-bill"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ pay.payment_number }} - {{ pay.customer.full_name }}</div>
+              <div class="act-sub">{{ pay.amount|floatformat:"0" }} RWF · {{ pay.get_purpose_display }} · {{ pay.get_payment_method_display }} · Phone: {{ pay.phone_number|default:"N/A" }}</div>
+              <div class="act-sub">
+                {% if pay.booking %}
+                  Booking {{ pay.booking.booking_number }} · {{ pay.booking.car.title }}
+                {% elif pay.schedule %}
+                  Visit {{ pay.schedule.schedule_number }} · {{ pay.schedule.car.title }} · {{ pay.schedule.visit_date|date:"M d, Y" }} {{ pay.schedule.visit_time|time:"H:i" }}
+                {% else %}
+                  Direct payment record
+                {% endif %}
+                · Created {{ pay.created_at|date:"M d, Y H:i" }}
+                {% if pay.processed_by %} · Confirmed by {{ pay.processed_by.full_name }}{% endif %}
+              </div>
+              <span class="pill {{ pay.status }}">{{ pay.get_status_display }}</span>
+              {% if pay.status == "pending" %}
+              <div class="act-actions">
+                <form method="post" action="{% url 'homepage:confirm_payment' pay.id %}" onsubmit="return confirm('Confirm this payment?');">
+                  {% csrf_token %}
+                  <button class="btn-link success" type="submit"><i class="fas fa-check"></i>Confirm Payment</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-receipt"></i>No payments recorded yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if False %}
+      <section id="payments-work" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-money-bill-transfer"></i>Processed Payments</h2>
+          <span class="badge">Recent activity</span>
+        </div>
+        <div class="activity-grid">
+          {% for pay in recent_payments %}
+          <div class="act-item">
+            <div class="act-icon payment"><i class="fas fa-money-bill"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ pay.payment_number }}</div>
+              <div class="act-sub">{{ pay.amount|floatformat:"0" }} RWF · {{ pay.get_purpose_display }} · {{ pay.get_payment_method_display }}</div>
+              <span class="pill {{ pay.status }}">{{ pay.get_status_display }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-receipt"></i>No payments processed yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+
+      <!-- ════════════════════════════════════
+           CUSTOMER SUPPORT TICKETS
+      ════════════════════════════════════ -->
+      {% if request.user.role == "customer_support" %}
+      <section id="tickets" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-ticket"></i>Support Queue</h2>
+          <span class="badge">Assigned tickets</span>
+        </div>
+        <div class="activity-grid">
+          {% for ticket in assigned_tickets %}
+          <div class="act-item">
+            <div class="act-icon ticket"><i class="fas fa-ticket"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ ticket.ticket_number }} — {{ ticket.subject }}</div>
+              <div class="act-sub">From {{ ticket.submitted_by.full_name }} · Priority: {{ ticket.get_priority_display }} · {{ ticket.created_at|date:"M d, Y" }}</div>
+              <span class="pill {{ ticket.status }}">{{ ticket.get_status_display }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-inbox"></i>No assigned support tickets.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+
+      <!-- ════════════════════════════════════
+           ADMIN AUDIT TRAIL
+      ════════════════════════════════════ -->
+      {% if request.user.role == "super_admin" or request.user.role == "admin" %}
+      <section id="audit" class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-clock-rotate-left"></i>Audit Trail</h2>
+          <span class="badge">Recent account actions</span>
+        </div>
+        <div class="activity-grid">
+          {% for log in audit_logs %}
+          <div class="act-item">
+            <div class="act-icon log"><i class="fas fa-shield-halved"></i></div>
+            <div class="act-body">
+              <div class="act-title">{{ log.get_action_display }} · {{ log.model_affected }}</div>
+              <div class="act-sub">{{ log.description }} · {{ log.timestamp|date:"M d, Y H:i" }}{% if log.ip_address %} · IP: {{ log.ip_address }}{% endif %}</div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty"><i class="fas fa-file-circle-xmark"></i>No audit logs yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+
+      <!-- ── Security Quick Access ── -->
+      <section class="card" style="padding: 22px 24px;">
+        <div class="sec-hd">
+          <h2><i class="fas fa-shield-halved"></i>Security</h2>
+          <span class="badge">Account protection</span>
+        </div>
+        <div class="security-row">
+          <div class="security-info">
+            <div class="security-icon green"><i class="fas fa-key"></i></div>
+            <div>
+              <div class="sec-label">Password</div>
+              <div class="sec-sub">Last changed on {{ request.user.date_joined|date:"M d, Y" }}</div>
+            </div>
+          </div>
+          <a href="{% url 'homepage:profile_security' %}" class="btn-sm"><i class="fas fa-pen"></i>Change</a>
+        </div>
+        <div class="security-row">
+          <div class="security-info">
+            <div class="security-icon blue"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div class="sec-label">Email Address</div>
+              <div class="sec-sub">{{ request.user.email }}</div>
+            </div>
+          </div>
+          <button class="btn-sm" onclick="document.querySelector('#edit').scrollIntoView({behavior:'smooth'})"><i class="fas fa-pen"></i>Update</button>
+        </div>
+        <div class="security-row">
+          <div class="security-info">
+            <div class="security-icon orange"><i class="fas fa-right-from-bracket"></i></div>
+            <div>
+              <div class="sec-label">Sign Out</div>
+              <div class="sec-sub">End your current session</div>
+            </div>
+          </div>
+          <a href="{% url 'homepage:logout' %}" class="btn-sm danger"><i class="fas fa-right-from-bracket"></i>Sign Out</a>
+        </div>
+      </section>
+
+    </div><!-- /main -->
+  </div><!-- /pp-grid -->
+</main>
+
+<script>
+  // Style all form inputs automatically
+  document.querySelectorAll('input:not([type=submit]):not([type=file]), select, textarea').forEach(el => {
+    el.classList.add('fi');
+  });
+  document.querySelectorAll('input[type=file]').forEach(el => {
+    el.classList.add('fi', 'fi-file');
+  });
+
+  // Smooth scroll on nav clicks
+  document.querySelectorAll('.nav-item a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.nav-item a').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  document.addEventListener('click', e => {
+    const item = e.target.closest('[data-detail-url]');
+    if (!item || e.target.closest('a, button, input, select, textarea, label, form')) return;
+    window.location.href = item.dataset.detailUrl;
+  });
+</script>
+{% endblock %}
+
+
+
+

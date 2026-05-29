@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ site_name }} | Sign in</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞🚗</text></svg>"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --ink: #14213d;
+        --muted: #66758a;
+        --line: #d8e1ec;
+        --panel: #ffffff;
+        --soft: #f4f7fb;
+        --accent: #0f766e;
+        --accent-dark: #115e59;
+        --accent-light: #14b8a6;
+        --gold: #d97706;
+        --gold-dark: #b45309;
+        --danger: #b42318;
+        --success: #079455;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow: 0 30px 90px rgba(15, 23, 42, 0.18);
+        --shadow-lg: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(
+            circle at 18% 12%,
+            rgba(217, 119, 6, 0.12),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 88% 84%,
+            rgba(15, 118, 110, 0.14),
+            transparent 30%
+          ),
+          linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ── Page wrapper ── */
+      .page {
+        display: none;
+        width: min(1120px, 100%);
+      }
+      .page.active {
+        display: block;
+      }
+
+      /* ── Main container ── */
+      .auth-shell {
+        position: relative;
+        width: 100%;
+        min-height: 690px;
+        background: var(--panel);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        transition: var(--transition);
+        animation: shellIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
+      }
+
+      @keyframes shellIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* ── Left Panel ── */
+      .brand-panel {
+        position: relative;
+        min-width: 0;
+        padding: 42px;
+        color: #fff;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(20, 33, 61, 0.92),
+            rgba(15, 118, 110, 0.88)
+          ),
+          url("https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=82")
+            center/cover;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        backdrop-filter: blur(2px);
+      }
+
+      .brand-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.3), transparent 60%);
+        pointer-events: none;
+      }
+
+      .brand-mark,
+      .brand-copy,
+      .home-link {
+        position: relative;
+        z-index: 1;
+      }
+
+      .brand-mark {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .brand-logo {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+        font-weight: 900;
+        font-size: 1.8rem;
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+      }
+
+      .brand-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .brand-name {
+        display: grid;
+        gap: 4px;
+      }
+      .brand-name strong {
+        font-size: 1.45rem;
+        line-height: 1.2;
+        letter-spacing: -0.3px;
+      }
+      .brand-name span {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .brand-name span i {
+        font-size: 0.75rem;
+      }
+
+      .brand-copy {
+        max-width: 440px;
+      }
+      .brand-copy h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1.08;
+        margin: 0 0 18px;
+        letter-spacing: -0.02em;
+        font-weight: 800;
+      }
+      .brand-copy p {
+        margin: 0;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+      }
+
+      .home-link {
+        width: max-content;
+        padding: 10px 20px;
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(4px);
+      }
+      .home-link i {
+        font-size: 0.9rem;
+        transition: transform 0.2s ease;
+      }
+      .home-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.6);
+      }
+      .home-link:hover i {
+        transform: translateX(-3px);
+      }
+
+      /* ── Right Panel ── */
+      .form-panel {
+        min-width: 0;
+        padding: 42px 38px;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+      }
+
+      /* ── Auth card ── */
+      .auth-card h2 {
+        margin: 0 0 12px;
+        font-size: clamp(1.6rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .auth-card h2 i {
+        color: var(--accent);
+        font-size: 1.8rem;
+      }
+      .auth-card > p {
+        color: var(--muted);
+        margin: 0 0 28px;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      /* ── Messages ── */
+      .messages,
+      .form-errors {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px;
+      }
+      .messages li {
+        border-left: 4px solid var(--accent);
+        background: rgba(15, 118, 110, 0.08);
+        color: var(--accent-dark);
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .messages li i {
+        font-size: 1.1rem;
+      }
+      .form-errors li,
+      .field-error {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .field-error i {
+        font-size: 0.7rem;
+      }
+
+      /* ── Fields ── */
+      .field-grid {
+        display: grid;
+        gap: 18px;
+      }
+      .field-grid.two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        color: var(--ink);
+      }
+      label i {
+        color: var(--accent);
+        font-size: 0.85rem;
+        width: 16px;
+      }
+
+      .input-shell {
+        position: relative;
+      }
+
+      .auth-input {
+        width: 100%;
+        min-width: 0;
+        height: 50px;
+        border: 1.5px solid var(--line);
+        border-radius: 14px;
+        padding: 0 16px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: var(--ink);
+        background: #fff;
+        outline: none;
+        transition: var(--transition);
+      }
+      .input-shell .auth-input {
+        padding-right: 52px;
+      }
+      .auth-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+      }
+
+      select.auth-input {
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2366758a" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 10px;
+        background: #f1f5f9;
+        color: var(--muted);
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .password-toggle i {
+        font-size: 1rem;
+      }
+      .password-toggle:hover {
+        background: var(--accent);
+        color: white;
+      }
+
+      .auth-button {
+        width: 100%;
+        height: 52px;
+        border: 0;
+        border-radius: 14px;
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent-dark) 100%
+        );
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 24px;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .auth-button i {
+        font-size: 1.1rem;
+        transition: transform 0.2s ease;
+      }
+      .auth-button:hover {
+        background: linear-gradient(
+          135deg,
+          var(--accent-dark) 0%,
+          var(--accent) 100%
+        );
+        box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3);
+        transform: translateY(-2px);
+      }
+      .auth-button:hover i {
+        transform: translateX(3px);
+      }
+
+      /* ── Switch row ── */
+      .switch-row {
+        margin-top: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .switch-row button {
+        border: 0;
+        background: transparent;
+        color: var(--gold);
+        font-family: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .switch-row button i {
+        font-size: 0.8rem;
+      }
+      .switch-row button:hover {
+        color: var(--gold-dark);
+        gap: 8px;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        body {
+          padding: 14px;
+        }
+        .auth-shell {
+          grid-template-columns: 1fr;
+          min-height: auto;
+          border-radius: 24px;
+        }
+        .brand-panel {
+          min-height: 280px;
+          padding: 28px;
+        }
+        .form-panel {
+          padding: 28px 24px;
+        }
+      }
+      @media (max-width: 600px) {
+        .field-grid.two {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ════════════════════════════════════════
+         PAGE: SIGN IN
+    ════════════════════════════════════════ -->
+    <div class="page active" id="page-login">
+      <main class="auth-shell">
+        <aside class="brand-panel">
+          <div class="brand-mark">
+            <span class="brand-logo">
+              {% if site_logo %}
+              <img src="{{ site_logo }}" alt="{{ site_name }} logo" />
+              {% else %}
+              <i class="fas fa-car-side" aria-hidden="true"></i>
+              {% endif %}
+            </span>
+            <span class="brand-name">
+              <strong>{{ site_name }}</strong>
+              <span
+                ><i class="fas fa-star-of-life"></i> Premium car booking
+                platform</span
+              >
+            </span>
+          </div>
+
+          <div class="brand-copy">
+            <h1>Welcome back to {{ site_name }}.</h1>
+            <p>
+              Sign in to continue, or create a customer account. Internal team
+              accounts are created securely from the admin dashboard.
+            </p>
+          </div>
+
+          <a class="home-link" href="{% url 'homepage:index' %}">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to home</span>
+          </a>
+        </aside>
+
+        <section class="form-panel">
+          <article class="auth-card login-card" aria-label="Sign in form">
+            <h2>
+              <i class="fas fa-key"></i>
+              <span>Sign in</span>
+            </h2>
+            <p>Access your account and continue from where you stopped.</p>
+
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <li><i class="fas fa-info-circle"></i> {{ message }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <form method="post" novalidate id="loginForm">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="login" />
+
+              {% if login_form.non_field_errors %}
+              <ul class="form-errors">
+                {% for error in login_form.non_field_errors %}
+                <li><i class="fas fa-exclamation-triangle"></i> {{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+
+              <div class="field-grid">
+                <div>
+                  <label for="{{ login_form.email.id_for_label }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                  </label>
+                  {{ login_form.email }} {% for error in login_form.email.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ login_form.password.id_for_label }}">
+                    <i class="fas fa-lock"></i>
+                    <span>Password</span>
+                  </label>
+                  <div class="input-shell">
+                    {{ login_form.password }}
+                    <button
+                      class="password-toggle"
+                      type="button"
+                      data-password-toggle
+                      aria-label="Show password"
+                    >
+                      <i class="far fa-eye"></i>
+                    </button>
+                  </div>
+                  {% for error in login_form.password.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <button class="auth-button" type="submit">
+                <span>Sign in</span>
+                <i class="fas fa-arrow-right"></i>
+              </button>
+              <div
+                style="margin-top: 12px; text-align: right; font-size: 0.95rem"
+              >
+                <a href="{% url 'password_reset' %}">Forgot password?</a>
+              </div>
+            </form>
+
+            <div class="switch-row">
+              <span>New customer?</span>
+              <button type="button" onclick="showPage('register')">
+                <i class="fas fa-user-plus"></i>
+                <span>Create account</span>
+              </button>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         PAGE: REGISTER
+    ════════════════════════════════════════ -->
+    <div class="page" id="page-register">
+      <main class="auth-shell">
+        <aside class="brand-panel">
+          <div class="brand-mark">
+            <span class="brand-logo">
+              {% if site_logo %}
+              <img src="{{ site_logo }}" alt="{{ site_name }} logo" />
+              {% else %}
+              <i class="fas fa-car-side" aria-hidden="true"></i>
+              {% endif %}
+            </span>
+            <span class="brand-name">
+              <strong>{{ site_name }}</strong>
+              <span
+                ><i class="fas fa-star-of-life"></i> Premium car booking
+                platform</span
+              >
+            </span>
+          </div>
+
+          <div class="brand-copy">
+            <h1>Join {{ site_name }} today.</h1>
+            <p>
+              Create your customer account for browsing, booking, comments, and
+              support.
+            </p>
+          </div>
+
+          <a class="home-link" href="{% url 'homepage:index' %}">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to home</span>
+          </a>
+        </aside>
+
+        <section class="form-panel">
+          <article
+            class="auth-card register-card"
+            aria-label="Customer register form"
+          >
+            <h2>
+              <i class="fas fa-user-astronaut"></i>
+              <span>Customer register</span>
+            </h2>
+            <p>
+              Create a customer account for browsing, booking, comments, and
+              support.
+            </p>
+
+            <form method="post" novalidate id="registerForm">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="register" />
+
+              {% if register_form.non_field_errors %}
+              <ul class="form-errors">
+                {% for error in register_form.non_field_errors %}
+                <li><i class="fas fa-exclamation-triangle"></i> {{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+
+              <div class="field-grid two">
+                <div>
+                  <label for="{{ register_form.full_name.id_for_label }}">
+                    <i class="fas fa-user"></i>
+                    <span>Full name</span>
+                  </label>
+                  {{ register_form.full_name }} {% for error in register_form.full_name.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.email.id_for_label }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                  </label>
+                  {{ register_form.email }} {% for error in register_form.email.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.phone.id_for_label }}">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Phone</span>
+                  </label>
+                  {{ register_form.phone }} {% for error in register_form.phone.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.province.id_for_label }}">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Province</span>
+                  </label>
+                  {{ register_form.province }} {% for error in register_form.province.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.district.id_for_label }}">
+                    <i class="fas fa-city"></i>
+                    <span>District</span>
+                  </label>
+                  {{ register_form.district }} {% for error in register_form.district.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.password1.id_for_label }}">
+                    <i class="fas fa-key"></i>
+                    <span>Password</span>
+                  </label>
+                  <div class="input-shell">
+                    {{ register_form.password1 }}
+                    <button
+                      class="password-toggle"
+                      type="button"
+                      data-password-toggle
+                      aria-label="Show password"
+                    >
+                      <i class="far fa-eye"></i>
+                    </button>
+                  </div>
+                  {% for error in register_form.password1.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <div>
+                  <label for="{{ register_form.password2.id_for_label }}">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Confirm password</span>
+                  </label>
+                  <div class="input-shell">
+                    {{ register_form.password2 }}
+                    <button
+                      class="password-toggle"
+                      type="button"
+                      data-password-toggle
+                      aria-label="Show password"
+                    >
+                      <i class="far fa-eye"></i>
+                    </button>
+                  </div>
+                  {% for error in register_form.password2.errors %}
+                  <div class="field-error">
+                    <i class="fas fa-circle-exclamation"></i> {{ error }}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <button class="auth-button" type="submit">
+                <span>Create customer account</span>
+                <i class="fas fa-user-check"></i>
+              </button>
+            </form>
+
+            <div class="switch-row">
+              <span>Already registered?</span>
+              <button type="button" onclick="showPage('login')">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Sign in</span>
+              </button>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // ── Page switcher ──────────────────────────────────────────────
+      function showPage(name) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        const target = document.getElementById("page-" + name);
+        if (target) {
+          target.classList.add("active");
+          // Re-trigger entrance animation
+          const shell = target.querySelector(".auth-shell");
+          if (shell) {
+            shell.style.animation = "none";
+            shell.offsetHeight; // reflow
+            shell.style.animation = "";
+          }
+          // Update URL without reload
+          const url = new URL(window.location);
+          url.searchParams.set("mode", name);
+          history.replaceState(null, "", url);
+        }
+      }
+
+      // ── Read ?mode= on load ────────────────────────────────────────
+      (() => {
+        const mode = new URLSearchParams(window.location.search).get("mode");
+        if (mode === "register") showPage("register");
+
+        // Django: if active_panel was set server-side, honour it
+        // {% if active_panel == 'register' %}
+        // showPage('register');
+        // {% endif %}
+
+        // ── Password toggles ───────────────────────────────────────
+        document.querySelectorAll("[data-password-toggle]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const input = btn.closest(".input-shell")?.querySelector("input");
+            const icon = btn.querySelector("i");
+            if (!input || !icon) return;
+            const reveal = input.type === "password";
+            input.type = reveal ? "text" : "password";
+            icon.classList.toggle("fa-eye", !reveal);
+            icon.classList.toggle("fa-eye-slash", reveal);
+            btn.setAttribute(
+              "aria-label",
+              reveal ? "Hide password" : "Show password",
+            );
+          });
+        });
+
+        // ── Submit spinner ─────────────────────────────────────────
+        document.querySelectorAll("form").forEach((form) => {
+          form.addEventListener("submit", () => {
+            const btn = form.querySelector('button[type="submit"]');
+            if (!btn) return;
+            const orig = btn.innerHTML;
+            btn.innerHTML =
+              '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+            btn.disabled = true;
+            setTimeout(() => {
+              if (btn.disabled) {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+              }
+            }, 5000);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

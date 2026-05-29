@@ -1,0 +1,1502 @@
+﻿{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}{{ car.year }} {{ car.brand }} {{ car.model }} - {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      --black:       #f7f3ec;
+      --off-black:   #fbf8f2;
+      --card-bg:     #ffffff;
+      --border:      #e7ded1;
+      --border-light:#ddd3c3;
+      --text:        #1f1b16;
+      --text-muted:  #6f6458;
+      --text-dim:    #a19382;
+      --accent:      #e8c84a;
+      --accent-dark: #b89a2a;
+      --accent-glow: rgba(232,200,74,0.18);
+      --green:       #3ddc84;
+      --red:         #ff4d4d;
+      --blue:        #4da8ff;
+      --radius:      12px;
+      --radius-sm:   8px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+
+    body {
+      background: linear-gradient(180deg, #fffdfa 0%, var(--off-black) 100%);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content:'';
+      position:fixed;inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events:none;z-index:999;opacity:0.4;
+    }
+
+    /* â”€â”€ TOPBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .topbar {
+      position:sticky;top:0;z-index:100;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      padding:0 32px;
+      height:64px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .topbar-logo {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:22px;letter-spacing:3px;
+      color:var(--accent);text-decoration:none;
+      display:flex;align-items:center;gap:10px;
+    }
+    .topbar-logo span {
+      display:inline-block;width:8px;height:8px;
+      background:var(--accent);border-radius:50%;
+      animation:pulse 2s ease-in-out infinite;
+    }
+    .brand-logo-img{
+      width:30px;height:30px;border-radius:8px;object-fit:cover;
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+    }
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+    .topbar-right{display:flex;align-items:center;gap:26px}
+    .topbar-right a{color:var(--text-muted);font-size:13px;text-decoration:none;transition:color .2s;font-weight:500}
+    .topbar-right a:hover{color:var(--text)}
+    .btn-login{background:var(--accent);color:var(--black)!important;padding:8px 18px;border-radius:6px;font-weight:600!important;font-size:13px!important;transition:background .2s,transform .1s!important}
+    .btn-login:hover{background:#f0d050!important;transform:translateY(-1px)}
+
+    /* â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .breadcrumb-bar{
+      background:#fffdf8;
+      border-bottom:1px solid var(--border);
+      padding:12px 32px;
+      display:flex;align-items:center;gap:8px;
+      font-size:12px;color:var(--text-dim);
+      font-family:'DM Mono',monospace;
+    }
+    .breadcrumb-bar a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+    .breadcrumb-bar a:hover{color:var(--accent)}
+    .breadcrumb-bar .sep{color:var(--border-light)}
+
+    /* â”€â”€ PAGE WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .page{max-width:1280px;margin:0 auto;padding:32px 32px 80px}
+
+    /* â”€â”€ CAR HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .car-header{
+      display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;
+      margin-bottom:28px;
+    }
+    .car-eyebrow{
+      font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+      text-transform:uppercase;color:var(--accent);margin-bottom:8px;
+    }
+    .car-title{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2.4rem,5vw,4rem);letter-spacing:2px;
+      line-height:1.05;color:var(--text);margin-bottom:14px;
+    }
+    .car-title em{color:var(--text-muted);font-style:normal}
+    .car-meta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+    .status-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:4px 12px;border-radius:99px;
+      font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+      letter-spacing:.5px;text-transform:uppercase;
+    }
+    .s-available{background:rgba(61,220,132,.15);border:1px solid rgba(61,220,132,.3);color:var(--green)}
+    .s-scheduled{background:rgba(77,168,255,.15);border:1px solid rgba(77,168,255,.3);color:var(--blue)}
+    .s-booked{background:rgba(232,200,74,.15);border:1px solid rgba(232,200,74,.3);color:var(--accent)}
+    .s-sold{background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.3);color:var(--red)}
+    .s-pending{background:rgba(120,120,130,.15);border:1px solid rgba(120,120,130,.3);color:var(--text-muted)}
+
+    .views-badge{
+      display:inline-flex;align-items:center;gap:5px;
+      font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);
+      background:#fff;padding:4px 10px;border-radius:99px;
+      border:1px solid var(--border);
+    }
+    .rating-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted)}
+    .stars-acc{color:var(--accent);font-size:12px}
+    .feat-tag{
+      display:inline-flex;align-items:center;gap:4px;
+      font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);
+      text-transform:uppercase;letter-spacing:1px;
+    }
+
+    .price-block{text-align:right}
+    .price-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+    .price-main{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:2px;color:var(--text);line-height:1}
+    .price-main .cur{font-size:.45em;font-family:'DM Mono',monospace;color:var(--text-dim);letter-spacing:1px}
+    .price-neg{margin-top:6px;font-size:11px;color:#b896ff;display:flex;align-items:center;gap:4px;justify-content:flex-end;font-family:'DM Mono',monospace}
+
+    /* â”€â”€ GALLERY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .gallery-grid{
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      grid-template-rows:400px 190px;
+      gap:6px;
+      border-radius:var(--radius);
+      overflow:hidden;
+      margin-bottom:36px;
+    }
+    .g-main{grid-row:1/3;position:relative;cursor:pointer;overflow:hidden;background:#f4efe6}
+    .g-thumb{position:relative;cursor:pointer;overflow:hidden;background:#f4efe6}
+    .g-main img,.g-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+    .g-main:hover img,.g-thumb:hover img{transform:scale(1.04)}
+    .g-overlay{
+      position:absolute;inset:0;
+      background:rgba(31,27,22,.34);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;
+      gap:10px;cursor:pointer;transition:background .25s;
+    }
+    .g-overlay:hover{background:rgba(31,27,22,.48)}
+    .cover-badge{
+      position:absolute;top:14px;left:14px;
+      background:var(--accent);color:var(--black);
+      font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      padding:4px 12px;border-radius:99px;
+    }
+    .feat-ribbon{
+      position:absolute;top:14px;right:14px;
+      background:#fff;color:var(--accent);
+      font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+      padding:5px 12px;border-radius:99px;
+      display:flex;align-items:center;gap:5px;
+      border:1px solid rgba(232,200,74,.3);
+    }
+    .no-photos{
+      height:400px;background:#fffdf8;border-radius:var(--radius);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text-dim);gap:12px;font-family:'DM Mono',monospace;font-size:12px;
+      letter-spacing:1px;margin-bottom:36px;
+      border:1px solid var(--border);
+    }
+
+    /* â”€â”€ LIGHTBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .lightbox{
+      position:fixed;inset:0;background:rgba(255,251,244,.96);z-index:2000;
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:opacity .3s;
+    }
+    .lightbox.open{opacity:1;pointer-events:all}
+    .lb-inner{position:relative;max-width:90vw;max-height:88vh}
+    .lb-inner img{max-width:100%;max-height:88vh;object-fit:contain;border-radius:var(--radius-sm)}
+    .lb-close{
+      position:absolute;top:-48px;right:0;
+      background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;
+      transition:color .2s;
+    }
+    .lb-close:hover{color:#fff}
+    .lb-nav{
+      position:absolute;top:50%;transform:translateY(-50%);
+      background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+      color:#fff;border-radius:99px;padding:10px 14px;cursor:pointer;
+      backdrop-filter:blur(8px);transition:background .2s;
+    }
+    .lb-nav:hover{background:rgba(255,255,255,.22)}
+    .lb-prev{left:-60px}.lb-next{right:-60px}
+    .lb-counter{
+      position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);
+      color:rgba(255,255,255,.4);font-size:11px;font-family:'DM Mono',monospace;
+    }
+
+    /* â”€â”€ MAIN GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .content-grid{display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start}
+
+    /* â”€â”€ SPEC CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .specs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+    .spec-card{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+      padding:16px;transition:border-color .25s,box-shadow .25s;
+    }
+    .spec-card:hover{border-color:rgba(232,200,74,.3);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+    .spec-icon{
+      width:30px;height:30px;background:var(--accent-glow);
+      border-radius:6px;display:flex;align-items:center;justify-content:center;
+      color:var(--accent);margin-bottom:10px;
+    }
+    .spec-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px}
+    .spec-value{font-size:.95rem;font-weight:600;color:var(--text)}
+
+    /* â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .tab-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:28px}
+    .tab-btn{
+      padding:10px 18px;font-size:12px;font-weight:500;letter-spacing:.5px;
+      color:var(--text-dim);background:none;border:none;
+      border-bottom:2px solid transparent;margin-bottom:-1px;
+      cursor:pointer;transition:color .2s,border-color .2s;
+      display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;
+    }
+    .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+    .tab-btn:hover{color:var(--text)}
+    .tab-badge{
+      background:var(--accent-glow);border:1px solid rgba(232,200,74,.3);
+      color:var(--accent);border-radius:99px;
+      font-family:'DM Mono',monospace;font-size:9px;padding:1px 6px;
+    }
+    .tab-panel{display:none}.tab-panel.active{display:block}
+
+    /* â”€â”€ SECTION HEADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .sec-head{
+      display:flex;align-items:center;gap:12px;
+      margin-bottom:20px;padding-bottom:12px;
+      border-bottom:1px solid var(--border);
+    }
+    .sec-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--text)}
+    .sec-head-icon{
+      width:32px;height:32px;background:var(--accent-glow);
+      border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--accent);
+    }
+
+    /* â”€â”€ DESCRIPTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .desc-text{font-size:.95rem;line-height:1.8;color:var(--text-muted);font-weight:300;white-space:pre-line}
+    .desc-text.clamped{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+    .read-more{
+      display:inline-flex;align-items:center;gap:5px;margin-top:12px;
+      font-size:12px;font-weight:600;color:var(--accent);
+      cursor:pointer;background:none;border:none;padding:0;
+      font-family:'DM Sans',sans-serif;letter-spacing:.5px;transition:opacity .2s;
+    }
+    .read-more:hover{opacity:.7}
+
+    /* â”€â”€ SPECS TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .specs-table table{width:100%;border-collapse:collapse}
+    .specs-table tr{border-bottom:1px solid var(--border)}
+    .specs-table tr:last-child{border-bottom:none}
+    .specs-table td{padding:11px 4px;font-size:.88rem}
+    .specs-table td:first-child{color:var(--text-dim);width:42%;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.5px}
+    .specs-table td:last-child{font-weight:500;color:var(--text)}
+    .mono{font-family:'DM Mono',monospace}
+
+    /* â”€â”€ FEATURES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .feature-cats{display:flex;flex-direction:column;gap:20px}
+    .feature-cat h3{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+    .feat-pills{display:flex;flex-wrap:wrap;gap:8px}
+    .feat-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:99px;font-size:.78rem;font-weight:400;border:1px solid;
+    }
+    .feat-pill.has{background:rgba(61,220,132,.08);border-color:rgba(61,220,132,.25);color:var(--green)}
+    .feat-pill.no{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.2);color:var(--red);text-decoration:line-through;opacity:.6}
+
+    /* â”€â”€ LOCATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .loc-card{
+      background:#fffdf8;border:1px solid var(--border);border-radius:var(--radius-sm);
+      padding:18px 22px;display:flex;gap:16px;align-items:center;
+    }
+    .loc-icon{
+      width:44px;height:44px;border-radius:50%;
+      background:var(--accent-glow);border:1px solid rgba(232,200,74,.3);
+      display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;
+    }
+    .loc-details h3{font-size:.95rem;font-weight:600;margin-bottom:2px}
+    .loc-details p{font-size:.82rem;color:var(--text-dim)}
+
+    /* â”€â”€ VIDEO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+    .video-card{border-radius:var(--radius-sm);overflow:hidden;background:#fffdf8;aspect-ratio:16/9;border:1px solid var(--border)}
+    .video-card video{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* â”€â”€ REVIEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .review-summary{
+      display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;
+      background:#fffdf8;border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:22px;margin-bottom:22px;
+    }
+    .big-rating{text-align:center}
+    .big-rating .num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:2px;color:var(--accent);line-height:1}
+    .big-rating .out-of{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)}
+    .rating-bars{display:flex;flex-direction:column;gap:6px}
+    .rbar-row{display:flex;align-items:center;gap:10px;font-size:.78rem}
+    .rbar-row .lbl{width:14px;text-align:right;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:10px}
+    .bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+    .bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .8s ease}
+    .rbar-cnt{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);width:24px}
+
+    .review-card{
+      background:var(--card-bg);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:18px;margin-bottom:12px;
+      transition:border-color .25s;
+    }
+    .review-card:hover{border-color:rgba(232,200,74,.2)}
+    .rev-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .rev-name{font-weight:600;font-size:.88rem}
+    .rev-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)}
+    .rev-title{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:5px}
+    .rev-body{font-size:.85rem;color:var(--text-muted);line-height:1.7}
+
+    /* â”€â”€ COMMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .comment-card{padding:14px 0;border-bottom:1px solid var(--border)}
+    .comment-card:last-child{border-bottom:none}
+    .comment-head{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+    .comment-avatar{
+      width:34px;height:34px;border-radius:50%;
+      background:var(--accent-glow);border:1px solid rgba(232,200,74,.3);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--accent);
+      overflow:hidden;flex-shrink:0;
+    }
+    .comment-avatar img{width:100%;height:100%;object-fit:cover}
+    .comment-meta{flex:1}
+    .comment-author{font-weight:500;font-size:.85rem}
+    .comment-time{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--text-dim)}
+    .comment-text{font-size:.88rem;color:var(--text-muted);line-height:1.65}
+    .comment-reply-btn{
+      font-size:.75rem;color:var(--accent);cursor:pointer;margin-top:6px;
+      display:inline-flex;align-items:center;gap:4px;background:none;border:none;
+      padding:0;font-family:'DM Sans',sans-serif;transition:opacity .2s;
+    }
+    .comment-reply-btn:hover{opacity:.7}
+    .reply-card{margin-left:46px;padding:12px 0 12px 14px;border-left:2px solid var(--border);border-bottom:none}
+
+    /* â”€â”€ FORM ELEMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .form-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+    .form-input,.form-textarea,.form-select{
+      width:100%;background:#fff;border:1px solid var(--border-light);
+      color:var(--text);padding:10px 14px;border-radius:var(--radius-sm);
+      font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--text-dim)}
+    .form-input:focus,.form-textarea:focus,.form-select:focus{
+      border-color:rgba(232,200,74,.5);box-shadow:0 0 0 3px var(--accent-glow);
+    }
+    .form-textarea{resize:vertical;min-height:90px}
+
+    /* Star input */
+    .star-input{display:flex;gap:6px;flex-direction:row-reverse;justify-content:flex-end}
+    .star-input input{display:none}
+    .star-input label{cursor:pointer;color:var(--border-light);font-size:1.5rem;transition:color .2s,transform .2s;line-height:1}
+    .star-input label:hover,.star-input label:hover~label,.star-input input:checked~label{color:var(--accent)}
+    .star-input label:hover{transform:scale(1.15)}
+
+    /* â”€â”€ SIDEBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .sidebar{position:sticky;top:80px;display:flex;flex-direction:column;gap:14px}
+    .sb-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .sb-card.action-card{border-color:rgba(232,200,74,.3);background:linear-gradient(135deg,var(--card-bg) 60%,rgba(232,200,74,.04))}
+
+    .action-header{background:#fffdf8;border-bottom:1px solid var(--border);padding:18px 22px}
+    .action-price{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:var(--accent);line-height:1}
+    .action-price .cur{font-family:'DM Mono',monospace;font-size:.4em;color:var(--text-dim)}
+    .action-price-type{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:2px}
+
+    .action-body{padding:20px}
+    .fee-note{
+      background:var(--accent-glow);border:1px solid rgba(232,200,74,.2);
+      border-radius:var(--radius-sm);padding:10px 12px;font-size:.78rem;color:var(--text-muted);
+      display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;
+    }
+    .fee-note i{color:var(--accent);flex-shrink:0;margin-top:1px}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 20px;border-radius:var(--radius-sm);
+      font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;
+      letter-spacing:.5px;cursor:pointer;border:none;text-decoration:none;
+      transition:all .2s;width:100%;
+    }
+    .btn-gold{background:var(--accent);color:var(--black)}
+    .btn-gold:hover{background:#f0d050;transform:translateY(-1px);box-shadow:0 6px 20px rgba(232,200,74,.3)}
+    .btn-outline{background:transparent;color:var(--blue);border:1px solid rgba(77,168,255,.3)}
+    .btn-outline:hover{background:rgba(77,168,255,.1);border-color:rgba(77,168,255,.5)}
+    .btn-whatsapp{background:#25d366;color:#fff}
+    .btn-whatsapp:hover{background:#1db954}
+    .btn-wish{
+      background:transparent;border:1px solid var(--border-light);
+      color:var(--text-dim);
+    }
+    .btn-wish.active{background:rgba(255,77,77,.1);border-color:rgba(255,77,77,.4);color:var(--red)}
+    .btn-wish:hover{border-color:var(--red);color:var(--red)}
+    .btn-disabled{background:#f5f1e8;color:var(--text-dim);border:1px solid var(--border);cursor:not-allowed}
+    .btn+.btn{margin-top:9px}
+
+    /* Info rows */
+    .sb-body{padding:18px}
+    .info-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border)}
+    .info-row:last-child{border-bottom:none}
+    .info-icon{color:var(--accent);flex-shrink:0;margin-top:2px}
+    .info-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
+    .info-val{font-size:.88rem;font-weight:500;color:var(--text)}
+
+    /* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .toast-container{position:fixed;bottom:24px;right:24px;z-index:3000;display:flex;flex-direction:column;gap:10px}
+    .toast{
+      background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius);
+      padding:14px 18px;display:flex;align-items:center;gap:12px;
+      min-width:300px;max-width:380px;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);
+      animation:toastIn .3s ease;
+    }
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-left:3px solid var(--green)}
+    .toast.error{border-left:3px solid var(--red)}
+    .toast.info{border-left:3px solid var(--blue)}
+    .toast-text strong{display:block;font-size:13px;color:var(--text)}
+    .toast-text span{font-size:12px;color:var(--text-muted)}
+
+    /* â”€â”€ SIGN-IN PROMPT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .sign-prompt{
+      text-align:center;padding:20px;background:#fffdf8;
+      border-radius:var(--radius-sm);margin-top:20px;
+      border:1px solid var(--border);
+    }
+    .sign-prompt p{color:var(--text-dim);margin-bottom:12px;font-size:.85rem;font-family:'DM Mono',monospace}
+
+    /* â”€â”€ DIVIDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .divider{height:1px;background:var(--border);margin:28px 0}
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       POPUP MODALS
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    .modal-overlay{
+      position:fixed;inset:0;z-index:1500;
+      background:rgba(31,27,22,0.18);backdrop-filter:blur(10px);
+      display:none;align-items:center;justify-content:center;padding:24px;
+    }
+    .modal-overlay.open{display:flex}
+    .modal{
+      background:var(--card-bg);border:1px solid var(--border-light);
+      border-radius:16px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+      animation:modalIn .25s ease;
+    }
+    @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-header{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    .modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text);line-height:1}
+    .modal-subtitle{font-size:12px;color:var(--text-muted);margin-top:4px;font-family:'DM Mono',monospace}
+    .modal-pay-info{
+      font-size:12px;color:var(--text);margin-top:8px;
+      background:rgba(61,220,132,.08);padding:10px 12px;border-radius:6px;
+      border:1px solid rgba(61,220,132,.2);font-family:'DM Mono',monospace;
+      line-height:1.8;
+    }
+    .modal-pay-info strong{color:var(--accent)}
+    .modal-close{
+      background:#fff;border:1px solid var(--border);color:var(--text-muted);
+      width:32px;height:32px;border-radius:50%;cursor:pointer;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;
+    }
+    .modal-close:hover{color:var(--text);border-color:var(--text-dim)}
+    .modal-body{padding:24px}
+    .modal-car-info{
+      background:#fffdf8;border:1px solid var(--border);border-radius:var(--radius-sm);
+      padding:14px;margin-bottom:20px;display:flex;gap:14px;align-items:center;
+    }
+    .modal-car-thumb{width:80px;height:60px;border-radius:8px;background:var(--card-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .modal-car-thumb img{width:100%;height:100%;object-fit:cover}
+    .modal-car-details h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+    .modal-car-details p{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace}
+    .modal-car-price{margin-left:auto;text-align:right;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);white-space:nowrap;letter-spacing:1px}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .payment-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+    .payment-option{border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all .2s;background:var(--off-black)}
+    .payment-option:hover{border-color:rgba(232,200,74,.3)}
+    .payment-option.selected{border-color:var(--accent);background:var(--accent-glow)}
+    .payment-option input{display:none}
+    .pay-opt-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+    .pay-opt-desc{font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace}
+    .upload-area{
+      border:2px dashed var(--border-light);border-radius:var(--radius-sm);
+      padding:20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;
+      position:relative;background:#fff;
+    }
+    .upload-area:hover{border-color:rgba(232,200,74,.4);background:rgba(232,200,74,.03)}
+    .upload-area.has-file{border-color:rgba(61,220,132,.4);background:rgba(61,220,132,.04)}
+    .upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .upload-icon{font-size:24px;margin-bottom:8px}
+    .upload-label{font-size:13px;color:var(--text-muted);margin-bottom:4px}
+    .upload-label strong{color:var(--accent)}
+    .upload-hint{font-size:10px;color:var(--text-dim);font-family:'DM Mono',monospace}
+    .upload-preview{margin-top:12px;display:none}
+    .upload-preview img{max-height:120px;border-radius:6px;border:1px solid var(--border-light);object-fit:cover}
+    .upload-filename{font-size:11px;color:var(--green);font-family:'DM Mono',monospace;margin-top:6px}
+    .modal-footer{padding:16px 24px 24px;display:flex;gap:10px}
+    .btn-primary{
+      flex:1;background:var(--accent);color:var(--black);border:none;
+      padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;
+      font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .btn-primary:hover{background:#f0d050;transform:translateY(-1px)}
+    .btn-primary.sched{background:var(--blue);color:#000}
+    .btn-primary.sched:hover{background:#7abfff}
+    .btn-cancel{
+      background:var(--off-black);color:var(--text-muted);
+      border:1px solid var(--border-light);padding:13px 20px;
+      border-radius:var(--radius-sm);font-size:13px;font-family:'DM Sans',sans-serif;
+      cursor:pointer;transition:all .2s;
+    }
+    .btn-cancel:hover{color:var(--text)}
+    .fee-sched-note{
+      font-family:'DM Mono',monospace;font-size:9px;color:var(--text-dim);
+      margin-top:6px;display:flex;align-items:center;gap:4px;
+    }
+    .form-err{
+      color:var(--red);font-size:11px;margin-bottom:12px;
+      font-family:'DM Mono',monospace;padding:10px;
+      background:rgba(255,77,77,.08);border-radius:6px;
+      border:1px solid rgba(255,77,77,.2);display:none;
+    }
+
+    /* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .footer{background:#f7efe0;border-top:3px solid var(--accent)}
+    .footer-grid{
+      width:min(1180px,calc(100% - 32px));margin:0 auto;
+      padding:60px 0 36px;
+      display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:32px;
+    }
+    .footer-brand{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--accent);margin-bottom:12px}
+    .footer p,.footer li{color:var(--text-muted);font-size:13px;line-height:1.9}
+    .footer h4{color:var(--text);font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;font-family:'DM Mono',monospace}
+    .footer ul{list-style:none;padding:0;margin:0}
+    .footer ul a{color:var(--text-muted);font-size:13px;transition:color .2s;text-decoration:none}
+    .footer ul a:hover{color:var(--accent)}
+    .socials{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .socials a{
+      display:inline-grid;place-items:center;min-width:38px;height:38px;padding:0 10px;
+      border:1px solid rgba(232,200,74,.18);border-radius:6px;
+      background:#fff;color:var(--text-muted);
+      font-size:12px;font-weight:700;font-family:'DM Mono',monospace;text-decoration:none;transition:all .2s;
+    }
+    .socials a:hover{border-color:var(--accent);color:var(--accent)}
+    .copyright{
+      width:min(1180px,calc(100% - 32px));margin:0 auto;
+      padding:18px 0 32px;border-top:1px solid rgba(255,255,255,.08);
+      color:var(--text-dim);font-size:11px;font-family:'DM Mono',monospace;
+    }
+
+    /* â”€â”€ SCROLL REVEAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    @media(max-width:1024px){
+      .content-grid{grid-template-columns:1fr}
+      .sidebar{position:static}
+      .specs-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:768px){
+      .page{padding:20px 16px 60px}
+      .gallery-grid{grid-template-columns:1fr;grid-template-rows:260px 120px 120px}
+      .g-main{grid-row:1}
+      .car-header{grid-template-columns:1fr}
+      .price-block{text-align:left}
+      .footer-grid{grid-template-columns:1fr 1fr}
+      .breadcrumb-bar{padding:10px 16px}
+      .modal{max-width:calc(100vw - 24px)}
+      .modal-header,.modal-body,.modal-footer{padding-left:20px;padding-right:20px}
+      .modal-footer{flex-direction:column}
+      .modal-footer .btn-primary,.modal-footer .btn-cancel{width:100%}
+      .payment-options{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){
+      .specs-grid{grid-template-columns:repeat(2,1fr)}
+      .form-row{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr}
+      .gallery-grid{grid-template-rows:220px 92px 92px}
+      .modal-pay-info,.modal-pay-banner{font-size:12px;line-height:1.7}
+    }
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#f5efe5}
+    ::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+    .topbar-logo .logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      animation: none;
+      background: linear-gradient(135deg, #f4efe6, var(--orange, #ff7a18), var(--teal, #15a3a3));
+    }
+    .topbar-logo .logo-dot {
+      width: 8px;
+      height: 8px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <!-- â•â• TOPBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- â•â• BREADCRUMB â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <div class="breadcrumb-bar">
+    <a href="/">Home</a><span class="sep">/</span>
+    <a href="/cars/">Cars</a><span class="sep">/</span>
+    {% if car.brand %}<a href="/cars/?brand={{ car.brand.name }}">{{ car.brand.name }}</a><span class="sep">/</span>{% endif %}
+    <span>{{ car.model }} {{ car.year }}</span>
+  </div>
+
+  <!-- â•â• PAGE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <div class="page">
+
+    <!-- HEADER -->
+    <header class="car-header reveal">
+      <div>
+        <div class="car-eyebrow">
+          {% if car.brand %}{{ car.brand.name }}{% endif %} Â· {{ car.year }} Â· {{ car.get_condition_display }}
+        </div>
+        <h1 class="car-title">
+          {{ car.title|default:"" }}{% if car.model %} <em>{{ car.model }}</em>{% endif %}
+        </h1>
+        <div class="car-meta-row">
+          {% if car.status == 'available' %}<span class="status-badge s-available"><i data-lucide="check-circle" style="width:11px;height:11px"></i> Available</span>
+          {% elif car.status == 'scheduled' %}<span class="status-badge s-scheduled"><i data-lucide="calendar" style="width:11px;height:11px"></i> Visit Scheduled</span>
+          {% elif car.status == 'booked' %}<span class="status-badge s-booked"><i data-lucide="lock" style="width:11px;height:11px"></i> Booked</span>
+          {% elif car.status == 'sold' %}<span class="status-badge s-sold"><i data-lucide="x-circle" style="width:11px;height:11px"></i> Sold</span>
+          {% else %}<span class="status-badge s-pending"><i data-lucide="clock" style="width:11px;height:11px"></i> {{ car.get_status_display }}</span>{% endif %}
+          <span class="views-badge"><i data-lucide="eye" style="width:11px;height:11px"></i> {{ car.views_count }} views</span>
+          {% if car.total_reviews > 0 %}
+          <span class="rating-pill">
+            <span class="stars-acc">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</span>
+            {{ car.average_rating }} ({{ car.total_reviews }})
+          </span>
+          {% endif %}
+          {% if car.is_featured %}<span class="feat-tag"><i data-lucide="award" style="width:11px;height:11px"></i> Featured</span>{% endif %}
+        </div>
+      </div>
+      <div class="price-block">
+        <div class="price-label">Listed Price</div>
+        <div class="price-main"><span class="cur">RWF</span> {{ car.price|floatformat:0 }}</div>
+        {% if car.is_negotiable %}<div class="price-neg"><i data-lucide="message-circle" style="width:11px;height:11px"></i> Negotiable</div>{% endif %}
+      </div>
+    </header>
+
+    <!-- GALLERY -->
+    <section class="reveal">
+      {% with photos=car.photos.all %}{% if photos %}
+      <div class="gallery-grid" id="galleryGrid">
+        {% for photo in photos %}
+          {% if forloop.first %}
+          <div class="g-main" onclick="openLb({{ forloop.counter0 }})">
+            <img src="{{ photo.photo.url }}" alt="{{ photo.caption|default:car.title }}" loading="eager"/>
+            {% if photo.is_cover %}<span class="cover-badge">Cover</span>{% endif %}
+            {% if car.is_featured %}<span class="feat-ribbon"><i data-lucide="award" style="width:10px;height:10px"></i> Featured</span>{% endif %}
+          </div>
+          {% elif forloop.counter == 2 %}
+          <div class="g-thumb" onclick="openLb({{ forloop.counter0 }})">
+            <img src="{{ photo.photo.url }}" alt="{{ photo.caption|default:car.title }}" loading="lazy"/>
+          </div>
+          {% elif forloop.counter == 3 %}
+          <div class="g-thumb" onclick="openLb({{ forloop.counter0 }})">
+            <img src="{{ photo.photo.url }}" alt="{{ photo.caption|default:car.title }}" loading="lazy"/>
+            {% if photos|length > 3 %}
+            <div class="g-overlay"><i data-lucide="images" style="width:24px;height:24px"></i> +{{ photos|length|add:"-3" }} more</div>
+            {% endif %}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-photos"><i data-lucide="image-off" style="width:28px;height:28px"></i> NO PHOTOS AVAILABLE</div>
+      {% endif %}{% endwith %}
+    </section>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLbOverlay(event)">
+      <div class="lb-inner">
+        <button class="lb-close" onclick="closeLb()"><i data-lucide="x" style="width:26px;height:26px"></i></button>
+        <img id="lbImg" src="" alt="Car photo"/>
+        <button class="lb-nav lb-prev" onclick="lbNav(-1)"><i data-lucide="chevron-left"></i></button>
+        <button class="lb-nav lb-next" onclick="lbNav(1)"><i data-lucide="chevron-right"></i></button>
+        <div class="lb-counter" id="lbCounter">1 / 1</div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-grid">
+
+      <!-- â•â•â• LEFT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <main>
+
+        <!-- QUICK SPEC CARDS -->
+        <div class="specs-grid reveal">
+          <div class="spec-card">
+            <div class="spec-icon"><i data-lucide="gauge" style="width:15px;height:15px"></i></div>
+            <div class="spec-label">Mileage</div>
+            <div class="spec-value">{{ car.mileage_km|floatformat:0 }} km</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-icon"><i data-lucide="zap" style="width:15px;height:15px"></i></div>
+            <div class="spec-label">Fuel Type</div>
+            <div class="spec-value">{{ car.get_fuel_type_display }}</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-icon"><i data-lucide="settings-2" style="width:15px;height:15px"></i></div>
+            <div class="spec-label">Transmission</div>
+            <div class="spec-value">{{ car.get_transmission_display }}</div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-icon"><i data-lucide="users" style="width:15px;height:15px"></i></div>
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">{{ car.seats }} Seats</div>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tab-nav reveal">
+          <button class="tab-btn active" onclick="switchTab('overview',this)"><i data-lucide="info" style="width:13px;height:13px"></i> Overview</button>
+          <button class="tab-btn" onclick="switchTab('specs',this)"><i data-lucide="list" style="width:13px;height:13px"></i> Full Specs</button>
+          <button class="tab-btn" onclick="switchTab('features',this)"><i data-lucide="sparkles" style="width:13px;height:13px"></i> Features</button>
+          <button class="tab-btn" onclick="switchTab('media',this)"><i data-lucide="video" style="width:13px;height:13px"></i> Videos</button>
+          <button class="tab-btn" onclick="switchTab('reviews',this)">
+            <i data-lucide="star" style="width:13px;height:13px"></i> Reviews
+            {% if car.total_reviews > 0 %}<span class="tab-badge">{{ car.total_reviews }}</span>{% endif %}
+          </button>
+          <button class="tab-btn" onclick="switchTab('comments',this)"><i data-lucide="message-square" style="width:13px;height:13px"></i> Comments</button>
+        </div>
+
+        <!-- TAB: OVERVIEW -->
+        <div id="tab-overview" class="tab-panel active">
+          <div class="reveal" style="margin-bottom:28px">
+            <div class="sec-head">
+              <div class="sec-head-icon"><i data-lucide="file-text" style="width:14px;height:14px"></i></div>
+              <h2>About This Car</h2>
+            </div>
+            <p class="desc-text clamped" id="descText">{{ car.description }}</p>
+            <button class="read-more" id="readMoreBtn" onclick="toggleReadMore()">
+              Read more <i data-lucide="chevron-down" style="width:12px;height:12px"></i>
+            </button>
+          </div>
+          <div class="reveal">
+            <div class="sec-head">
+              <div class="sec-head-icon"><i data-lucide="map-pin" style="width:14px;height:14px"></i></div>
+              <h2>Location</h2>
+            </div>
+            <div class="loc-card">
+              <div class="loc-icon"><i data-lucide="map-pin" style="width:18px;height:18px"></i></div>
+              <div class="loc-details">
+                <h3>{{ car.district }}{% if car.province %}, {{ car.province }}{% endif %}</h3>
+                {% if car.exact_location %}<p>{{ car.exact_location }}</p>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: FULL SPECS -->
+        <div id="tab-specs" class="tab-panel">
+          <div class="sec-head reveal">
+            <div class="sec-head-icon"><i data-lucide="clipboard-list" style="width:14px;height:14px"></i></div>
+            <h2>Technical Specifications</h2>
+          </div>
+          <div class="specs-table reveal">
+            <table>
+              <tbody>
+                <tr><td>Brand</td><td>{% if car.brand %}{{ car.brand.name }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Model</td><td>{{ car.model|default:"â€”" }}</td></tr>
+                <tr><td>Year</td><td>{{ car.year }}</td></tr>
+                <tr><td>Condition</td><td>{{ car.get_condition_display }}</td></tr>
+                <tr><td>Colour</td><td>{{ car.color|default:"â€”" }}</td></tr>
+                <tr><td>Mileage</td><td>{{ car.mileage_km|floatformat:0 }} km</td></tr>
+                <tr><td>Engine Size</td><td>{% if car.engine_size_cc %}{{ car.engine_size_cc }} cc{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Transmission</td><td>{{ car.get_transmission_display }}</td></tr>
+                <tr><td>Fuel Type</td><td>{{ car.get_fuel_type_display }}</td></tr>
+                <tr><td>Drive Type</td><td>{% if car.drive_type %}{{ car.get_drive_type_display }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Seats</td><td>{{ car.seats }}</td></tr>
+                <tr><td>Doors</td><td>{{ car.doors }}</td></tr>
+                <tr><td>Registration</td><td class="mono">{% if car.registration_plate %}{{ car.registration_plate }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Stock Number</td><td class="mono">{% if car.stock_number %}{{ car.stock_number }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Province</td><td>{{ car.province }}</td></tr>
+                <tr><td>District</td><td>{{ car.district }}</td></tr>
+                <tr><td>Price</td><td><strong>RWF {{ car.price|floatformat:0 }}{% if car.is_negotiable %} (Negotiable){% endif %}</strong></td></tr>
+                <tr><td>Scheduling Fee</td><td>RWF {{ car.scheduling_fee|floatformat:0 }}</td></tr>
+                <tr><td>Listed By</td><td>{% if car.uploaded_by %}{{ car.uploaded_by.full_name }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Approved By</td><td>{% if car.approved_by %}{{ car.approved_by.full_name }}{% else %}Pending{% endif %}</td></tr>
+                <tr><td>Listed On</td><td class="mono">{{ car.created_at|date:"d M Y" }}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: FEATURES -->
+        <div id="tab-features" class="tab-panel">
+          <div class="sec-head reveal">
+            <div class="sec-head-icon"><i data-lucide="sparkles" style="width:14px;height:14px"></i></div>
+            <h2>Features &amp; Amenities</h2>
+          </div>
+          {% with features=car.features.all %}{% if features %}
+          {% regroup features by get_category_display as feature_groups %}
+          <div class="feature-cats reveal">
+            {% for group in feature_groups %}
+            <div>
+              <h3>{{ group.grouper }}</h3>
+              <div class="feat-pills">
+                {% for feat in group.list %}
+                <span class="feat-pill {% if feat.has_it %}has{% else %}no{% endif %}">
+                  {% if feat.has_it %}<i data-lucide="check" style="width:11px;height:11px"></i>{% else %}<i data-lucide="x" style="width:11px;height:11px"></i>{% endif %}
+                  {{ feat.name }}
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}{% if features_summary_list %}
+          <div class="feat-pills reveal">
+            {% for feat in features_summary_list %}
+            <span class="feat-pill has"><i data-lucide="check" style="width:11px;height:11px"></i> {{ feat }}</span>
+            {% endfor %}
+          </div>
+          {% else %}<p style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px">No features listed yet.</p>{% endif %}{% endif %}{% endwith %}
+        </div>
+
+        <!-- TAB: MEDIA -->
+        <div id="tab-media" class="tab-panel">
+          <div class="sec-head reveal">
+            <div class="sec-head-icon"><i data-lucide="video" style="width:14px;height:14px"></i></div>
+            <h2>Video Walkarounds</h2>
+          </div>
+          {% with videos=car.videos.all %}{% if videos %}
+          <div class="video-grid reveal">
+            {% for video in videos %}
+            <div class="video-card"><video controls preload="metadata"><source src="{{ video.video.url }}"/> Your browser does not support video.</video></div>
+            {% endfor %}
+          </div>
+          {% else %}<p style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;padding:20px 0">No videos uploaded yet.</p>{% endif %}{% endwith %}
+        </div>
+
+        <!-- TAB: REVIEWS -->
+        <div id="tab-reviews" class="tab-panel">
+          <div class="sec-head reveal">
+            <div class="sec-head-icon"><i data-lucide="star" style="width:14px;height:14px"></i></div>
+            <h2>Customer Reviews</h2>
+          </div>
+          {% if car.total_reviews > 0 %}
+          <div class="review-summary reveal">
+            <div class="big-rating">
+              <div class="num">{{ car.average_rating }}</div>
+              <div style="color:var(--accent);font-size:16px">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</div>
+              <div class="out-of">{{ car.total_reviews }} review{{ car.total_reviews|pluralize }}</div>
+            </div>
+            <div class="rating-bars">
+              {% for row in rating_breakdown_rows %}
+              <div class="rbar-row">
+                <span class="lbl">{{ row.star }}</span>
+                <div class="bar-track"><div class="bar-fill" data-width="{% widthratio row.count car.total_reviews 100 %}%" style="width:0%"></div></div>
+                <span class="rbar-cnt">{{ row.count }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          {% for review in reviews %}
+          <div class="review-card reveal">
+            <div class="rev-header">
+              <div>
+                <div class="rev-name">{{ review.customer.full_name }}</div>
+                <div style="color:var(--accent);font-size:12px;margin-top:2px">{% for i in "12345" %}{% if forloop.counter <= review.rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</div>
+              </div>
+              <span class="rev-date">{{ review.created_at|date:"d M Y" }}</span>
+            </div>
+            {% if review.title %}<div class="rev-title">{{ review.title }}</div>{% endif %}
+            {% if review.body %}<div class="rev-body">{{ review.body }}</div>{% endif %}
+          </div>
+          {% empty %}<p style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;padding:20px 0">No reviews yet. Be the first!</p>{% endfor %}
+
+          {% if user.is_authenticated and user.is_customer and not user_reviewed %}
+          <div style="margin-top:28px">
+            <div class="sec-head"><div class="sec-head-icon"><i data-lucide="edit-3" style="width:14px;height:14px"></i></div><h2>Write a Review</h2></div>
+            <div class="form-card">
+              <form method="post" action="{% url 'homepage:car_review' car.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label class="form-label">Your Rating</label>
+                  <div class="star-input">{% for i in "54321" %}<input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required/><label for="star{{ i }}">â˜…</label>{% endfor %}</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="rTitle">Review Title</label>
+                  <input type="text" class="form-input" id="rTitle" name="title" placeholder="Summary of your experience"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="rBody">Your Review</label>
+                  <textarea class="form-textarea" id="rBody" name="body" placeholder="Tell others about this carâ€¦" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-gold" style="width:auto;padding:11px 24px"><i data-lucide="send" style="width:14px;height:14px"></i> Submit Review</button>
+              </form>
+            </div>
+          </div>
+          {% elif not user.is_authenticated %}
+          <div class="sign-prompt"><p>Sign in to leave a review</p><a href="/login/?next={{ request.path }}" class="btn btn-gold" style="width:auto;padding:10px 22px">Sign In</a></div>
+          {% endif %}
+        </div>
+
+        <!-- TAB: COMMENTS (max 10) -->
+        <div id="tab-comments" class="tab-panel">
+          <div class="sec-head reveal">
+            <div class="sec-head-icon"><i data-lucide="message-square" style="width:14px;height:14px"></i></div>
+            <h2>Comments &amp; Questions</h2>
+          </div>
+          {% for comment in comments|slice:":10" %}
+          <div class="comment-card">
+            <div class="comment-head">
+              <div class="comment-avatar">
+                {% if comment.user.profile_photo %}<img src="{{ comment.user.profile_photo.url }}" alt="{{ comment.user.full_name }}"/>{% else %}{{ comment.user.full_name|first|upper }}{% endif %}
+              </div>
+              <div class="comment-meta">
+                <div class="comment-author">{{ comment.user.full_name }}</div>
+                <div class="comment-time">{{ comment.created_at|timesince }} ago</div>
+              </div>
+            </div>
+            <div class="comment-text">{{ comment.content }}</div>
+            {% if user.is_authenticated %}
+            <button class="comment-reply-btn" onclick="showReply('reply-{{ comment.id }}')"><i data-lucide="corner-down-right" style="width:11px;height:11px"></i> Reply</button>
+            <div id="reply-{{ comment.id }}" style="display:none;margin-top:10px">
+              <form method="post" action="{% url 'homepage:car_comment' car.pk %}">
+                {% csrf_token %}<input type="hidden" name="parent_id" value="{{ comment.id }}"/>
+                <textarea class="form-textarea" name="content" placeholder="Write a replyâ€¦" rows="2" style="margin-bottom:8px"></textarea>
+                <button type="submit" class="btn btn-gold" style="width:auto;padding:7px 16px;font-size:.78rem"><i data-lucide="send" style="width:12px;height:12px"></i> Reply</button>
+              </form>
+            </div>
+            {% endif %}
+            {% for reply in comment.replies.all %}
+            <div class="comment-card reply-card">
+              <div class="comment-head">
+                <div class="comment-avatar" style="width:28px;height:28px;font-size:.8rem">
+                  {% if reply.user.profile_photo %}<img src="{{ reply.user.profile_photo.url }}" alt="{{ reply.user.full_name }}"/>{% else %}{{ reply.user.full_name|first|upper }}{% endif %}
+                </div>
+                <div class="comment-meta">
+                  <div class="comment-author" style="font-size:.82rem">{{ reply.user.full_name }}</div>
+                  <div class="comment-time">{{ reply.created_at|timesince }} ago</div>
+                </div>
+              </div>
+              <div class="comment-text">{{ reply.content }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% empty %}<p style="color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;padding:20px 0">No comments yet. Ask a question below!</p>{% endfor %}
+
+          {% if user.is_authenticated %}
+          <div style="margin-top:22px">
+            <div class="sec-head"><div class="sec-head-icon"><i data-lucide="edit" style="width:14px;height:14px"></i></div><h2>Leave a Comment</h2></div>
+            <div class="form-card">
+              <form method="post" action="{% url 'homepage:car_comment' car.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label class="form-label">Your Comment or Question</label>
+                  <textarea class="form-textarea" name="content" placeholder="Leave a comment or questionâ€¦" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-gold" style="width:auto;padding:11px 24px"><i data-lucide="send" style="width:14px;height:14px"></i> Post Comment</button>
+              </form>
+            </div>
+          </div>
+          {% else %}
+          <div class="sign-prompt"><p>Sign in to comment</p><a href="/login/?next={{ request.path }}" class="btn btn-gold" style="width:auto;padding:10px 22px">Sign In</a></div>
+          {% endif %}
+        </div>
+
+      </main>
+
+      <!-- â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <aside class="sidebar">
+
+        <!-- ACTION CARD -->
+        <div class="sb-card action-card">
+          <div class="action-header">
+            <div class="action-price"><span class="cur">RWF</span> {{ car.price|floatformat:0 }}</div>
+            <div class="action-price-type">{% if car.is_negotiable %}Negotiable Price{% else %}Fixed Price{% endif %}</div>
+          </div>
+          <div class="action-body">
+            {% if car.scheduling_fee > 0 %}
+            <div class="fee-note"><i data-lucide="info" style="width:13px;height:13px"></i><span>A <strong>RWF {{ car.scheduling_fee|floatformat:0 }}</strong> scheduling fee is required to book a visit.</span></div>
+            {% endif %}
+
+            {% if car.status == 'available' or car.status == 'scheduled' %}
+            <button class="btn btn-gold" onclick="openBookModal()"><i data-lucide="credit-card" style="width:14px;height:14px"></i> Book This Car</button>
+            <button class="btn btn-outline" onclick="openSchedModal()"><i data-lucide="calendar-plus" style="width:14px;height:14px"></i> Schedule a Visit</button>
+            {% elif car.status == 'booked' %}
+            <div class="btn btn-disabled"><i data-lucide="lock" style="width:14px;height:14px"></i> Currently Booked</div>
+            {% elif car.status == 'sold' %}
+            <div class="btn btn-disabled" style="color:var(--red)"><i data-lucide="x-circle" style="width:14px;height:14px"></i> This Car is Sold</div>
+            {% endif %}
+
+            <a href="https://wa.me/{{ whatsapp_number }}?text=Hi%2C%20I%27m%20interested%20in%20the%20{{ car.year }}%20{{ car.brand }}%20{{ car.model }}%20listed%20at%20RWF%20{{ car.price|floatformat:0 }}" target="_blank" class="btn btn-whatsapp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              Chat on WhatsApp
+            </a>
+
+            <form method="post" action="{% url 'homepage:toggle_wishlist' car.pk %}" id="wishlistForm">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-wish {% if in_wishlist %}active{% endif %}" id="wishlistBtn">
+                <i data-lucide="heart" style="width:14px;height:14px"></i>
+                {% if in_wishlist %}Saved to Wishlist{% else %}Save to Wishlist{% endif %}
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- AT A GLANCE -->
+        <div class="sb-card">
+          <div class="sb-body">
+            <div class="sec-head" style="margin-bottom:14px">
+              <div class="sec-head-icon"><i data-lucide="zap" style="width:13px;height:13px"></i></div>
+              <h2 style="font-size:1rem">At a Glance</h2>
+            </div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="fuel" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Fuel</div><div class="info-val">{{ car.get_fuel_type_display }}</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="settings-2" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Transmission</div><div class="info-val">{{ car.get_transmission_display }}</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="gauge" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Mileage</div><div class="info-val">{{ car.mileage_km|floatformat:0 }} km</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="palette" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Colour</div><div class="info-val">{{ car.color|default:"â€”" }}</div></div></div>
+            {% if car.engine_size_cc %}<div class="info-row"><div class="info-icon"><i data-lucide="cpu" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Engine</div><div class="info-val">{{ car.engine_size_cc }} cc</div></div></div>{% endif %}
+            {% if car.drive_type %}<div class="info-row"><div class="info-icon"><i data-lucide="circle-dot" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Drive</div><div class="info-val">{{ car.get_drive_type_display }}</div></div></div>{% endif %}
+            <div class="info-row"><div class="info-icon"><i data-lucide="users" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Seats / Doors</div><div class="info-val">{{ car.seats }} seats Â· {{ car.doors }} doors</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="map-pin" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Location</div><div class="info-val">{{ car.district }}, {{ car.province }}</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="calendar" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Listed On</div><div class="info-val">{{ car.created_at|date:"d F Y" }}</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="eye" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Total Views</div><div class="info-val">{{ car.views_count }}</div></div></div>
+          </div>
+        </div>
+
+      </aside>
+    </div><!-- end content-grid -->
+  </div><!-- end page -->
+
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       BOOK MODAL
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <div class="modal-overlay" id="bookModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Book This Car</div>
+          <div class="modal-subtitle">Secure your reservation today</div>
+          <div class="modal-pay-info">
+            <strong>Pay via Mobile Money or Bank Transfer:</strong><br>
+            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br>
+            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> | Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br>
+            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br>
+            <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('bookModal')" aria-label="Close">âœ•</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-car-info">
+          <div class="modal-car-thumb">
+            {% with photos=car.photos.all %}{% if photos %}<img src="{{ photos.0.photo.url }}" alt="{{ car.title }}"/>{% endif %}{% endwith %}
+          </div>
+          <div class="modal-car-details">
+            <h4>{{ car.title }}</h4>
+            <p>{{ car.year }} Â· {{ car.get_transmission_display }} Â· {{ car.get_fuel_type_display }}</p>
+          </div>
+          <div class="modal-car-price">{{ car.price|floatformat:0 }}<br><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)">RWF</span></div>
+        </div>
+
+        <div class="form-err" id="bookErr"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="bookName" placeholder="Jean-Pierre Uwimana" {% if user.is_authenticated %}value="{{ user.full_name }}"{% endif %}/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-input" id="bookPhone" placeholder="+250 7XX XXX XXX" {% if user.is_authenticated %}value="{{ user.phone }}"{% endif %}/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="bookEmail" placeholder="you@example.com" {% if user.is_authenticated %}value="{{ user.email }}"{% endif %}/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Type</label>
+          <div class="payment-options">
+            <label class="payment-option selected" onclick="selectPay(this,'full')" id="payFull">
+              <input type="radio" name="bpaytype" value="full"/>
+              <div class="pay-opt-title">Full Payment</div>
+              <div class="pay-opt-desc" id="fullLbl">100% â€” RWF {{ car.price|floatformat:0 }}</div>
+            </label>
+            <label class="payment-option" onclick="selectPay(this,'half')" id="payHalf">
+              <input type="radio" name="bpaytype" value="half"/>
+              <div class="pay-opt-title">Half Payment</div>
+              <div class="pay-opt-desc">50% deposit</div>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select" id="bookMethod">
+            <option value="mtn_momo">MTN Mobile Money</option>
+            <option value="airtel_money">Airtel Money</option>
+            <option value="bank_transfer">Bank Transfer</option>
+            <option value="cash">Cash (In Person)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Screenshot / Receipt</label>
+          <div class="upload-area" id="bookUploadArea">
+            <input type="file" id="bookReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'bookUploadArea','bookPreviewImg','bookFileName')"/>
+            <div class="upload-icon">ðŸ“¸</div>
+            <div class="upload-label"><strong>Click to upload</strong> or drag & drop</div>
+            <div class="upload-hint">PNG, JPG, PDF - Max 5 MB</div>
+            <div class="upload-preview" id="bookUploadPreview">
+              <img id="bookPreviewImg" src="" alt="Preview"/>
+              <div class="upload-filename" id="bookFileName"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text-muted);font-size:.85rem">
+            <input type="checkbox" id="bookDriver" style="accent-color:var(--accent)"/> Need a driver?
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fee Payment Screenshot</label>
+          <div class="upload-area" id="schedUploadArea">
+            <input type="file" id="schedReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'schedUploadArea','schedPreviewImg','schedFileName')"/>
+            <div class="upload-icon">ðŸ“¸</div>
+            <div class="upload-label"><strong>Click to upload</strong> or drag & drop</div>
+            <div class="upload-hint">PNG, JPG, PDF - Max 5 MB</div>
+            <div class="upload-preview" id="schedUploadPreview">
+              <img id="schedPreviewImg" src="" alt="Preview"/>
+              <div class="upload-filename" id="schedFileName"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <textarea class="form-textarea" id="bookNotes" placeholder="Any special requestsâ€¦"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('bookModal')">Cancel</button>
+        <button class="btn-primary" id="bookSubmit" onclick="confirmBooking()">
+          <i data-lucide="credit-card" style="width:14px;height:14px"></i> Confirm Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       SCHEDULE MODAL
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <div class="modal-overlay" id="schedModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Schedule a Visit</div>
+          <div class="modal-subtitle">Come see the car in person</div>
+          <div class="modal-pay-info">
+            <strong>Pay scheduling fee via:</strong><br>
+            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br>
+            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> | Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br>
+            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br>
+            <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('schedModal')" aria-label="Close">âœ•</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-car-info">
+          <div class="modal-car-thumb">
+            {% with photos=car.photos.all %}{% if photos %}<img src="{{ photos.0.photo.url }}" alt="{{ car.title }}"/>{% endif %}{% endwith %}
+          </div>
+          <div class="modal-car-details">
+            <h4>{{ car.title }}</h4>
+            <p>{{ car.year }} Â· {{ car.district }}, {{ car.province }}</p>
+          </div>
+          <div class="modal-car-price" style="color:var(--blue)">
+            {{ car.scheduling_fee|floatformat:0 }}<br>
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)">FEE</span>
+          </div>
+        </div>
+
+        <div class="form-err" id="schedErr"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="schedName" placeholder="Your full name" {% if user.is_authenticated %}value="{{ user.full_name }}"{% endif %}/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" class="form-input" id="schedPhone" placeholder="+250 7XX XXX XXX" {% if user.is_authenticated %}value="{{ user.phone }}"{% endif %}/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Visit Date</label>
+            <input type="date" class="form-input" id="visitDate"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preferred Time</label>
+            <input type="time" class="form-input" id="visitTime"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your District</label>
+          <input type="text" class="form-input" id="schedDistrict" placeholder="Where you'd like to meet"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fee Payment Method â€” <span style="color:var(--blue)">RWF {{ car.scheduling_fee|floatformat:0 }}</span></label>
+          <select class="form-select" id="schedFeeMethod">
+            <option value="mtn_momo">MTN Mobile Money</option>
+            <option value="airtel_money">Airtel Money</option>
+            <option value="cash">Cash on Visit</option>
+          </select>
+          <div class="fee-sched-note"><i data-lucide="zap" style="width:10px;height:10px"></i> Fee is non-refundable and confirms your slot</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <textarea class="form-textarea" id="schedNotes" placeholder="Any special requestsâ€¦" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('schedModal')">Cancel</button>
+        <button class="btn-primary sched" id="schedSubmit" onclick="confirmSchedule()">
+          <i data-lucide="calendar-plus" style="width:14px;height:14px"></i> Schedule Visit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â• TOAST â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+{% include "homepage/partials/footer.html" %}
+
+  <!-- â•â• JS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <script>
+    lucide.createIcons();
+
+    /* â”€â”€ LIGHTBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    const photos = [{% for photo in car.photos.all %}{src:"{{ photo.photo.url }}",alt:"{{ photo.caption|default:car.title }}"}{% if not forloop.last %},{% endif %}{% endfor %}];
+    let lbIdx = 0;
+    function openLb(i){lbIdx=i;updateLb();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden'}
+    function closeLb(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow=''}
+    function closeLbOverlay(e){if(e.target===document.getElementById('lightbox'))closeLb()}
+    function lbNav(d){lbIdx=(lbIdx+d+photos.length)%photos.length;updateLb()}
+    function updateLb(){if(!photos.length)return;document.getElementById('lbImg').src=photos[lbIdx].src;document.getElementById('lbImg').alt=photos[lbIdx].alt;document.getElementById('lbCounter').textContent=`${lbIdx+1} / ${photos.length}`}
+    document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbNav(-1);if(e.key==='ArrowRight')lbNav(1)});
+
+    /* â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function switchTab(name,btn){
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById('tab-'+name).classList.add('active');
+      btn.classList.add('active');
+      setTimeout(()=>lucide.createIcons(),50);
+    }
+
+    /* â”€â”€ READ MORE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function toggleReadMore(){
+      const t=document.getElementById('descText'),b=document.getElementById('readMoreBtn');
+      const open=!t.classList.contains('clamped');
+      if(open){t.classList.add('clamped');b.innerHTML='Read more <i data-lucide="chevron-down" style="width:12px;height:12px"></i>'}
+      else{t.classList.remove('clamped');b.innerHTML='Read less <i data-lucide="chevron-up" style="width:12px;height:12px"></i>'}
+      lucide.createIcons();
+    }
+
+    /* â”€â”€ REPLY TOGGLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function showReply(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none'}
+
+    /* â”€â”€ SCROLL REVEAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:.08});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    /* â”€â”€ RATING BARS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    setTimeout(()=>{document.querySelectorAll('.bar-fill').forEach(b=>{b.style.width=b.dataset.width||'0%'})},400);
+
+    /* â”€â”€ CSRF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function getCookie(n){let v=null;document.cookie.split(';').forEach(c=>{c=c.trim();if(c.startsWith(n+'='))v=decodeURIComponent(c.slice(n.length+1))});return v}
+    const CSRF=getCookie('csrftoken');
+
+    /* â”€â”€ WISHLIST AJAX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    document.getElementById('wishlistForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      const btn=document.getElementById('wishlistBtn');
+      fetch(this.action,{method:'POST',headers:{'X-CSRFToken':CSRF,'X-Requested-With':'XMLHttpRequest'}})
+        .then(r=>r.json()).then(data=>{
+          if(data.in_wishlist){btn.classList.add('active');btn.innerHTML='<i data-lucide="heart" style="width:14px;height:14px"></i> Saved to Wishlist';showToast('success','Added to wishlist â™¥','')}
+          else{btn.classList.remove('active');btn.innerHTML='<i data-lucide="heart" style="width:14px;height:14px"></i> Save to Wishlist';showToast('info','Removed from wishlist','')}
+          lucide.createIcons();
+        });
+    });
+
+    /* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function showToast(type,title,msg){
+      const icons={success:'âœ“',error:'âœ•',info:'â„¹'};
+      const c=document.getElementById('toastContainer');
+      const t=document.createElement('div');
+      t.className=`toast ${type}`;
+      t.innerHTML=`<span style="font-size:16px">${icons[type]||'â„¹'}</span><div class="toast-text"><strong>${title}</strong>${msg?`<span>${msg}</span>`:''}</div>`;
+      c.appendChild(t);
+      setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},4500);
+    }
+
+    /* â”€â”€ DJANGO MESSAGES AS TOASTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    {% for message in messages %}
+    showToast("{% if message.tags == 'error' %}error{% else %}success{% endif %}","{{ message|escapejs }}","");
+    {% endfor %}
+
+    /* â”€â”€ MODAL HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function handleFileSelect(input,areaId,previewImgId,fileNameId){
+      const file=input.files[0];
+      if(!file)return;
+      const area=document.getElementById(areaId);
+      const preview=area.querySelector('.upload-preview');
+      const img=document.getElementById(previewImgId);
+      const fileName=document.getElementById(fileNameId);
+      area.classList.add('has-file');
+      fileName.textContent='âœ“ ' + file.name;
+      preview.style.display='block';
+      if(file.type.startsWith('image/')){
+        const reader=new FileReader();
+        reader.onload=e=>{img.src=e.target.result;img.style.display='block';};
+        reader.readAsDataURL(file);
+      }else{
+        img.style.display='none';
+      }
+    }
+    document.querySelectorAll('.upload-area').forEach(area=>{
+      area.addEventListener('dragover',e=>{e.preventDefault();area.style.borderColor='rgba(232,200,74,.6)'});
+      area.addEventListener('dragleave',()=>{area.style.borderColor=''});
+      area.addEventListener('drop',e=>{
+        e.preventDefault();
+        area.style.borderColor='';
+        const fileInput=area.querySelector('input[type="file"]');
+        if(e.dataTransfer.files.length){
+          fileInput.files=e.dataTransfer.files;
+          fileInput.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+    let activePayType='full';
+    function selectPay(el,type){
+      activePayType=type;
+      document.querySelectorAll('.payment-option').forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    function closeModal(id){document.getElementById(id).classList.remove('open')}
+    document.querySelectorAll('.modal-overlay').forEach(o=>{
+      o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')})
+    });
+
+    /* â”€â”€ BOOK MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function openBookModal(){
+      document.getElementById('bookErr').style.display='none';
+      document.getElementById('visitDate').min=new Date().toISOString().split('T')[0];
+      const uploadArea=document.getElementById('bookUploadArea');
+      uploadArea.classList.remove('has-file');
+      uploadArea.querySelector('.upload-preview').style.display='none';
+      document.getElementById('bookReceiptUpload').value='';
+      document.getElementById('bookModal').classList.add('open');
+    }
+
+    function confirmBooking(){
+      const name=document.getElementById('bookName').value.trim();
+      const phone=document.getElementById('bookPhone').value.trim();
+      const email=document.getElementById('bookEmail').value.trim();
+      const method=document.getElementById('bookMethod').value;
+      const notes=document.getElementById('bookNotes').value.trim();
+      const driver=document.getElementById('bookDriver').checked?'1':'';
+      const errEl=document.getElementById('bookErr');
+      errEl.style.display='none';
+      if(!name||!phone){errEl.textContent='Full name and phone are required.';errEl.style.display='block';return}
+      const btn=document.getElementById('bookSubmit');
+      btn.disabled=true;btn.textContent='Submittingâ€¦';
+      const body=new FormData();
+      body.append('full_name',name);
+      body.append('phone',phone);
+      body.append('email',email);
+      body.append('payment_type',activePayType);
+      body.append('payment_method',method);
+      body.append('notes',notes);
+      body.append('driver_needed',driver);
+      body.append('csrfmiddlewaretoken',CSRF);
+      const receiptFile=document.getElementById('bookReceiptUpload').files[0];
+      if(receiptFile)body.append('payment_receipt',receiptFile);
+      fetch("{% url 'homepage:book_car' car.pk %}",{
+        method:'POST',
+        headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':CSRF},
+        body
+      }).then(r=>{
+        const ct=r.headers.get('content-type')||'';
+        if(!ct.includes('application/json'))return{success:false,errors:{__all__:['Please sign in to book a car.']}};
+        return r.json();
+      }).then(data=>{
+        btn.disabled=false;btn.innerHTML='<i data-lucide="credit-card" style="width:14px;height:14px"></i> Confirm Booking';lucide.createIcons();
+        if(data.success){
+          closeModal('bookModal');
+          showToast('success','Booking Confirmed!',data.message||'');
+          if(data.detail_url){setTimeout(()=>window.location.href=data.detail_url,900)}
+        }
+        else{const m=Object.values(data.errors||{}).flat().join(' ');errEl.textContent=m||'Something went wrong.';errEl.style.display='block'}
+      }).catch(()=>{btn.disabled=false;btn.textContent='Confirm Booking';showToast('error','Network Error','Check your connection and try again.')});
+    }
+
+    /* â”€â”€ SCHEDULE MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    function openSchedModal(){
+      document.getElementById('schedErr').style.display='none';
+      document.getElementById('visitDate').min=new Date().toISOString().split('T')[0];
+      const uploadArea=document.getElementById('schedUploadArea');
+      uploadArea.classList.remove('has-file');
+      uploadArea.querySelector('.upload-preview').style.display='none';
+      document.getElementById('schedReceiptUpload').value='';
+      document.getElementById('schedModal').classList.add('open');
+    }
+
+    function confirmSchedule(){
+      const name=document.getElementById('schedName').value.trim();
+      const phone=document.getElementById('schedPhone').value.trim();
+      const date=document.getElementById('visitDate').value;
+      const time=document.getElementById('visitTime').value;
+      const dist=document.getElementById('schedDistrict').value.trim();
+      const method=document.getElementById('schedFeeMethod').value;
+      const notes=document.getElementById('schedNotes').value.trim();
+      const errEl=document.getElementById('schedErr');
+      errEl.style.display='none';
+      if(!name||!phone){errEl.textContent='Full name and phone are required.';errEl.style.display='block';return}
+      if(!date||!time){errEl.textContent='Please select a visit date and time.';errEl.style.display='block';return}
+      const btn=document.getElementById('schedSubmit');
+      btn.disabled=true;btn.textContent='Submittingâ€¦';
+      const body=new FormData();
+      body.append('full_name',name);
+      body.append('phone',phone);
+      body.append('visit_date',date);
+      body.append('visit_time',time);
+      body.append('district',dist);
+      body.append('fee_payment_method',method);
+      body.append('notes',notes);
+      body.append('csrfmiddlewaretoken',CSRF);
+      const receiptFile=document.getElementById('schedReceiptUpload').files[0];
+      if(receiptFile)body.append('fee_receipt',receiptFile);
+      fetch("{% url 'homepage:schedule_visit' car.pk %}",{
+        method:'POST',
+        headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':CSRF},
+        body
+      }).then(r=>{
+        const ct=r.headers.get('content-type')||'';
+        if(!ct.includes('application/json'))return{success:false,errors:{__all__:['Please sign in to schedule a visit.']}};
+        return r.json();
+      }).then(data=>{
+        btn.disabled=false;btn.innerHTML='<i data-lucide="calendar-plus" style="width:14px;height:14px"></i> Schedule Visit';lucide.createIcons();
+        if(data.success){
+          closeModal('schedModal');
+          showToast('info','Visit Scheduled!',data.message||'');
+          if(data.detail_url){setTimeout(()=>window.location.href=data.detail_url,900)}
+        }
+        else{const m=Object.values(data.errors||{}).flat().join(' ');errEl.textContent=m||'Something went wrong.';errEl.style.display='block'}
+      }).catch(()=>{btn.disabled=false;btn.textContent='Schedule Visit';showToast('error','Network Error','Check your connection and try again.')});
+    }
+  </script>
+</body>
+</html>
+{% endblock %}
+
+

@@ -1,0 +1,519 @@
+{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}Book or Schedule a Visit | {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+    <style>
+      :root {
+        --black: #0a0a0a;
+        --panel: #ffffff;
+        --panel-2: #f4f5f7;
+        --form-panel: #111113;
+        --form-panel-2: #18181c;
+        --border: #e3e5ea;
+        --dark-border: #29292f;
+        --text: #161616;
+        --form-text: #f4f1ec;
+        --muted: #646873;
+        --form-muted: #a1a1aa;
+        --dim: #858996;
+        --accent: #e8c84a;
+        --blue: #4da8ff;
+        --green: #3ddc84;
+        --red: #ff6262;
+        --radius: 10px;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        min-height: 100vh;
+        background: #ffffff;
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+      }
+      a { color: inherit; text-decoration: none; }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        height: 64px;
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(16px);
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 2px;
+        color: var(--accent);
+        font-size: 24px;
+      }
+      .brand img { width: 34px; height: 34px; border-radius: 7px; object-fit: cover; }
+      .nav { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+      .nav a { padding: 9px 13px; border-radius: 7px; color: var(--muted); }
+      .nav a:hover { background: #f2f3f5; color: var(--text); }
+      .page {
+        width: min(1220px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 44px 0 70px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 24px;
+        margin-bottom: 26px;
+      }
+      .eyebrow {
+        font-family: "DM Mono", monospace;
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(42px, 7vw, 76px);
+        line-height: 0.95;
+        letter-spacing: 2px;
+      }
+      .hero p {
+        max-width: 620px;
+        color: var(--muted);
+        margin-top: 12px;
+        line-height: 1.7;
+      }
+      .auth-note {
+        padding: 14px 16px;
+        border: 1px solid rgba(77, 168, 255, 0.35);
+        border-radius: var(--radius);
+        color: #d8ecff;
+        background: rgba(77, 168, 255, 0.09);
+        font-size: 13px;
+      }
+      .auth-note a { color: var(--blue); font-weight: 800; }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .cars-panel {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+      .forms-panel {
+        border: 1px solid var(--dark-border);
+        border-radius: var(--radius);
+        background: var(--form-panel);
+        color: var(--form-text);
+      }
+      .panel-head {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .panel-head strong { font-size: 15px; }
+      .panel-head span { color: var(--muted); font-size: 12px; font-family: "DM Mono", monospace; }
+      .cars-grid {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 14px;
+      }
+      .car-card {
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: #ffffff;
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+      }
+      .car-card:hover,
+      .car-card.selected {
+        border-color: rgba(232, 200, 74, 0.7);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+        transform: translateY(-2px);
+      }
+      .car-media { aspect-ratio: 4 / 3; background: var(--panel-2); overflow: hidden; }
+      .car-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .placeholder {
+        height: 100%;
+        display: grid;
+        place-items: center;
+        color: var(--dim);
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+      }
+      .car-body { padding: 13px; }
+      .car-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--accent);
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .car-title { font-weight: 800; line-height: 1.3; min-height: 42px; }
+      .car-sub { color: var(--muted); font-size: 12px; margin-top: 7px; }
+      .car-price {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .price {
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 1px;
+        font-size: 26px;
+        color: var(--text);
+      }
+      .status {
+        border: 1px solid rgba(61, 220, 132, 0.35);
+        border-radius: 999px;
+        padding: 4px 8px;
+        color: var(--green);
+        font-size: 10px;
+        font-family: "DM Mono", monospace;
+      }
+      .forms-panel {
+        position: sticky;
+        top: 84px;
+        overflow: hidden;
+      }
+      .selected-car {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--form-panel-2);
+      }
+      .selected-car span {
+        display: block;
+        color: var(--form-muted);
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        margin-bottom: 4px;
+      }
+      .selected-car strong { font-size: 17px; }
+      .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 10px;
+        gap: 8px;
+        border-bottom: 1px solid var(--dark-border);
+      }
+      .tab {
+        min-height: 42px;
+        border: 1px solid var(--dark-border);
+        border-radius: 7px;
+        background: transparent;
+        color: var(--form-muted);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .tab.active { background: var(--accent); color: var(--black); border-color: var(--accent); }
+      .form-wrap { padding: 18px 20px 20px; display: none; }
+      .form-wrap.active { display: block; }
+      .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .form-group { margin-bottom: 13px; }
+      .form-grid .form-group { margin-bottom: 0; }
+      label {
+        display: block;
+        color: var(--form-muted);
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        margin-bottom: 6px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--dark-border);
+        border-radius: 7px;
+        background: #0d0d10;
+        color: var(--form-text);
+        min-height: 43px;
+        padding: 10px 12px;
+        font: inherit;
+        outline: none;
+      }
+      textarea { min-height: 82px; resize: vertical; }
+      input:focus,
+      select:focus,
+      textarea:focus { border-color: rgba(232, 200, 74, 0.65); }
+      .payment-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .payment-option {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px;
+        border: 1px solid var(--dark-border);
+        border-radius: 8px;
+        background: var(--form-panel-2);
+        cursor: pointer;
+      }
+      .payment-option input { width: auto; min-height: auto; }
+      .payment-option strong { display: block; font-size: 13px; color: var(--form-text); }
+      .payment-option span { display: block; color: var(--form-muted); font-size: 11px; font-family: "DM Mono", monospace; }
+      .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--form-muted);
+        font-size: 13px;
+      }
+      .checkbox-row input { width: auto; min-height: auto; }
+      .submit {
+        width: 100%;
+        min-height: 48px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--black);
+        background: var(--accent);
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .submit.visit { background: var(--blue); }
+      .empty {
+        padding: 40px 20px;
+        color: var(--muted);
+        text-align: center;
+      }
+      @media (max-width: 920px) {
+        .hero,
+        .layout { grid-template-columns: 1fr; }
+        .forms-panel { position: static; order: -1; }
+      }
+      @media (max-width: 560px) {
+        .topbar { padding: 0 14px; }
+        .nav a { padding: 8px; }
+        .form-grid,
+        .payment-options { grid-template-columns: 1fr; }
+        .submit { width: 100%; }
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main class="page">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Choose a car, then book or visit</div>
+          <h1>Make a Booking or Schedule a Visit</h1>
+          <p>Select one available car from the list, then use the booking form for half or full payment, or schedule a visit to see it first.</p>
+        </div>
+        {% if not user.is_authenticated %}
+          <div class="auth-note">
+            You can browse cars here. To submit a booking or visit request, <a href="{% url 'homepage:auth' %}">sign in first</a>.
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="layout">
+        <div class="cars-panel">
+          <div class="panel-head">
+            <strong>Available Cars</strong>
+            <span>{{ car_cards|length }} ready</span>
+          </div>
+          {% if car_cards %}
+            <div class="cars-grid" id="carGrid">
+              {% for item in car_cards %}
+                <article
+                  class="car-card {% if forloop.first %}selected{% endif %}"
+                  data-title="{{ item.car.title|escape }}"
+                  data-book-url="{% url 'homepage:book_car' item.car.pk %}"
+                  data-schedule-url="{% url 'homepage:schedule_visit' item.car.pk %}"
+                  data-price="{{ item.car.price|floatformat:'0' }}"
+                  data-half-price="{{ item.car.price|floatformat:'0' }}"
+                  data-fee="{{ item.car.scheduling_fee|floatformat:'0' }}"
+                >
+                  <div class="car-media">
+                    {% if item.image %}
+                      <img src="{{ item.image }}" alt="{{ item.car.title }}" />
+                    {% else %}
+                      <div class="placeholder">No photo</div>
+                    {% endif %}
+                  </div>
+                  <div class="car-body">
+                    <div class="car-meta">
+                      <span>{% if item.car.brand %}{{ item.car.brand.name }}{% else %}On Call Driver{% endif %}</span>
+                      <span>{{ item.car.year }}</span>
+                    </div>
+                    <div class="car-title">{{ item.car.title }}</div>
+                    <div class="car-sub">{{ item.car.get_transmission_display }} · {{ item.car.get_fuel_type_display }} · {{ item.car.district }}</div>
+                    <div class="car-price">
+                      <div class="price">{{ item.car.price|floatformat:"0" }} RWF</div>
+                      <span class="status">{{ item.car.get_status_display }}</span>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty">No available cars right now. Please check again later.</div>
+          {% endif %}
+        </div>
+
+        <aside class="forms-panel">
+          <div class="selected-car">
+            <span>Selected car</span>
+            <strong id="selectedCarName">{% if car_cards %}{{ car_cards.0.car.title }}{% else %}No car selected{% endif %}</strong>
+          </div>
+          <div class="tabs">
+            <button class="tab active" type="button" data-tab="book">Book Car</button>
+            <button class="tab" type="button" data-tab="visit">Schedule Visit</button>
+          </div>
+
+          <form class="form-wrap active" id="bookForm" method="post" enctype="multipart/form-data" {% if car_cards %}action="{% url 'homepage:book_car' car_cards.0.car.pk %}"{% endif %}>
+            {% csrf_token %}
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="{{ booking_form.full_name.id_for_label }}">Full Name</label>
+                {{ booking_form.full_name }}
+              </div>
+              <div class="form-group">
+                <label for="{{ booking_form.phone.id_for_label }}">Phone Number</label>
+                {{ booking_form.phone }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="{{ booking_form.email.id_for_label }}">Email</label>
+              {{ booking_form.email }}
+            </div>
+            <div class="form-group">
+              <label>Payment Option</label>
+              <div class="payment-options">
+                <label class="payment-option">
+                  <input type="radio" name="payment_type" value="full" checked />
+                  <span><strong>Full Payment</strong><span id="fullPriceLabel">Select a car</span></span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment_type" value="half" />
+                  <span><strong>Half Payment</strong><span id="halfPriceLabel">50% reservation</span></span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="{{ booking_form.payment_method.id_for_label }}">Payment Method</label>
+              {{ booking_form.payment_method }}
+            </div>
+            <div class="form-group">
+              <label for="{{ booking_form.payment_receipt.id_for_label }}">Payment Screenshot</label>
+              {{ booking_form.payment_receipt }}
+            </div>
+            <div class="form-group">
+              <label for="{{ booking_form.notes.id_for_label }}">Notes</label>
+              {{ booking_form.notes }}
+            </div>
+            <div class="form-group checkbox-row">
+              {{ booking_form.driver_needed }}
+              <span>Need a driver to deliver?</span>
+            </div>
+            <button class="submit" type="submit" {% if not car_cards %}disabled{% endif %}>Confirm Booking</button>
+          </form>
+
+          <form class="form-wrap" id="visitForm" method="post" {% if car_cards %}action="{% url 'homepage:schedule_visit' car_cards.0.car.pk %}"{% endif %}>
+            {% csrf_token %}
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="{{ visit_form.full_name.id_for_label }}">Full Name</label>
+                {{ visit_form.full_name }}
+              </div>
+              <div class="form-group">
+                <label for="{{ visit_form.phone.id_for_label }}">Phone Number</label>
+                {{ visit_form.phone }}
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="{{ visit_form.visit_date.id_for_label }}">Visit Date</label>
+                {{ visit_form.visit_date }}
+              </div>
+              <div class="form-group">
+                <label for="{{ visit_form.visit_time.id_for_label }}">Preferred Time</label>
+                {{ visit_form.visit_time }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="{{ visit_form.district.id_for_label }}">District</label>
+              {{ visit_form.district }}
+            </div>
+            <div class="form-group">
+              <label for="{{ visit_form.fee_payment_method.id_for_label }}">Scheduling Fee: <span id="feeLabel">Select a car</span></label>
+              {{ visit_form.fee_payment_method }}
+            </div>
+            <div class="form-group">
+              <label for="{{ visit_form.notes.id_for_label }}">Notes</label>
+              {{ visit_form.notes }}
+            </div>
+            <button class="submit visit" type="submit" {% if not car_cards %}disabled{% endif %}>Schedule Visit</button>
+          </form>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const cards = Array.from(document.querySelectorAll(".car-card"));
+      const selectedCarName = document.getElementById("selectedCarName");
+      const bookForm = document.getElementById("bookForm");
+      const visitForm = document.getElementById("visitForm");
+      const fullPriceLabel = document.getElementById("fullPriceLabel");
+      const halfPriceLabel = document.getElementById("halfPriceLabel");
+      const feeLabel = document.getElementById("feeLabel");
+
+      function formatRwf(value) {
+        const number = Number(value || 0);
+        return `${number.toLocaleString("rw-RW")} RWF`;
+      }
+
+      function selectCar(card) {
+        if (!card) return;
+        cards.forEach((item) => item.classList.toggle("selected", item === card));
+        selectedCarName.textContent = card.dataset.title;
+        bookForm.action = card.dataset.bookUrl;
+        visitForm.action = card.dataset.scheduleUrl;
+        const price = Number(card.dataset.price || 0);
+        fullPriceLabel.textContent = formatRwf(price);
+        halfPriceLabel.textContent = formatRwf(price / 2);
+        feeLabel.textContent = formatRwf(card.dataset.fee);
+      }
+
+      cards.forEach((card) => card.addEventListener("click", () => selectCar(card)));
+      selectCar(cards[0]);
+
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".form-wrap").forEach((item) => item.classList.remove("active"));
+          tab.classList.add("active");
+          document.getElementById(`${tab.dataset.tab}Form`).classList.add("active");
+        });
+      });
+
+      const visitDate = document.querySelector("#visitForm input[type='date']");
+      if (visitDate) visitDate.min = new Date().toISOString().split("T")[0];
+    </script>
+{% endblock %}

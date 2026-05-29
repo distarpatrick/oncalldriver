@@ -1,0 +1,41 @@
+<footer id="contact" style="background:#050609;border-top:3px solid #e8c84a;margin-top:0;">
+  <div style="width:min(1180px,calc(100% - 32px));margin:0 auto;padding:60px 0 36px;display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:32px;">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:#e8c84a;margin-bottom:12px;">{{ site_name }}</div>
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;margin:0;">{{ site.tagline|default:"Reliable cars, guided booking, and support whenever customers need a better way to move." }}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">
+        <a href="{{ site.facebook_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Facebook</a>
+        <a href="{{ site.instagram_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Instagram</a>
+        <a href="{{ site.twitter_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Twitter</a>
+        <a href="{{ site.youtube_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">YouTube</a>
+      </div>
+    </div>
+    <div>
+      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">Services</h4>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Car listings</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Visit scheduling</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Booking support</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Driver requests</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">FAQ</h4>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">How do I schedule a visit?</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Can I reserve with half payment?</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Are cars verified?</li>
+        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Can I request a driver?</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">Contact</h4>
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;margin:0;">
+        {{ site.contact_phone|default:"+250 000 000 000" }}<br />
+        {{ site.contact_email|default:"support@oncalldriver.com" }}<br />
+        {{ site.address|default:"Kigali, Rwanda" }}
+      </p>
+    </div>
+  </div>
+  <div style="width:min(1180px,calc(100% - 32px));margin:0 auto;padding:18px 0 32px;border-top:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);font-size:12px;font-family:'DM Mono',monospace;">© {% now "Y" %} {{ site_name }}. All rights reserved.</div>
+</footer>

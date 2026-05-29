@@ -1,0 +1,793 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}{{ site_name }} | Upload Car{% endblock %}
+
+{% block extra_css %}
+    <style>
+        :root {
+            --ink: #14213d;
+            --muted: #64748b;
+            --line: #d9e2ec;
+            --soft: #f5f7fb;
+            --panel: #ffffff;
+            --accent: #0f766e;
+            --accent-dark: #115e59;
+            --danger: #b42318;
+            --gold: #b7791f;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .topbar {
+            min-height: 76px;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px clamp(18px, 4vw, 54px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand,
+        .top-actions,
+        .inline-check,
+        .media-count,
+        .recent-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .brand {
+            gap: 12px;
+            font-weight: 900;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: var(--accent);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .top-actions {
+            gap: 10px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .button-link,
+        .submit {
+            border-radius: 8px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .button-link {
+            border: 1px solid var(--line);
+            padding: 10px 14px;
+            background: #fff;
+        }
+
+        .button-link.primary,
+        .submit {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        main {
+            width: min(1220px, calc(100% - 32px));
+            margin: 32px auto 56px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            gap: 22px;
+            align-items: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 4vw, 3.1rem);
+            letter-spacing: 0;
+        }
+
+        .hero p,
+        .panel > p,
+        .help-text,
+        .recent-row span {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .role-pill {
+            white-space: nowrap;
+            border-radius: 8px;
+            background: rgba(15, 118, 110, 0.1);
+            color: var(--accent-dark);
+            padding: 10px 14px;
+            font-weight: 900;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 330px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .stepper {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .step-tab {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--muted);
+            min-height: 44px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .step-tab.active {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #fff;
+        }
+
+        .step-panel { display: none; }
+
+        .step-panel.active { display: block; }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-size: 1.3rem;
+        }
+
+        .panel > p { margin: 0 0 22px; }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .wide { grid-column: 1 / -1; }
+
+        label {
+            display: block;
+            font-weight: 900;
+            font-size: 0.86rem;
+            margin-bottom: 7px;
+        }
+
+        .upload-input {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 11px 13px;
+            font: inherit;
+            outline: none;
+            background: #fff;
+        }
+
+        textarea.upload-input { resize: vertical; }
+
+        .upload-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+        }
+
+        .inline-check {
+            min-height: 46px;
+            gap: 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0 13px;
+            background: #fff;
+            font-weight: 800;
+        }
+
+        .upload-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .field-error,
+        .form-errors li {
+            color: var(--danger);
+            font-size: 0.87rem;
+            margin-top: 7px;
+        }
+
+        .messages,
+        .form-errors {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px;
+        }
+
+        .messages li {
+            border: 1px solid rgba(15, 118, 110, 0.22);
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--accent-dark);
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+        }
+
+        .media-count {
+            justify-content: space-between;
+            gap: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            font-weight: 900;
+        }
+
+        .media-count strong { color: var(--accent-dark); }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .preview-grid img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
+
+        .submit {
+            width: 100%;
+            min-height: 52px;
+            border: 0;
+            font-size: 1rem;
+        }
+
+        .step-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .step-button {
+            min-height: 48px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            padding: 0 18px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .step-button.next {
+            margin-left: auto;
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .submit:hover,
+        .button-link.primary:hover { background: var(--accent-dark); }
+
+        .recent-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .recent-row {
+            display: grid;
+            grid-template-columns: 82px minmax(0, 1fr);
+            gap: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px 14px;
+            cursor: pointer;
+        }
+
+        .recent-row strong { display: block; }
+
+        .recent-image {
+            width: 82px;
+            aspect-ratio: 4 / 3;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #dbe6ef;
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+
+        .recent-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recent-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .plate {
+            display: block;
+            margin-top: 6px;
+            font-weight: 900;
+            color: var(--ink);
+        }
+
+        .status {
+            color: var(--gold);
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .empty {
+            border: 1px dashed var(--line);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 980px) {
+            .layout { grid-template-columns: 1fr; }
+            .hero { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (max-width: 680px) {
+            .field-grid { grid-template-columns: 1fr; }
+            .stepper { grid-template-columns: 1fr; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <section class="hero">
+            <div>
+                <h1>Upload car</h1>
+                <p>Add owner details, vehicle specifications, photos, and videos. New listings are saved as pending review.</p>
+            </div>
+            <span class="role-pill">{{ request.user.get_role_display }}</span>
+        </section>
+
+        <section class="layout">
+            <form method="post" enctype="multipart/form-data" id="carUploadForm" novalidate>
+                {% csrf_token %}
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if owner_form.non_field_errors or car_form.non_field_errors or media_form.non_field_errors %}
+                    <ul class="form-errors">
+                        {% for error in owner_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                        {% for error in car_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                        {% for error in media_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="stepper" aria-label="Upload steps">
+                    <button class="step-tab active" type="button" data-step-target="0">Owner</button>
+                    <button class="step-tab" type="button" data-step-target="1">Vehicle</button>
+                    <button class="step-tab" type="button" data-step-target="2">Pricing</button>
+                    <button class="step-tab" type="button" data-step-target="3">Description</button>
+                    <button class="step-tab" type="button" data-step-target="4">Media</button>
+                </div>
+
+                <section class="panel step-panel active" data-step="0">
+                    <h2>Owner</h2>
+                    <p>Choose company stock or citizen consignment before entering ownership documents.</p>
+                    <div class="field-grid">
+                        <div>
+                            <label for="{{ owner_form.owner_type.id_for_label }}">Owner type</label>
+                            {{ owner_form.owner_type }}
+                            {% for error in owner_form.owner_type.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ owner_form.commission_rate.id_for_label }}">Commission rate</label>
+                            {{ owner_form.commission_rate }}
+                            {% for error in owner_form.commission_rate.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.full_name.id_for_label }}">Full name</label>
+                            {{ owner_form.full_name }}
+                            {% for error in owner_form.full_name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.phone.id_for_label }}">Phone</label>
+                            {{ owner_form.phone }}
+                            {% for error in owner_form.phone.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.email.id_for_label }}">Email</label>
+                            {{ owner_form.email }}
+                            {% for error in owner_form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.national_id.id_for_label }}">National ID</label>
+                            {{ owner_form.national_id }}
+                            {% for error in owner_form.national_id.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.province.id_for_label }}">Owner province</label>
+                            {{ owner_form.province }}
+                            {% for error in owner_form.province.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.district.id_for_label }}">Owner district</label>
+                            {{ owner_form.district }}
+                            {% for error in owner_form.district.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="citizen-field">
+                            <label for="{{ owner_form.id_document.id_for_label }}">ID document</label>
+                            {{ owner_form.id_document }}
+                            {% for error in owner_form.id_document.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button class="step-button next" type="button" data-next-step>Next</button>
+                    </div>
+                </section>
+
+                <section class="panel step-panel" data-step="1">
+                    <h2>Vehicle</h2>
+                    <p>Enter the customer-facing details shown on the marketplace after approval.</p>
+                    <div class="field-grid">
+                        <div class="wide">
+                            <label for="{{ car_form.title.id_for_label }}">Listing title</label>
+                            {{ car_form.title }}
+                            {% for error in car_form.title.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.brand_name.id_for_label }}">Brand</label>
+                            {{ car_form.brand_name }}
+                            {% for error in car_form.brand_name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.model.id_for_label }}">Model</label>
+                            {{ car_form.model }}
+                            {% for error in car_form.model.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.year.id_for_label }}">Year</label>
+                            {{ car_form.year }}
+                            {% for error in car_form.year.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.condition.id_for_label }}">Condition</label>
+                            {{ car_form.condition }}
+                            {% for error in car_form.condition.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.mileage_km.id_for_label }}">Mileage km</label>
+                            {{ car_form.mileage_km }}
+                            {% for error in car_form.mileage_km.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.color.id_for_label }}">Color</label>
+                            {{ car_form.color }}
+                            {% for error in car_form.color.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.engine_size_cc.id_for_label }}">Engine size cc</label>
+                            {{ car_form.engine_size_cc }}
+                            {% for error in car_form.engine_size_cc.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.transmission.id_for_label }}">Transmission</label>
+                            {{ car_form.transmission }}
+                            {% for error in car_form.transmission.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.fuel_type.id_for_label }}">Fuel type</label>
+                            {{ car_form.fuel_type }}
+                            {% for error in car_form.fuel_type.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.drive_type.id_for_label }}">Drive type</label>
+                            {{ car_form.drive_type }}
+                            {% for error in car_form.drive_type.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.seats.id_for_label }}">Seats</label>
+                            {{ car_form.seats }}
+                            {% for error in car_form.seats.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.doors.id_for_label }}">Doors</label>
+                            {{ car_form.doors }}
+                            {% for error in car_form.doors.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.stock_number.id_for_label }}">Stock number</label>
+                            {{ car_form.stock_number }}
+                            {% for error in car_form.stock_number.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.registration_plate.id_for_label }}">Registration plate</label>
+                            {{ car_form.registration_plate }}
+                            {% for error in car_form.registration_plate.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button class="step-button" type="button" data-prev-step>Back</button>
+                        <button class="step-button next" type="button" data-next-step>Next</button>
+                    </div>
+                </section>
+
+                <section class="panel step-panel" data-step="2">
+                    <h2>Pricing and location</h2>
+                    <div class="field-grid">
+                        <div>
+                            <label for="{{ car_form.price.id_for_label }}">Price RWF</label>
+                            {{ car_form.price }}
+                            {% for error in car_form.price.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.scheduling_fee.id_for_label }}">Scheduling fee RWF</label>
+                            {{ car_form.scheduling_fee }}
+                            {% for error in car_form.scheduling_fee.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="inline-check">
+                            {{ car_form.is_negotiable }}
+                            <label for="{{ car_form.is_negotiable.id_for_label }}">Negotiable price</label>
+                        </div>
+                        <div class="inline-check">
+                            {{ car_form.is_featured }}
+                            <label for="{{ car_form.is_featured.id_for_label }}">Feature on homepage</label>
+                        </div>
+                        <div>
+                            <label for="{{ car_form.province.id_for_label }}">Car province</label>
+                            {{ car_form.province }}
+                            {% for error in car_form.province.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ car_form.district.id_for_label }}">Car district</label>
+                            {{ car_form.district }}
+                            {% for error in car_form.district.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="wide">
+                            <label for="{{ car_form.exact_location.id_for_label }}">Exact location</label>
+                            {{ car_form.exact_location }}
+                            {% for error in car_form.exact_location.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button class="step-button" type="button" data-prev-step>Back</button>
+                        <button class="step-button next" type="button" data-next-step>Next</button>
+                    </div>
+                </section>
+
+                <section class="panel step-panel" data-step="3">
+                    <h2>Description</h2>
+                    <div class="field-grid">
+                        <div class="wide">
+                            <label for="{{ car_form.description.id_for_label }}">Description</label>
+                            {{ car_form.description }}
+                            {% for error in car_form.description.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="wide">
+                            <label for="{{ car_form.features_summary.id_for_label }}">Features summary</label>
+                            {{ car_form.features_summary }}
+                            {% for error in car_form.features_summary.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button class="step-button" type="button" data-prev-step>Back</button>
+                        <button class="step-button next" type="button" data-next-step>Next</button>
+                    </div>
+                </section>
+
+                <section class="panel step-panel" data-step="4">
+                    <h2>Media</h2>
+                    <p>Use clear exterior, interior, dashboard, engine, and short walk around media.</p>
+                    <div class="field-grid">
+                        <div>
+                            <label for="{{ media_form.photos.id_for_label }}">Photos</label>
+                            {{ media_form.photos }}
+                            <div class="help-text">{{ media_form.photos.help_text }}</div>
+                            <div class="media-count"><span>Selected photos</span><strong id="photoCount">0 / 3</strong></div>
+                            <div class="preview-grid" id="photoPreview"></div>
+                            {% for error in media_form.photos.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div>
+                            <label for="{{ media_form.videos.id_for_label }}">Videos</label>
+                            {{ media_form.videos }}
+                            <div class="help-text">{{ media_form.videos.help_text }}</div>
+                            <div class="media-count"><span>Selected videos</span><strong id="videoCount">0 / 1</strong></div>
+                            {% for error in media_form.videos.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="step-actions">
+                        <button class="step-button" type="button" data-prev-step>Back</button>
+                        <button class="submit" type="submit">Upload car for review</button>
+                    </div>
+                </section>
+            </form>
+
+            <aside>
+                <section class="panel">
+                    <h2>Recent uploads</h2>
+                    <p>Your latest listings submitted from this account.</p>
+                    <div class="recent-list">
+                        {% for car in recent_cars %}
+                            <div class="recent-row" data-detail-url="{% url 'homepage:car_detail' car.car.pk %}">
+                                <div class="recent-image">
+                                    {% if car.image %}
+                                        <img src="{{ car.image }}" alt="{{ car.car.title }}">
+                                    {% else %}
+                                        No photo
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="recent-meta">
+                                        <strong>{{ car.car.title }}</strong>
+                                        <span class="status">{{ car.car.get_status_display }}</span>
+                                    </div>
+                                    <span>{{ car.car.year }} {{ car.car.brand.name|default:"No brand" }}</span>
+                                    <span class="plate">{{ car.car.registration_plate }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="empty">No cars uploaded yet.</div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        const ownerType = document.querySelector("[data-owner-type='true']");
+        const citizenFields = document.querySelectorAll(".citizen-field");
+        const photoInput = document.getElementById("{{ media_form.photos.id_for_label }}");
+        const videoInput = document.getElementById("{{ media_form.videos.id_for_label }}");
+        const photoCount = document.getElementById("photoCount");
+        const videoCount = document.getElementById("videoCount");
+        const photoPreview = document.getElementById("photoPreview");
+        const uploadForm = document.getElementById("carUploadForm");
+        const stepPanels = Array.from(document.querySelectorAll("[data-step]"));
+        const stepTabs = Array.from(document.querySelectorAll("[data-step-target]"));
+        let currentStep = 0;
+
+        function showStep(stepIndex) {
+            currentStep = Math.max(0, Math.min(stepIndex, stepPanels.length - 1));
+            stepPanels.forEach((panel, index) => {
+                panel.classList.toggle("active", index === currentStep);
+            });
+            stepTabs.forEach((tab, index) => {
+                tab.classList.toggle("active", index === currentStep);
+            });
+            window.scrollTo({ top: uploadForm.offsetTop - 90, behavior: "smooth" });
+        }
+
+        function toggleOwnerFields() {
+            const isCitizen = ownerType.value === "citizen";
+            citizenFields.forEach((field) => {
+                field.style.display = isCitizen ? "" : "none";
+            });
+        }
+
+        function updatePhotoPreview() {
+            const files = Array.from(photoInput.files || []);
+            photoCount.textContent = `${files.length} / 3`;
+            photoPreview.innerHTML = "";
+
+            files.slice(0, 12).forEach((file) => {
+                const image = document.createElement("img");
+                image.alt = file.name;
+                image.src = URL.createObjectURL(file);
+                image.onload = () => URL.revokeObjectURL(image.src);
+                photoPreview.appendChild(image);
+            });
+        }
+
+        function updateVideoCount() {
+            const files = Array.from(videoInput.files || []);
+            videoCount.textContent = `${files.length} / 1`;
+        }
+
+        ownerType.addEventListener("change", toggleOwnerFields);
+        photoInput.addEventListener("change", updatePhotoPreview);
+        videoInput.addEventListener("change", updateVideoCount);
+
+        uploadForm.addEventListener("submit", (event) => {
+            const photoTotal = photoInput.files ? photoInput.files.length : 0;
+            const videoTotal = videoInput.files ? videoInput.files.length : 0;
+
+            if (photoTotal < 3 || videoTotal < 1) {
+                event.preventDefault();
+                showStep(4);
+                alert("Please select at least 3 photos and 1 video before uploading.");
+            }
+        });
+
+        stepTabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                showStep(Number(tab.dataset.stepTarget));
+            });
+        });
+
+        document.querySelectorAll("[data-next-step]").forEach((button) => {
+            button.addEventListener("click", () => showStep(currentStep + 1));
+        });
+
+        document.querySelectorAll("[data-prev-step]").forEach((button) => {
+            button.addEventListener("click", () => showStep(currentStep - 1));
+        });
+
+        document.addEventListener("click", (event) => {
+            const row = event.target.closest("[data-detail-url]");
+            if (!row || event.target.closest("a, button, input, select, textarea, label")) return;
+            window.location.href = row.dataset.detailUrl;
+        });
+
+        const firstErrorPanel = document.querySelector("[data-step] .field-error, [data-step] .form-errors li");
+        if (firstErrorPanel) {
+            const panel = firstErrorPanel.closest("[data-step]");
+            showStep(Number(panel.dataset.step));
+        }
+
+        toggleOwnerFields();
+        updatePhotoPreview();
+        updateVideoCount();
+    </script>
+{% endblock %}
