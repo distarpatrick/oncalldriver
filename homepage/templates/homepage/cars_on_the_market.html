@@ -1,4 +1,5 @@
-﻿{% extends "homepage/base.html" %}
+{% extends "homepage/base.html" %}
+{% block global_messages %}{% endblock %}
 {% load static %}
 
 {% block title %}Cars on the Market - {{ site_name }}{% endblock %}
@@ -61,7 +62,7 @@
   }
 
   /* ====== CONTROLS BAR ====== */
-  /* Sticky offset accounts for your base.html topbar height â€” adjust the top value if needed */
+  /* Sticky offset accounts for your base.html topbar height — adjust the top value if needed */
   .controls {
     background: var(--cream);
     border-bottom: 1px solid var(--border);
@@ -277,7 +278,7 @@
   .badge-featured { background: rgba(201, 150, 42, 0.18); border: 1px solid rgba(201, 150, 42, 0.35); color: var(--gold); }
   .badge-negotiable { background: rgba(192, 82, 42, 0.12); border: 1px solid rgba(192, 82, 42, 0.3); color: var(--rust); }
 
-  /* -- Wishlist button â€” NO color change on hover -- */
+  /* -- Wishlist button — NO color change on hover -- */
   .btn-wish {
     position: absolute; top: 14px; right: 14px; width: 36px; height: 36px;
     background: rgba(245, 240, 232, 0.88); border: 1px solid rgba(140, 120, 80, 0.25);
@@ -339,7 +340,7 @@
 
   .card-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 
-  /* -- Book button â€” stays ink/dark, never changes to gold -- */
+  /* -- Book button — stays ink/dark, never changes to gold -- */
   .btn-book {
     background: var(--ink);
     color: var(--cream);
@@ -360,7 +361,7 @@
   }
   .btn-book:active { transform: translateY(0); }
 
-  /* -- Schedule/Visit button â€” stays sky/blue, never changes -- */
+  /* -- Schedule/Visit button — stays sky/blue, never changes -- */
   .btn-schedule {
     background: transparent;
     color: var(--sky);
@@ -480,7 +481,7 @@
 
   .modal-footer { padding: 16px 28px 28px; display: flex; gap: 10px; }
 
-  /* Modal primary button â€” stays ink, never changes to gold */
+  /* Modal primary button — stays ink, never changes to gold */
   .btn-modal-primary {
     flex: 1; background: var(--ink); color: var(--cream); border: none; padding: 13px;
     border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
@@ -491,7 +492,7 @@
   .btn-modal-primary:hover { background: var(--ink-soft); transform: translateY(-1px); }
   .btn-modal-primary.loading { opacity: 0.7; cursor: not-allowed; pointer-events: none; }
 
-  /* Schedule modal submit â€” stays sky/blue */
+  /* Schedule modal submit — stays sky/blue */
   .btn-modal-primary.sky-btn { background: var(--sky); }
   .btn-modal-primary.sky-btn:hover { background: #235d8f; }
 
@@ -588,7 +589,7 @@
 
 {% block content %}
 
-<!-- CONTROLS â€” sort + view toggle only; search is in base.html global header -->
+<!-- CONTROLS — sort + view toggle only; search is in base.html global header -->
 <div class="controls">
   <form method="get" action="{% url 'homepage:car_list' %}" id="filterForm">
     <div class="controls-inner">
@@ -721,7 +722,7 @@
                     {% for photo in photos %}
                       <div class="slider-slide">
                         <img src="{{ photo.image.url }}"
-                          alt="{{ car.title }} â€” photo {{ forloop.counter }}"
+                          alt="{{ car.title }} — photo {{ forloop.counter }}"
                           loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" />
                       </div>
                     {% endfor %}
@@ -893,7 +894,7 @@
           {% elif num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
             <a class="page-btn" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">{{ num }}</a>
           {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
-            <span class="page-dots">â€¦</span>
+            <span class="page-dots">…</span>
           {% endif %}
         {% endfor %}
 
@@ -921,11 +922,8 @@
           <div class="modal-title">Book This Car</div>
           <div class="modal-subtitle">Secure your reservation today</div>
           <div class="modal-pay-banner">
-            <strong>Pay via Mobile Money or Bank Transfer:</strong><br />
-            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br />
-            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> &nbsp;|&nbsp; Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br />
-            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br />
-            <small style="color:var(--ink-dim)">Then upload your payment screenshot below.</small>
+            <strong><i class="fa-solid fa-lock"></i> Secure checkout on the next step</strong><br />
+            Pay instantly with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong>. You'll get a prompt on your phone, or our bank details with your unique payment reference.
           </div>
         </div>
       <button class="modal-close" onclick="closeModal('bookModal')" aria-label="Close">
@@ -934,7 +932,7 @@
     </div>
     <div class="modal-body">
       <div class="modal-car-info" id="modalCarInfo">
-        <div style="color: var(--ink-dim); font-size: 13px">Loading car infoâ€¦</div>
+        <div style="color: var(--ink-dim); font-size: 13px">Loading car info…</div>
       </div>
       <div class="form-errors" id="bookFormErrors"></div>
 
@@ -977,12 +975,12 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Payment Screenshot / Receipt</label>
+        <label class="form-label">Already paid? Upload receipt (optional)</label>
         <div class="upload-area" id="bookUploadArea">
           <input type="file" id="bookReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'bookUploadArea','bookPreviewImg','bookFileName')" />
           <div class="upload-icon">??</div>
           <div class="upload-label"><strong>Click to upload</strong> or drag &amp; drop</div>
-          <div class="upload-hint">PNG, JPG, PDF â€” Max 5 MB</div>
+          <div class="upload-hint">PNG, JPG, PDF — Max 5 MB</div>
           <div class="upload-preview" id="bookUploadPreview">
             <img id="bookPreviewImg" src="" alt="Preview" />
             <div class="upload-filename" id="bookFileName"></div>
@@ -991,7 +989,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Notes (optional)</label>
-        <textarea class="form-textarea" id="bookNotes" placeholder="Any special requestsâ€¦"></textarea>
+        <textarea class="form-textarea" id="bookNotes" placeholder="Any special requests…"></textarea>
       </div>
       <div class="form-group">
         <label class="checkbox-item" style="color: var(--ink-muted)">
@@ -1016,11 +1014,8 @@
           <div class="modal-title">Schedule a Visit</div>
           <div class="modal-subtitle">Come see the car in person</div>
           <div class="modal-pay-banner">
-            <strong>Pay scheduling fee via:</strong><br />
-            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br />
-            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> &nbsp;|&nbsp; Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br />
-            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br />
-            <small style="color:var(--ink-dim)">Then upload your payment screenshot below.</small>
+            <strong><i class="fa-solid fa-lock"></i> Pay the scheduling fee securely next</strong><br />
+            After submitting, confirm the fee with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong> on our secure checkout.
           </div>
         </div>
       <button class="modal-close" onclick="closeModal('scheduleModal')" aria-label="Close">
@@ -1029,7 +1024,7 @@
     </div>
     <div class="modal-body">
       <div class="modal-car-info" id="modalSchedCarInfo">
-        <div style="color: var(--ink-dim); font-size: 13px">Loading car infoâ€¦</div>
+        <div style="color: var(--ink-dim); font-size: 13px">Loading car info…</div>
       </div>
       <div class="form-errors" id="schedFormErrors"></div>
 
@@ -1058,7 +1053,7 @@
         <input type="text" class="form-input" id="schedDistrict" placeholder="Where you'd like to meet" />
       </div>
       <div class="form-group">
-        <label class="form-label">Scheduling Fee â€” <span id="schedFeeDisplay">0 RWF</span></label>
+        <label class="form-label">Scheduling Fee — <span id="schedFeeDisplay">0 RWF</span></label>
         <select class="form-select" id="schedFeeMethod">
           <option value="mtn_momo">MTN Mobile Money</option>
           <option value="airtel_money">Airtel Money</option>
@@ -1072,7 +1067,7 @@
           <input type="file" id="schedReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'schedUploadArea','schedPreviewImg','schedFileName')" />
           <div class="upload-icon">??</div>
           <div class="upload-label"><strong>Click to upload</strong> or drag &amp; drop</div>
-          <div class="upload-hint">PNG, JPG, PDF â€” Max 5 MB</div>
+          <div class="upload-hint">PNG, JPG, PDF — Max 5 MB</div>
           <div class="upload-preview" id="schedUploadPreview">
             <img id="schedPreviewImg" src="" alt="Preview" />
             <div class="upload-filename" id="schedFileName"></div>
@@ -1181,7 +1176,7 @@
     }
   }
 
-  /* -- Auto-slide on hover â€” advances every 1.8s -- */
+  /* -- Auto-slide on hover — advances every 1.8s -- */
   const autoSlideTimers = {};
 
   document.querySelectorAll(".car-card").forEach((card) => {
@@ -1309,7 +1304,7 @@
     activeCard = urls.card; activeBookUrl = urls.bookUrl; activeModalUrl = urls.modalUrl;
     const errEl = document.getElementById("bookFormErrors");
     errEl.style.display = "none"; errEl.textContent = "";
-    document.getElementById("modalCarInfo").innerHTML = '<div style="color:var(--ink-dim);font-size:13px">Loadingâ€¦</div>';
+    document.getElementById("modalCarInfo").innerHTML = '<div style="color:var(--ink-dim);font-size:13px">Loading…</div>';
     fetchCarInfo(activeModalUrl)
       .then((car) => {
         const priceFmt = parseInt(car.price).toLocaleString("rw-RW");
@@ -1320,7 +1315,7 @@
           ${buildModalThumb(car)}
           <div class="modal-car-details">
             <h4>${car.title}</h4>
-            <p>${car.year} Â· ${car.transmission} Â· ${car.fuel_type} Â· ${car.province}</p>
+            <p>${car.year} · ${car.transmission} · ${car.fuel_type} · ${car.province}</p>
           </div>
           <div class="modal-car-price">${priceFmt}<br>
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-dim)">RWF</span>
@@ -1352,7 +1347,7 @@
       errEl.style.display = "block"; return;
     }
     const submitBtn = document.getElementById("bookSubmitBtn");
-    submitBtn.classList.add("loading"); submitBtn.textContent = "Submittingâ€¦";
+    submitBtn.classList.add("loading"); submitBtn.textContent = "Submitting…";
     const receiptFile = document.getElementById("bookReceiptUpload").files[0];
     const formData = new FormData();
     formData.append("full_name", fullName); formData.append("phone", phone);
@@ -1395,7 +1390,7 @@
     activeCard = urls.card; activeSchedUrl = urls.schedUrl; activeModalUrl = urls.modalUrl;
     const errEl = document.getElementById("schedFormErrors");
     errEl.style.display = "none"; errEl.textContent = "";
-    document.getElementById("modalSchedCarInfo").innerHTML = '<div style="color:var(--ink-dim);font-size:13px">Loadingâ€¦</div>';
+    document.getElementById("modalSchedCarInfo").innerHTML = '<div style="color:var(--ink-dim);font-size:13px">Loading…</div>';
     fetchCarInfo(activeModalUrl)
       .then((car) => {
         const feeFmt = parseInt(car.scheduling_fee || 0).toLocaleString("rw-RW");
@@ -1404,7 +1399,7 @@
           ${buildModalThumb(car)}
           <div class="modal-car-details">
             <h4>${car.title}</h4>
-            <p>${car.year} Â· ${car.province} / ${car.district}</p>
+            <p>${car.year} · ${car.province} / ${car.district}</p>
           </div>
           <div class="modal-car-price" style="color:var(--sky)">${feeFmt}<br>
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-dim)">FEE</span>
@@ -1440,7 +1435,7 @@
       errEl.style.display = "block"; return;
     }
     const submitBtn = document.getElementById("schedSubmitBtn");
-    submitBtn.classList.add("loading"); submitBtn.textContent = "Submittingâ€¦";
+    submitBtn.classList.add("loading"); submitBtn.textContent = "Submitting…";
     const receiptFile = document.getElementById("schedReceiptUpload").files[0];
     const formData = new FormData();
     formData.append("full_name", fullName);

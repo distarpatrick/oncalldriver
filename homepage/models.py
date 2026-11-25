@@ -561,13 +561,38 @@ class Payment(models.Model):
     paid_at         = models.DateTimeField(null=True, blank=True)
     created_at      = models.DateTimeField(auto_now_add=True)
 
+    # Gateway / verification tracking
+    reference_code     = models.CharField(max_length=20, blank=True, db_index=True,
+                                          help_text="Short code the customer quotes on transfers (e.g. OCD-7K2Q9X)")
+    provider_reference = models.CharField(max_length=64, blank=True, db_index=True,
+                                          help_text="Reference returned by MTN/Airtel API")
+    provider_status    = models.CharField(max_length=30, blank=True,
+                                          help_text="awaiting_approval, awaiting_verification, successful, failed…")
+    provider_payload   = models.JSONField(default=dict, blank=True)
+    payer_name         = models.CharField(max_length=150, blank=True)
+    bank_account       = models.ForeignKey('payment.BankAccount', on_delete=models.SET_NULL,
+                                           null=True, blank=True, related_name='payments')
+    updated_at         = models.DateTimeField(auto_now=True, null=True)
+
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return f"Payment {self.payment_number} — {self.amount} RWF ({self.status})"
 
+    @property
+    def is_paid(self):
+        return self.status == 'success'
+
+    @property
+    def awaiting_verification(self):
+        return self.status == 'pending' and self.provider_status == 'awaiting_verification'
+
     def save(self, *args, **kwargs):
+        if not self.reference_code:
+            import secrets
+            alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+            self.reference_code = "OCD-" + "".join(secrets.choice(alphabet) for _ in range(6))
         if not self.payment_number:
             last = Payment.objects.order_by('-created_at').first()
             num  = (int(last.payment_number.split('-')[-1]) + 1) if last else 1
@@ -690,6 +715,8 @@ class SiteSettings(models.Model):
     payment_mtn_code     = models.CharField(max_length=25, blank=True, default='1159490')
     payment_account      = models.CharField(max_length=50, blank=True, default='123456789')
     payment_account_name = models.CharField(max_length=100, blank=True, default='OnCall Driver')
+    payment_airtel_phone = models.CharField(max_length=25, blank=True,
+                                            help_text="Airtel Money number customers send money to (manual mode)")
 
     # Business rules
     default_scheduling_fee = models.DecimalField(max_digits=10, decimal_places=2, default=5000,

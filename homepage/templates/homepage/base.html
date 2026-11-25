@@ -5,32 +5,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ site_name }} | Premium Car Marketplace{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site_name }} — buy verified cars in Rwanda, book visits online and pay securely with MTN MoMo, Airtel Money or bank transfer.{% endblock %}">
+  <meta name="theme-color" content="#070a10">
+  <meta property="og:title" content="{{ site_name }} | Premium Car Marketplace">
+  <meta property="og:description" content="Verified cars, online visit booking and secure MTN MoMo, Airtel Money & bank payments.">
+  <meta property="og:type" content="website">
  <link rel="icon" type="image/x-icon" href="{% static 'images/oncall_logo.ico' %}">
 <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/oncall_logo-16x16.png' %}">
 <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/oncall_logo-32x32.png' %}">
 <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   {% block extra_css %}{% endblock %}
   <style>
     .topbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(10,10,10,0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border, #222226);
-      padding: 0 32px;
+      background: rgba(7,10,16,0.78);
+      -webkit-backdrop-filter: saturate(160%) blur(18px);
+      backdrop-filter: saturate(160%) blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 clamp(16px, 3vw, 36px);
       height: 64px;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+      transition: background .3s, box-shadow .3s;
     }
+    .topbar.scrolled { background: rgba(7,10,16,0.95); box-shadow: 0 12px 34px rgba(0,0,0,0.35); }
 
     .topbar-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px; letter-spacing: 3px;
-      color: var(--accent, #e8c84a); text-decoration: none;
-      display: flex; align-items: center; gap: 10px;
+      font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+      font-size: 18px; font-weight: 800; letter-spacing: -0.01em;
+      color: #fff; text-decoration: none; white-space: nowrap;
+      display: flex; align-items: center; gap: 11px;
       min-width: 200px;
+    }
+    .topbar-logo .logo-text small {
+      display: block; margin-top: 3px; color: #f5b83d;
+      font: 600 9.5px/1 "DM Mono", monospace; letter-spacing: .22em; text-transform: uppercase;
     }
     .topbar-logo .logo-dot {
       display: inline-block; width: 8px; height: 8px;
@@ -40,11 +53,11 @@
     @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
     .topbar-logo .logo-img {
-      width: 36px; height: 36px; border-radius: 8px; overflow: hidden;
-      background: linear-gradient(135deg, #111, var(--orange, #ff7a18), var(--teal, #15a3a3));
+      width: 38px; height: 38px; border-radius: 11px; overflow: hidden;
+      background: linear-gradient(135deg, #ffd27a, #f5b83d 45%, #ff8a3d);
       display: flex; align-items: center; justify-content: center;
-      color: #fff; font-weight: 900; font-size: 14px;
-      box-shadow: 0 8px 24px rgba(255,122,24,0.3);
+      color: #1a1205; font-weight: 900; font-size: 14px; letter-spacing: -.02em;
+      box-shadow: 0 8px 24px rgba(245,184,61,0.3), inset 0 0 0 1px rgba(255,255,255,.25);
     }
     .topbar-logo .logo-img img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -53,16 +66,18 @@
       list-style: none; padding: 0; margin: 0;
     }
     .nav-links a {
+      position: relative;
       display: inline-flex; align-items: center; min-height: 38px;
-      padding: 0 14px; border-radius: var(--radius-sm, 8px);
-      color: white; font-weight: 500; font-size: 13px;
+      padding: 0 14px; border-radius: 10px;
+      color: rgba(255,255,255,0.74); font-weight: 600; font-size: 13.5px;
       transition: color 0.2s, background 0.2s;
       text-decoration: none;
     }
-    .nav-links a:hover,
-    .nav-links a.active {
-      color:  #010101;
-      background:white;
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-links a.active { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-links > li > a.active::after {
+      content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px;
+      border-radius: 2px; background: linear-gradient(90deg, #ffd27a, #f5b83d);
     }
 
     .account-nav { position: relative; }
@@ -296,13 +311,23 @@
     }
 
     .topbar-right { display: flex; align-items: center; gap: 10px; }
-    .btn-signin {
-      background: var(--accent, #e8c84a); color: var(--black, #0a0a0a) !important;
-      padding: 8px 18px; border-radius: 6px;
-      font-weight: 700 !important; font-size: 13px;
-      transition: background 0.2s, transform 0.1s;
+    .nav-links a.btn-signin, .btn-signin {
+      background: linear-gradient(135deg, #ffd27a, #f5b83d); color: #1a1205 !important;
+      padding: 0 18px; border-radius: 10px;
+      font-weight: 800 !important; font-size: 13px;
+      box-shadow: 0 10px 26px rgba(245,184,61,0.25);
+      transition: box-shadow 0.2s, transform 0.1s;
     }
-    .btn-signin:hover { background: #f0d050; transform: translateY(-1px); }
+    .nav-links a.btn-signin:hover, .btn-signin:hover { background: linear-gradient(135deg, #ffe09a, #f5b83d); transform: translateY(-1px); }
+    .nav-links a.btn-signin::after { display: none; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+      border-radius: 10px; border: 1px solid rgba(245,184,61,0.45);
+      color: #ffd27a; font: 700 13px/1 "Plus Jakarta Sans", sans-serif; text-decoration: none;
+      transition: background .2s, color .2s;
+    }
+    .nav-cta:hover { background: rgba(245,184,61,0.12); color: #fff; }
+    @media (max-width: 1180px) { .nav-cta { display: none; } }
 
     .menu-toggle {
       display: none; width: 40px; height: 40px;
@@ -338,8 +363,10 @@
       .search-actions { margin-top: 12px; }
     }
   </style>
+  <link rel="stylesheet" href="{% static 'css/oncall.css' %}">
 </head>
 <body>
+<div class="oc-progress" id="ocProgress" aria-hidden="true"></div>
 <nav class="topbar" id="topbar">
   <a class="topbar-logo" href="{% url 'homepage:index' %}">
     <span class="logo-img">
@@ -349,8 +376,7 @@
         OD
       {% endif %}
     </span>
-    {{ site_name }}
-    <span class="logo-dot"></span>
+    <span class="logo-text">{{ site_name }}<small>Cars · Visits · Drivers</small></span>
   </a>
 
   <ul class="nav-links" id="navLinks">
@@ -429,6 +455,7 @@
   </ul>
 
   <div class="topbar-right">
+    <a class="nav-cta" href="{% url 'homepage:make_book_visit' %}"><i class="fa-solid fa-calendar-check"></i> Book a visit</a>
     <button class="search-btn" id="searchBtn" type="button" aria-label="Search">
       <i class="fa-solid fa-magnifying-glass"></i>
     </button>
@@ -455,7 +482,69 @@
 
 {% block content %}{% endblock %}
 
+{% block global_messages %}
+  {% if messages %}
+    <div class="oc-toasts" id="ocToasts" role="status" aria-live="polite">
+      {% for message in messages %}
+        <div class="oc-toast {{ message.tags }}">
+          <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% elif message.tags == 'error' %}fa-circle-exclamation{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+          <span>{{ message }}</span>
+          <button type="button" aria-label="Dismiss" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+<button class="oc-top-btn" id="ocTopBtn" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+{% if site.whatsapp_number %}
+  <a class="oc-wa-btn" href="https://wa.me/{{ site.whatsapp_number|cut:'+'|cut:' ' }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+{% endif %}
+
 <script>
+  (function () {
+    const topbar = document.getElementById('topbar');
+    const progress = document.getElementById('ocProgress');
+    const topBtn = document.getElementById('ocTopBtn');
+    function onScroll() {
+      const y = window.scrollY || 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (progress) progress.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      topbar?.classList.toggle('scrolled', y > 12);
+      topBtn?.classList.toggle('show', y > 600);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Auto-dismiss toasts
+    document.querySelectorAll('.oc-toast').forEach((t, i) => {
+      setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 350); }, 6000 + i * 600);
+    });
+
+    // Reveal on scroll
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const targets = document.querySelectorAll('[data-reveal], .car-card, .service-item, .video-card, .stat, .oc-step, .oc-pay-card');
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('oc-reveal-in');
+            entry.target.classList.remove('oc-reveal-init');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -40px 0px', threshold: 0.08 });
+      targets.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top > window.innerHeight) {
+          el.classList.add('oc-reveal-init');
+          el.style.transitionDelay = ((i % 4) * 70) + 'ms';
+          io.observe(el);
+        }
+      });
+    }
+  })();
+
   const menuToggle = document.getElementById('menuToggle');
   const navLinks = document.getElementById('navLinks');
   menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));

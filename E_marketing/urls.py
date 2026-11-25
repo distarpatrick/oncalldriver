@@ -1,30 +1,24 @@
-"""
-URL configuration for E_marketing project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
+"""URL configuration for the On Call Driver project."""
 from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import include, path
+from django.contrib import admin
+from django.urls import include, path, re_path
+from django.views.static import serve
+
+admin.site.site_header = "On Call Driver — Administration"
+admin.site.site_title = "On Call Driver Admin"
+admin.site.index_title = "Control panel"
 
 urlpatterns = [
     path('', include('homepage.urls')),
+    path('pay/', include('payment.urls')),
     # Django built-in auth views (password reset, login/out helpers)
     path('accounts/', include('django.contrib.auth.urls')),
-    path('admin/', admin.site.urls),
+    path(settings.ADMIN_URL, admin.site.urls),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.SERVE_MEDIA:
+    # User uploads (car photos, receipts). For larger deployments move media
+    # to object storage (S3/Cloudinary) and set DJANGO_SERVE_MEDIA=false.
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

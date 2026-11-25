@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -19,15 +20,18 @@ UPLOAD_SELECT_CLASS = "upload-input upload-select"
 
 
 def normalize_rwanda_phone(phone):
-    phone = (phone or "").strip().replace(" ", "").replace("-", "")
+    """Accept 07XXXXXXXX, 2507XXXXXXXX or +2507XXXXXXXX and return +2507XXXXXXXX."""
+    phone = re.sub(r"[\s\-().]", "", phone or "")
     if not phone:
         raise ValidationError("Phone number is required.")
-    if not phone.startswith("+250"):
-        raise ValidationError("Enter a valid phone number starting with +250.")
-    if not phone[1:].isdigit() or len(phone) != 13:
-        raise ValidationError("Enter a valid Rwandan phone number in the format +2507XXXXXXXX.")
-    if not phone[4:].startswith("7"):
-        raise ValidationError("Use a Rwanda mobile number starting with +2507.")
+    if phone.startswith("00250"):
+        phone = "+" + phone[2:]
+    elif phone.startswith("250"):
+        phone = "+" + phone
+    elif phone.startswith("07"):
+        phone = "+250" + phone[1:]
+    if not re.fullmatch(r"\+2507\d{8}", phone):
+        raise ValidationError("Enter a valid Rwandan mobile number, e.g. 078 123 4567 or +250 78 123 4567.")
     return phone
 
 
@@ -322,7 +326,7 @@ class BookingForm(forms.Form):
         })
     )
     phone = forms.CharField(
-        max_length=15,
+        max_length=20,
         widget=forms.TextInput(attrs={
             'class': 'form-input',
             'placeholder': '+250 7XX XXX XXX',
@@ -353,6 +357,12 @@ class BookingForm(forms.Form):
         label='Upload payment screenshot',
         help_text='Upload your MTN, bank transfer, or mobile money receipt to help staff verify payment faster.',
     )
+
+    def clean_payment_receipt(self):
+        receipt = self.cleaned_data.get('payment_receipt')
+        if receipt and receipt.size > 5 * 1024 * 1024:
+            raise ValidationError('Receipt image must be 5 MB or smaller.')
+        return receipt
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
@@ -390,7 +400,7 @@ class VisitScheduleForm(forms.Form):
         })
     )
     phone = forms.CharField(
-        max_length=15,
+        max_length=20,
         widget=forms.TextInput(attrs={
             'class': 'form-input',
             'placeholder': '+250 7XX XXX XXX',
@@ -649,6 +659,10 @@ class SiteSettingsForm(forms.ModelForm):
             'payment_account': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '123456789'
+            }),
+            'payment_airtel_phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+250 73X XXX XXX'
             }),
             'payment_account_name': forms.TextInput(attrs={
                 'class': 'form-control',

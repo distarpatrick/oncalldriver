@@ -3006,6 +3006,8 @@
                     </td>
                     <td style="font-size: 0.82rem">
                       {{ p.get_payment_method_display }}
+                      <div style="color: var(--fog); font-size: 0.72rem; font-family: monospace">{{ p.reference_code }}{% if p.transaction_id %}<br>txn {{ p.transaction_id }}{% endif %}{% if p.bank_account %}<br>{{ p.bank_account.bank_name }}{% endif %}</div>
+                      {% if p.provider_status == "awaiting_verification" %}<span class="badge bg-sapphire" style="margin-top:4px">Proof submitted</span>{% endif %}
                     </td>
                     <td style="font-size: 0.82rem">
                       {% if p.receipt_image %}

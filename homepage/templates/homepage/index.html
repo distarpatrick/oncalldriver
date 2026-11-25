@@ -1,4 +1,5 @@
-﻿{% extends "homepage/base.html" %}
+{% extends "homepage/base.html" %}
+{% block global_messages %}{% endblock %}
 {% load static %}
 
 {% block title %}{{ site_name }} | Premium Car Marketplace{% endblock %}
@@ -51,7 +52,7 @@
 
       a { color: inherit; text-decoration: none; }
 
-      /* â”€â”€ TOPBAR â”€â”€ */
+      /* ── TOPBAR ── */
       .topbar {
         position: fixed; top: 0; left: 0; right: 0; z-index: 100;
         background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(20px);
@@ -152,7 +153,7 @@
         font-size: 18px; align-items: center; justify-content: center;
       }
 
-      /* â”€â”€ HERO SLIDER â”€â”€ */
+      /* ── HERO SLIDER ── */
       .hero { position: relative; min-height: 760px; padding-top: 64px; overflow: hidden; background: #050609; }
       .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease; }
       .slide.active { opacity: 1; }
@@ -198,7 +199,7 @@
       .dot { width: 28px; height: 4px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.3); cursor: pointer; transition: background 0.2s; }
       .dot.active { background: var(--accent); }
 
-      /* â”€â”€ STATS BAND â”€â”€ */
+      /* ── STATS BAND ── */
       .stats-band { position: relative; z-index: 4; margin-top: -56px; }
       .stats-grid {
         width: min(1180px, calc(100% - 32px)); margin: 0 auto;
@@ -210,14 +211,14 @@
       .stat strong { display: block; font-family: "Bebas Neue", sans-serif; font-size: 32px; color: var(--accent); letter-spacing: 1px; }
       .stat span { color: var(--text-muted); font-size: 12px; font-weight: 500; font-family: "DM Mono", monospace; }
 
-      /* â”€â”€ SECTIONS â”€â”€ */
+      /* ── SECTIONS ── */
       .section { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 80px 0; }
       .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
       .section-head h2 { margin: 0; font-family: "Bebas Neue", sans-serif; font-size: clamp(36px, 5vw, 56px); letter-spacing: 2px; color: black; }
       .section-head h2 span { color: var(--accent); }
       .section-head p { max-width: 440px; color: #b89a2a; font-size: 14px; line-height: 1.7; }
 
-      /* â”€â”€ CAR CARDS â”€â”€ */
+      /* ── CAR CARDS ── */
       .cars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
       .cars-grid .car-card:first-child { grid-column: span 2; }
 
@@ -285,7 +286,7 @@
       }
       .btn-visit:hover { background: rgba(77,168,255,0.1); border-color: rgba(77,168,255,0.5); }
 
-      /* â”€â”€ ABOUT BAND â”€â”€ */
+      /* ── ABOUT BAND ── */
       .about-band { background: var(--off-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
       .about-grid { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 48px; align-items: center; }
       .about-copy h2 { font-family: "Bebas Neue", sans-serif; font-size: clamp(34px, 4vw, 56px); letter-spacing: 2px; margin: 0 0 18px; color: var(--text); }
@@ -298,7 +299,7 @@
       .service-item strong { display: block; font-size: 13px; color: var(--text); margin-bottom: 3px; }
       .service-item span { font-size: 11px; color: var(--text-muted); font-family: "DM Mono", monospace; }
 
-      /* â”€â”€ VIDEO SECTION â”€â”€ */
+      /* ── VIDEO SECTION ── */
       .video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
       .video-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
       .video-card:hover { border-color: rgba(232, 200, 74, 0.2); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
@@ -310,7 +311,7 @@
       .video-info h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
       .video-info p { font-size: 12px; color: var(--text-muted); font-family: "DM Mono", monospace; }
 
-      /* â”€â”€ MODALS â”€â”€ */
+      /* ── MODALS ── */
       .modal-overlay {
         position: fixed; inset: 0; z-index: 500;
         background: rgba(114, 112, 112, 0.88); backdrop-filter: blur(8px);
@@ -423,11 +424,11 @@
       }
       .checkbox-item input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
       .checkbox-item input[type="checkbox"]:checked::after {
-        content: "âœ“"; position: absolute; top: -1px; left: 2px;
+        content: "✓"; position: absolute; top: -1px; left: 2px;
         font-size: 11px; color: var(--black); font-weight: 700;
       }
 
-      /* â”€â”€ TOAST â”€â”€ */
+      /* ── TOAST ── */
       .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
       .toast {
         background: var(--card-bg); border: 1px solid var(--border-light);
@@ -447,7 +448,7 @@
       .toast-text strong { display: block; font-size: 13px; color: var(--text); }
       .toast-text span { font-size: 12px; color: var(--text-muted); }
 
-      /* â”€â”€ FOOTER â”€â”€ */
+      /* ── FOOTER ── */
       .footer { background: #050609; border-top: 3px solid var(--accent); }
       .footer-grid { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 60px 0 36px; display: grid; grid-template-columns: 1.2fr repeat(3, 1fr); gap: 32px; }
       .footer-brand { font-family: "Bebas Neue", sans-serif; font-size: 24px; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px; }
@@ -471,7 +472,7 @@
       ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-      /* â”€â”€ RESPONSIVE â”€â”€ */
+      /* ── RESPONSIVE ── */
       @media (max-width: 980px) {
         .menu-toggle { display: flex; }
         .nav-links { position: absolute; top: 64px; left: 16px; right: 16px; flex-direction: column; align-items: stretch; display: none; padding: 10px; border: 1px solid var(--border-light); border-radius: var(--radius); background: var(--card-bg); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
@@ -499,12 +500,114 @@
         .modal-footer .btn-modal-cancel { width: 100%; }
         .payment-options { grid-template-columns: 1fr; }
       }
+
+      /* ═══ 2026 refresh — homepage polish ═══ */
+      body { background: #f5f7fb; font-family: "Plus Jakarta Sans", "DM Sans", sans-serif; }
+      body::before { display: none; }
+      .hero { min-height: 780px; }
+      .hero::after {
+        background:
+          radial-gradient(1200px 500px at 10% 60%, rgba(7,10,16,.92), transparent 70%),
+          linear-gradient(90deg, rgba(7,10,16,.92), rgba(7,10,16,.55) 58%, rgba(7,10,16,.15)),
+          linear-gradient(0deg, rgba(7,10,16,.85), transparent 45%);
+      }
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 8px 16px;
+        border-color: rgba(245,184,61,.35); background: rgba(245,184,61,.1); color: #ffd27a; letter-spacing: 1.2px;
+      }
+      .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,.2); }
+      .hero h1 { font-size: clamp(54px, 8.4vw, 108px); letter-spacing: 1.5px; text-shadow: 0 10px 40px rgba(0,0,0,.35); }
+      .hero p { color: rgba(255,255,255,.82); }
+      .btn { border-radius: 12px; font-family: "Plus Jakarta Sans", sans-serif; }
+      .btn-primary { background: linear-gradient(135deg, #ffd27a, #f5b83d); color: #1a1205; box-shadow: 0 16px 40px rgba(245,184,61,.3); }
+      .btn-primary:hover { background: linear-gradient(135deg, #ffe09a, #f5b83d); }
+      .hero-trust { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 34px; color: rgba(255,255,255,.78); font-size: 13.5px; font-weight: 600; }
+      .hero-trust span { display: inline-flex; align-items: center; gap: 8px; }
+      .hero-trust i { color: #f5b83d; }
+      .dot.active { background: #f5b83d; width: 42px; }
+      .dot { transition: width .3s, background .3s; }
+
+      .stats-grid {
+        background: rgba(12,16,24,.92); border-color: rgba(255,255,255,.08);
+        -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+        box-shadow: 0 30px 80px rgba(7,10,16,.35);
+      }
+      .stat { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.06); display: flex; align-items: center; gap: 14px; }
+      .stat .stat-ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(245,184,61,.12); color: #f5b83d; font-size: 17px; flex-shrink: 0; }
+      .stat strong { font-size: 34px; line-height: 1; color: #fff; }
+      .stat span { color: #9aa4b8; }
+
+      .section-head h2 { color: #0b0f17; }
+      .section-head h2 span { color: #e0a22a; }
+      .section-head p { color: #5b6476; }
+      .oc-kicker { display: inline-block; margin-bottom: 10px; color: #c98a14; font: 700 11px/1 "DM Mono", monospace; letter-spacing: .2em; text-transform: uppercase; }
+
+      .car-card {
+        --text: #0f172a; --text-muted: #5b6476; --text-dim: #8a93a6; --off-black: #f1f3f7; --border: #e6e9f0;
+        background: #fff; border-color: #e6e9f0; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 10px 30px rgba(15,23,42,.06);
+        animation: none;
+      }
+      .car-card:hover { border-color: rgba(245,184,61,.55); box-shadow: 0 26px 60px rgba(15,23,42,.14); }
+      .card-brand { color: #c98a14; }
+      .card-location { color: #5b6476; }
+      .card-price { color: #0b0f17; font-size: 26px; }
+      .btn-book { background: linear-gradient(135deg, #ffd27a, #f5b83d); color: #1a1205; border-radius: 10px; }
+      .btn-book:hover { background: #0b0f17; color: #ffd27a; }
+      .btn-visit { color: #2563eb; border-color: rgba(37,99,235,.3); border-radius: 10px; }
+
+      .about-band { background: #0b0f17; }
+      .service-item { border-radius: 14px; transition: border-color .2s, transform .2s; }
+      .service-item:hover { transform: translateY(-3px); border-color: rgba(245,184,61,.4); }
+
+      /* How it works */
+      .oc-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: step; }
+      .oc-step {
+        position: relative; padding: 26px 22px 24px; border-radius: 18px; background: #fff;
+        border: 1px solid #e6e9f0; box-shadow: 0 10px 30px rgba(15,23,42,.05);
+      }
+      .oc-step::before {
+        counter-increment: step; content: "0" counter(step);
+        position: absolute; right: 18px; top: 16px; font: 400 40px/1 "Bebas Neue", sans-serif; color: #eef0f5;
+      }
+      .oc-step .ic { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; color: #1a1205; background: linear-gradient(135deg, #ffd27a, #f5b83d); box-shadow: 0 12px 26px rgba(245,184,61,.3); }
+      .oc-step h3 { margin: 0 0 8px; font-size: 16.5px; font-weight: 800; color: #0b0f17; letter-spacing: -.01em; }
+      .oc-step p { margin: 0; color: #5b6476; font-size: 13.5px; line-height: 1.65; }
+
+      /* Pay your way */
+      .oc-pay { background: radial-gradient(900px 400px at 85% 0%, rgba(245,184,61,.14), transparent 60%), #070a10; color: #eef2f8; }
+      .oc-pay .section-head h2 { color: #fff; }
+      .oc-pay .section-head p { color: #9aa4b8; }
+      .oc-pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .oc-pay-card {
+        position: relative; overflow: hidden; padding: 28px 24px; border-radius: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+        border: 1px solid rgba(255,255,255,.08); transition: transform .25s, border-color .25s;
+      }
+      .oc-pay-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.18); }
+      .oc-pay-card::after { content: ""; position: absolute; inset: auto -40px -60px auto; width: 180px; height: 180px; border-radius: 50%; background: var(--brand); opacity: .12; filter: blur(10px); }
+      .oc-pay-logo { width: 58px; height: 58px; border-radius: 16px; display: grid; place-items: center; font: 900 15px/1 "Plus Jakarta Sans", sans-serif; background: var(--brand); color: var(--brand-ink); margin-bottom: 18px; }
+      .oc-pay-card h3 { margin: 0 0 8px; font-size: 19px; font-weight: 800; }
+      .oc-pay-card p { margin: 0 0 16px; color: #9aa4b8; font-size: 14px; line-height: 1.65; }
+      .oc-pay-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 13.5px; color: #c9d1df; }
+      .oc-pay-card li i { color: #22c55e; margin-right: 8px; }
+      .oc-pay-note { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px 26px; color: #9aa4b8; font-size: 13.5px; }
+      .oc-pay-note i { color: #f5b83d; margin-right: 6px; }
+
+      @media (max-width: 980px) {
+        .oc-steps { grid-template-columns: repeat(2, 1fr); }
+        .oc-pay-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 560px) {
+        .oc-steps { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: 1fr 1fr; }
+        .hero-trust { gap: 10px 16px; font-size: 12.5px; }
+      }
     </style>
 {% endblock %}
 
 {% block content %}
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HERO SLIDER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ HERO SLIDER ═══════════════════ -->
     <section class="hero" id="home">
       {% for slide in hero_slides %}
         <div class="slide {% if forloop.first %}active{% endif %}" data-title="{{ slide.title }}" data-text="{{ slide.text }}">
@@ -513,12 +616,18 @@
       {% endfor %}
 
       <div class="hero-content">
-        <span class="eyebrow">Trusted Cars Â· Clear Visits Â· Fast Support</span>
+        <span class="eyebrow">Trusted Cars · Clear Visits · Fast Support</span>
         <h1 id="heroTitle">{% if hero_slides %}{{ hero_slides.0.title }}{% else %}Your Next Car Starts Here{% endif %}</h1>
         <p id="heroText">{% if hero_slides %}{{ hero_slides.0.text }}{% else %}Find inspected cars, schedule visits, and drive with confidence.{% endif %}</p>
         <div class="hero-buttons">
-          <a class="btn btn-primary" href="{% url 'homepage:car_list' %}">Explore All Cars</a>
-          <a class="btn btn-ghost" href="{% url 'homepage:make_book_visit' %}">Make a Book Or Visit Now</a>
+          <a class="btn btn-primary" href="{% url 'homepage:car_list' %}"><i class="fa-solid fa-car-side"></i> Explore all cars</a>
+          <a class="btn btn-ghost" href="{% url 'homepage:make_book_visit' %}"><i class="fa-solid fa-calendar-check"></i> Book or visit now</a>
+        </div>
+        <div class="hero-trust">
+          <span><i class="fa-solid fa-shield-halved"></i> Verified listings</span>
+          <span><i class="fa-solid fa-mobile-screen-button"></i> MTN MoMo &amp; Airtel Money</span>
+          <span><i class="fa-solid fa-building-columns"></i> Bank transfer</span>
+          <span><i class="fa-solid fa-headset"></i> 24/7 on-call support</span>
         </div>
       </div>
 
@@ -529,22 +638,23 @@
       </div>
     </section>
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• STATS BAND â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ STATS BAND ═══════════════════ -->
     <div class="stats-band">
       <div class="stats-grid">
-        <div class="stat"><strong>24/7</strong><span>On-call guidance</span></div>
-        <div class="stat"><strong>35{{ featured_cars|length }}+</strong><span>Featured cars live</span></div>
-        <div class="stat"><strong>4000+</strong><span>Video walkthroughs</span></div>
-        <div class="stat"><strong>100%</strong><span>Professional booking</span></div>
+        <div class="stat"><div class="stat-ic"><i class="fa-solid fa-car"></i></div><div><strong>{{ stats.cars_live }}</strong><span>Cars available now</span></div></div>
+        <div class="stat"><div class="stat-ic"><i class="fa-solid fa-map-location-dot"></i></div><div><strong>{{ stats.districts }}</strong><span>Districts covered</span></div></div>
+        <div class="stat"><div class="stat-ic"><i class="fa-solid fa-user-check"></i></div><div><strong>{{ stats.customers }}+</strong><span>Registered customers</span></div></div>
+        <div class="stat"><div class="stat-ic"><i class="fa-solid fa-headset"></i></div><div><strong>24/7</strong><span>On-call support</span></div></div>
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FEATURED CARS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ FEATURED CARS ═══════════════════ -->
     <section class="section" id="cars">
       <div class="section-head">
         <div>
+          <span class="oc-kicker">Hand-picked</span>
           <h2>Featured <span>Cars</span></h2>
-          <p>Hand-picked available vehicles â€” schedule a visit or book directly from the listing.</p>
+          <p>Hand-picked available vehicles — schedule a visit or book directly from the listing.</p>
         </div>
         <a class="btn btn-primary" href="{% url 'homepage:car_list' %}" style="flex-shrink:0">View All Cars</a>
       </div>
@@ -591,14 +701,14 @@
               <div class="card-title">{{ car.title }}</div>
               <div class="card-specs">
                 <span class="spec-item">
-                  {% if car.fuel == 'Petrol' or car.fuel == 'petrol' %}â›½
-                  {% elif car.fuel == 'Diesel' or car.fuel == 'diesel' %}ðŸ›¢ï¸
-                  {% elif car.fuel == 'Electric' or car.fuel == 'electric' %}âš¡
-                  {% else %}ðŸ”‹{% endif %}
+                  {% if car.fuel == 'Petrol' or car.fuel == 'petrol' %}⛽
+                  {% elif car.fuel == 'Diesel' or car.fuel == 'diesel' %}🛢️
+                  {% elif car.fuel == 'Electric' or car.fuel == 'electric' %}⚡
+                  {% else %}🔋{% endif %}
                   {{ car.fuel }}
                 </span>
-                <span class="spec-item">âš™ï¸ {{ car.transmission }}</span>
-                <span class="spec-item">ðŸ“ {{ car.mileage }} km</span>
+                <span class="spec-item">⚙️ {{ car.transmission }}</span>
+                <span class="spec-item">📏 {{ car.mileage }} km</span>
               </div>
               <div class="card-location">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -610,7 +720,7 @@
                 <div>
                   <div class="card-price">{{ car.price|floatformat:"0" }} <span>RWF</span></div>
                   <div class="card-rating">
-                    <span class="stars">{% for i in "12345" %}{% if forloop.counter <= car.rating|floatformat:"0"|add:"0" %}â˜…{% endif %}{% endfor %}</span>
+                    <span class="stars">{% for i in "12345" %}{% if forloop.counter <= car.rating|floatformat:"0"|add:"0" %}★{% endif %}{% endfor %}</span>
                     {{ car.rating|floatformat:1 }}
                   </div>
                 </div>
@@ -629,13 +739,13 @@
           </div>
         {% empty %}
           <div style="grid-column:1/-1;text-align:center;padding:60px 24px;color:var(--text-muted)">
-            <p style="font-family:'DM Mono',monospace;font-size:13px">No featured cars yet â€” upload and mark as featured to show here.</p>
+            <p style="font-family:'DM Mono',monospace;font-size:13px">No featured cars yet — upload and mark as featured to show here.</p>
           </div>
         {% endfor %}
       </div>
     </section>
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ABOUT / SERVICES BAND â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ ABOUT / SERVICES BAND ═══════════════════ -->
     <div class="about-band" id="about">
       <div class="section about-grid">
         <div class="about-copy">
@@ -646,15 +756,70 @@
           <a class="btn btn-primary" href="{% url 'homepage:car_list' %}" style="margin-top:8px">Browse the Marketplace</a>
         </div>
         <div class="service-grid" id="services">
-          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">ðŸš—</div><strong>Vehicle Marketing</strong><span>Promotion for listed cars</span></a>
-          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">ðŸ“…</div><strong>Visit Scheduling</strong><span>Book a viewing in minutes</span></a>
-          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">ðŸ’³</div><strong>Flexible Booking</strong><span>Half or full payment options</span></a>
-          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">ðŸ§‘â€âœˆï¸</div><strong>Driver Requests</strong><span>Optional delivery support</span></a>
+          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">🚗</div><strong>Vehicle Marketing</strong><span>Promotion for listed cars</span></a>
+          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">📅</div><strong>Visit Scheduling</strong><span>Book a viewing in minutes</span></a>
+          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">💳</div><strong>Flexible Booking</strong><span>Half or full payment options</span></a>
+          <a class="service-item" href="{% url 'homepage:make_book_visit' %}"><div class="service-icon">🧑‍✈️</div><strong>Driver Requests</strong><span>Optional delivery support</span></a>
         </div>
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• VIDEO WALKTHROUGHS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+    <section class="section" id="how-it-works">
+      <div class="section-head">
+        <div>
+          <span class="oc-kicker">Simple &amp; transparent</span>
+          <h2>How it <span>works</span></h2>
+          <p>From browsing to driving away — four clear steps, with our team on call the whole way.</p>
+        </div>
+      </div>
+      <div class="oc-steps">
+        <div class="oc-step"><div class="ic"><i class="fa-solid fa-magnifying-glass"></i></div><h3>Find your car</h3><p>Compare verified cars by price, fuel, transmission, mileage and location.</p></div>
+        <div class="oc-step"><div class="ic"><i class="fa-solid fa-calendar-check"></i></div><h3>Book a visit</h3><p>Pick a date and time to inspect the car in person with a sales agent.</p></div>
+        <div class="oc-step"><div class="ic"><i class="fa-solid fa-mobile-screen-button"></i></div><h3>Pay securely</h3><p>Reserve with 50% or pay in full via MTN MoMo, Airtel Money or bank transfer.</p></div>
+        <div class="oc-step"><div class="ic"><i class="fa-solid fa-key"></i></div><h3>Drive away</h3><p>Get your invoice instantly and request an on-call driver for delivery.</p></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PAY YOUR WAY ═══════════════════ -->
+    <div class="oc-pay" id="payments">
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="oc-kicker">Payments</span>
+            <h2>Pay <span>your way</span></h2>
+            <p>Every payment gets a unique reference, is verified before your booking is confirmed, and comes with a downloadable invoice.</p>
+          </div>
+        </div>
+        <div class="oc-pay-grid">
+          <div class="oc-pay-card" style="--brand:#ffcc00;--brand-ink:#1a1a1a">
+            <div class="oc-pay-logo">MTN</div>
+            <h3>MTN MoMo</h3>
+            <p>Approve a payment prompt on your phone with your MoMo PIN, or pay with our MoMoPay code.</p>
+            <ul><li><i class="fa-solid fa-check"></i>Numbers starting 078 / 079</li><li><i class="fa-solid fa-check"></i>Instant confirmation</li></ul>
+          </div>
+          <div class="oc-pay-card" style="--brand:#ed1c24;--brand-ink:#fff">
+            <div class="oc-pay-logo">airtel</div>
+            <h3>Airtel Money</h3>
+            <p>Receive a USSD prompt on your Airtel line and confirm with your PIN in seconds.</p>
+            <ul><li><i class="fa-solid fa-check"></i>Numbers starting 072 / 073</li><li><i class="fa-solid fa-check"></i>No extra app needed</li></ul>
+          </div>
+          <div class="oc-pay-card" style="--brand:#2f6bff;--brand-ink:#fff">
+            <div class="oc-pay-logo"><i class="fa-solid fa-building-columns"></i></div>
+            <h3>Bank transfer</h3>
+            <p>Transfer or deposit at your bank using your payment reference, then upload the slip.</p>
+            <ul><li><i class="fa-solid fa-check"></i>Ideal for full payments</li><li><i class="fa-solid fa-check"></i>Verified by our finance team</li></ul>
+          </div>
+        </div>
+        <div class="oc-pay-note">
+          <span><i class="fa-solid fa-lock"></i>Encrypted HTTPS checkout</span>
+          <span><i class="fa-solid fa-receipt"></i>Automatic invoices</span>
+          <span><i class="fa-solid fa-rotate-left"></i>Refund support</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ═══════════════════ VIDEO WALKTHROUGHS ═══════════════════ -->
     <section class="section" id="videos">
       <div class="section-head">
         <div>
@@ -671,7 +836,7 @@
             </video>
             <div class="video-info">
               <h3>{{ video.title|default:video.car.title }}</h3>
-              <p>{{ video.car.year }} Â· {{ video.car.district }}, {{ video.car.province|title }}</p>
+              <p>{{ video.car.year }} · {{ video.car.district }}, {{ video.car.province|title }}</p>
             </div>
           </article>
         {% endfor %}
@@ -694,7 +859,7 @@
 
     {% include "homepage/partials/footer.html" %}
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• BOOK MODAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ BOOK MODAL ═══════════════════ -->
     <div class="modal-overlay" id="bookModal">
       <div class="modal">
         <div class="modal-header">
@@ -702,18 +867,15 @@
             <div class="modal-title">Book This Car</div>
             <div class="modal-subtitle">Secure your reservation today</div>
             <div class="modal-pay-banner">
-              <strong>Pay via Mobile Money or Bank Transfer:</strong><br />
-              📱 Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br />
-              🔢 MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> &nbsp;|&nbsp; Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br />
-              👤 Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br />
-              <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
-            </div>
+            <strong><i class="fa-solid fa-lock"></i> Secure checkout on the next step</strong><br />
+            Pay instantly with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong>. You'll get a prompt on your phone, or our bank details with your unique payment reference.
           </div>
-          <button class="modal-close" onclick="closeModal('bookModal')">Ã—</button>
+          </div>
+          <button class="modal-close" onclick="closeModal('bookModal')">×</button>
         </div>
         <div class="modal-body">
           <div class="modal-car-info" id="modalCarInfo">
-            <div style="color:var(--text-dim);font-size:13px">Loading car infoâ€¦</div>
+            <div style="color:var(--text-dim);font-size:13px">Loading car info…</div>
           </div>
           <div class="form-errors" id="bookFormErrors"></div>
 
@@ -760,12 +922,12 @@
 
           <!-- Screenshot Upload -->
           <div class="form-group">
-            <label class="form-label">Payment Screenshot / Receipt</label>
+            <label class="form-label">Already paid? Upload receipt (optional)</label>
             <div class="upload-area" id="bookUploadArea">
               <input type="file" id="bookReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'bookUploadArea','bookPreviewImg','bookFileName')" />
-              <div class="upload-icon">ðŸ“¸</div>
+              <div class="upload-icon">📸</div>
               <div class="upload-label"><strong>Click to upload</strong> or drag &amp; drop</div>
-              <div class="upload-hint">PNG, JPG, PDF â€” Max 5 MB</div>
+              <div class="upload-hint">PNG, JPG, PDF — Max 5 MB</div>
               <div class="upload-preview" id="bookUploadPreview">
                 <img id="bookPreviewImg" src="" alt="Preview" />
                 <div class="upload-filename" id="bookFileName"></div>
@@ -775,7 +937,7 @@
 
           <div class="form-group">
             <label class="form-label">Notes (optional)</label>
-            <textarea class="form-textarea" id="bookNotes" placeholder="Any special requestsâ€¦"></textarea>
+            <textarea class="form-textarea" id="bookNotes" placeholder="Any special requests…"></textarea>
           </div>
           <div class="form-group">
             <label class="checkbox-item" style="color:var(--text-muted)">
@@ -785,12 +947,12 @@
         </div>
         <div class="modal-footer">
           <button class="btn-modal-cancel" onclick="closeModal('bookModal')">Cancel</button>
-          <button class="btn-modal-primary" id="bookSubmitBtn" onclick="confirmBooking()">Confirm Booking â†’</button>
+          <button class="btn-modal-primary" id="bookSubmitBtn" onclick="confirmBooking()">Confirm Booking →</button>
         </div>
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SCHEDULE MODAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ═══════════════════ SCHEDULE MODAL ═══════════════════ -->
     <div class="modal-overlay" id="scheduleModal">
       <div class="modal">
         <div class="modal-header">
@@ -798,18 +960,15 @@
             <div class="modal-title">Schedule a Visit</div>
             <div class="modal-subtitle">Come see the car in person</div>
             <div class="modal-pay-banner">
-              <strong>Pay scheduling fee via:</strong><br />
-              📱 Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br />
-              🔢 MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> &nbsp;|&nbsp; Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br />
-              👤 Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br />
-              <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
-            </div>
+            <strong><i class="fa-solid fa-lock"></i> Pay the scheduling fee securely next</strong><br />
+            After submitting, confirm the fee with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong> on our secure checkout.
           </div>
-          <button class="modal-close" onclick="closeModal('scheduleModal')">Ã—</button>
+          </div>
+          <button class="modal-close" onclick="closeModal('scheduleModal')">×</button>
         </div>
         <div class="modal-body">
           <div class="modal-car-info" id="modalSchedCarInfo">
-            <div style="color:var(--text-dim);font-size:13px">Loading car infoâ€¦</div>
+            <div style="color:var(--text-dim);font-size:13px">Loading car info…</div>
           </div>
           <div class="form-errors" id="schedFormErrors"></div>
 
@@ -839,13 +998,13 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Scheduling Fee â€” <span id="schedFeeDisplay">0 RWF</span></label>
+            <label class="form-label">Scheduling Fee — <span id="schedFeeDisplay">0 RWF</span></label>
             <select class="form-select" id="schedFeeMethod">
               <option value="mtn_momo">MTN Mobile Money</option>
               <option value="airtel_money">Airtel Money</option>
               <option value="cash">Cash</option>
             </select>
-            <div class="schedule-fee-note">âš¡ Fee is non-refundable and confirms your slot</div>
+            <div class="schedule-fee-note">⚡ Fee is non-refundable and confirms your slot</div>
           </div>
 
           <!-- Screenshot Upload for schedule fee -->
@@ -853,9 +1012,9 @@
             <label class="form-label">Fee Payment Screenshot</label>
             <div class="upload-area" id="schedUploadArea">
               <input type="file" id="schedReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'schedUploadArea','schedPreviewImg','schedFileName')" />
-              <div class="upload-icon">ðŸ“¸</div>
+              <div class="upload-icon">📸</div>
               <div class="upload-label"><strong>Click to upload</strong> or drag &amp; drop</div>
-              <div class="upload-hint">PNG, JPG, PDF â€” Max 5 MB</div>
+              <div class="upload-hint">PNG, JPG, PDF — Max 5 MB</div>
               <div class="upload-preview" id="schedUploadPreview">
                 <img id="schedPreviewImg" src="" alt="Preview" />
                 <div class="upload-filename" id="schedFileName"></div>
@@ -865,7 +1024,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn-modal-cancel" onclick="closeModal('scheduleModal')">Cancel</button>
-          <button class="btn-modal-primary" id="schedSubmitBtn" style="background:#4da8ff;color:#000" onclick="confirmSchedule()">Schedule Visit â†’</button>
+          <button class="btn-modal-primary" id="schedSubmitBtn" style="background:#4da8ff;color:#000" onclick="confirmSchedule()">Schedule Visit →</button>
         </div>
       </div>
     </div>
@@ -887,7 +1046,7 @@
     {% endif %}
 
     <script>
-      // â”€â”€ CSRF â”€â”€
+      // ── CSRF ──
       function getCookie(name) {
         let v = null;
         document.cookie.split(";").forEach((c) => {
@@ -898,7 +1057,7 @@
       }
       const CSRF = getCookie("csrftoken");
 
-      // â”€â”€ Hero Slider â”€â”€
+      // ── Hero Slider ──
       const slides = Array.from(document.querySelectorAll(".slide"));
       const dots   = Array.from(document.querySelectorAll(".dot"));
       const heroTitle = document.getElementById("heroTitle");
@@ -915,32 +1074,9 @@
       dots.forEach(d => d.addEventListener("click", () => showSlide(+d.dataset.slide)));
       if (slides.length > 1) setInterval(() => showSlide(currentSlide + 1), 5200);
 
-      // â”€â”€ Mobile Menu â”€â”€
-      const menuToggle = document.getElementById("menuToggle");
-      const navLinks   = document.getElementById("navLinks");
-      menuToggle?.addEventListener("click", () => navLinks.classList.toggle("open"));
+      // Mobile menu and account dropdown are handled by base.html.
 
-      // â”€â”€ Account Dropdown â”€â”€
-      const accountNav = document.getElementById("accountNav");
-      const accountBtn = document.getElementById("accountBtn");
-      if (accountBtn && accountNav) {
-        accountBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const open = accountNav.classList.toggle("open");
-          accountBtn.setAttribute("aria-expanded", open);
-        });
-        document.addEventListener("click", (e) => {
-          if (!accountNav.contains(e.target)) {
-            accountNav.classList.remove("open");
-            accountBtn.setAttribute("aria-expanded", "false");
-          }
-        });
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") { accountNav.classList.remove("open"); accountBtn.setAttribute("aria-expanded","false"); }
-        });
-      }
-
-      // â”€â”€ Modal state â”€â”€
+      // ── Modal state ──
       let activeCard = null, activeBookUrl = null, activeSchedUrl = null,
           activeModalUrl = null, activePaymentType = "full";
 
@@ -955,7 +1091,7 @@
         return { card, bookUrl: card.dataset.bookUrl, schedUrl: card.dataset.scheduleUrl, modalUrl: card.dataset.modalUrl };
       }
 
-      // â”€â”€ File Upload Preview â”€â”€
+      // ── File Upload Preview ──
       function handleFileSelect(input, areaId, previewImgId, fileNameId) {
         const file = input.files[0];
         if (!file) return;
@@ -964,7 +1100,7 @@
         const img     = document.getElementById(previewImgId);
         const fname   = document.getElementById(fileNameId);
         area.classList.add("has-file");
-        fname.textContent = "âœ“ " + file.name;
+        fname.textContent = "✓ " + file.name;
         preview.style.display = "block";
         if (file.type.startsWith("image/")) {
           const reader = new FileReader();
@@ -990,7 +1126,7 @@
         });
       });
 
-      // â”€â”€ Fetch car info â”€â”€
+      // ── Fetch car info ──
       function fetchCarInfo(url) {
         return fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
           .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
@@ -1004,13 +1140,13 @@
         }</div>`;
       }
 
-      // â”€â”€ Book Modal â”€â”€
+      // ── Book Modal ──
       function openBookModal(e) {
         const urls = getCardUrls(e.currentTarget);
         activeCard = urls.card; activeBookUrl = urls.bookUrl; activeModalUrl = urls.modalUrl;
         const errEl = document.getElementById("bookFormErrors");
         errEl.style.display = "none"; errEl.textContent = "";
-        document.getElementById("modalCarInfo").innerHTML = '<div style="color:var(--text-dim);font-size:13px">Loadingâ€¦</div>';
+        document.getElementById("modalCarInfo").innerHTML = '<div style="color:var(--text-dim);font-size:13px">Loading…</div>';
 
         if (activeModalUrl) {
           fetchCarInfo(activeModalUrl)
@@ -1023,7 +1159,7 @@
                 ${buildModalThumb(car)}
                 <div class="modal-car-details">
                   <h4>${car.title}</h4>
-                  <p>${car.year} Â· ${car.transmission} Â· ${car.fuel_type} Â· ${car.province}</p>
+                  <p>${car.year} · ${car.transmission} · ${car.fuel_type} · ${car.province}</p>
                 </div>
                 <div class="modal-car-price">${priceFmt}<br><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">RWF</span></div>`;
             })
@@ -1057,7 +1193,7 @@
         }
 
         const submitBtn = document.getElementById("bookSubmitBtn");
-        submitBtn.classList.add("loading"); submitBtn.textContent = "Submittingâ€¦";
+        submitBtn.classList.add("loading"); submitBtn.textContent = "Submitting…";
 
         const formData = new FormData();
         formData.append("full_name", fullName);
@@ -1084,7 +1220,7 @@
           })
           .then(data => {
             submitBtn.classList.remove("loading");
-            submitBtn.textContent = "Confirm Booking â†’";
+            submitBtn.textContent = "Confirm Booking →";
             if (data.success) {
               closeModal("bookModal");
               showToast("success", "Booking Confirmed!", data.message);
@@ -1099,18 +1235,18 @@
           })
           .catch(() => {
             submitBtn.classList.remove("loading");
-            submitBtn.textContent = "Confirm Booking â†’";
+            submitBtn.textContent = "Confirm Booking →";
             showToast("error", "Network Error", "Could not submit booking.");
           });
       }
 
-      // â”€â”€ Schedule Modal â”€â”€
+      // ── Schedule Modal ──
       function openScheduleModal(e) {
         const urls = getCardUrls(e.currentTarget);
         activeCard = urls.card; activeSchedUrl = urls.schedUrl; activeModalUrl = urls.modalUrl;
         const errEl = document.getElementById("schedFormErrors");
         errEl.style.display = "none"; errEl.textContent = "";
-        document.getElementById("modalSchedCarInfo").innerHTML = '<div style="color:var(--text-dim);font-size:13px">Loadingâ€¦</div>';
+        document.getElementById("modalSchedCarInfo").innerHTML = '<div style="color:var(--text-dim);font-size:13px">Loading…</div>';
 
         if (activeModalUrl) {
           fetchCarInfo(activeModalUrl)
@@ -1119,7 +1255,7 @@
               document.getElementById("schedFeeDisplay").textContent = `${feeFmt} RWF`;
               document.getElementById("modalSchedCarInfo").innerHTML = `
                 ${buildModalThumb(car)}
-                <div class="modal-car-details"><h4>${car.title}</h4><p>${car.year} Â· ${car.province} / ${car.district}</p></div>
+                <div class="modal-car-details"><h4>${car.title}</h4><p>${car.year} · ${car.province} / ${car.district}</p></div>
                 <div class="modal-car-price" style="color:var(--blue)">${feeFmt}<br><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim)">FEE</span></div>`;
             })
             .catch(() => {
@@ -1156,7 +1292,7 @@
         }
 
         const btn = document.getElementById("schedSubmitBtn");
-        btn.classList.add("loading"); btn.textContent = "Submittingâ€¦";
+        btn.classList.add("loading"); btn.textContent = "Submitting…";
 
         const formData = new FormData();
         formData.append("full_name", fullName);
@@ -1182,10 +1318,10 @@
           })
           .then(data => {
             btn.classList.remove("loading");
-            btn.textContent = "Schedule Visit â†’";
+            btn.textContent = "Schedule Visit →";
             if (data.success) {
               closeModal("scheduleModal");
-              showToast("info", "Visit Scheduled! ðŸ“…", data.message);
+              showToast("info", "Visit Scheduled! 📅", data.message);
               if (data.detail_url) window.location.href = data.detail_url;
             } else {
               const msgs = Object.values(data.errors || {}).flat().join(" ");
@@ -1197,12 +1333,12 @@
           })
           .catch(() => {
             btn.classList.remove("loading");
-            btn.textContent = "Schedule Visit â†’";
+            btn.textContent = "Schedule Visit →";
             showToast("error", "Network Error", "Could not submit schedule.");
           });
       }
 
-      // â”€â”€ Modal Helpers â”€â”€
+      // ── Modal Helpers ──
       function closeModal(id) {
         document.getElementById(id).classList.remove("open");
         activeCard = activeBookUrl = activeSchedUrl = activeModalUrl = null;
@@ -1221,13 +1357,13 @@
         });
       });
 
-      // â”€â”€ Toast â”€â”€
+      // ── Toast ──
       function showToast(type, title, msg) {
-        const icons = { success: "âœ…", error: "âŒ", info: "â„¹ï¸" };
+        const icons = { success: "✅", error: "❌", info: "ℹ️" };
         const container = document.getElementById("toastContainer");
         const toast = document.createElement("div");
         toast.className = `toast ${type}`;
-        toast.innerHTML = `<span class="toast-icon">${icons[type] || "â„¹ï¸"}</span><div class="toast-text"><strong>${title}</strong>${msg ? `<span>${msg}</span>` : ""}</div>`;
+        toast.innerHTML = `<span class="toast-icon">${icons[type] || "ℹ️"}</span><div class="toast-text"><strong>${title}</strong>${msg ? `<span>${msg}</span>` : ""}</div>`;
         container.appendChild(toast);
         setTimeout(() => {
           toast.style.cssText += "opacity:0;transform:translateX(20px);transition:all 0.3s";

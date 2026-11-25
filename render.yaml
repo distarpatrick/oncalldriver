@@ -1,0 +1,46 @@
+databases:
+  - name: oncalldriver-db
+    plan: free
+    databaseName: oncalldriver
+    user: oncalldriver
+
+services:
+  - type: web
+    name: oncalldriver
+    runtime: python
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: gunicorn E_marketing.wsgi:application --bind 0.0.0.0:$PORT --workers 2
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.7
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: PAYMENT_CALLBACK_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: oncalldriver-db
+          property: connectionString
+      # Set these in the Render dashboard (never commit real values):
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      - key: DJANGO_SUPERUSER_FULL_NAME
+        sync: false
+      - key: DJANGO_SUPERUSER_PHONE
+        sync: false
+      - key: MTN_MOMO_SUBSCRIPTION_KEY
+        sync: false
+      - key: MTN_MOMO_API_USER
+        sync: false
+      - key: MTN_MOMO_API_KEY
+        sync: false
+      - key: AIRTEL_CLIENT_ID
+        sync: false
+      - key: AIRTEL_CLIENT_SECRET
+        sync: false

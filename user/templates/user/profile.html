@@ -764,6 +764,7 @@
                 <div class="act-title">{{ pay.payment_number }}</div>
                 <div class="act-sub">{{ pay.amount|floatformat:"0" }} RWF · {{ pay.get_payment_method_display }} · {{ pay.created_at|date:"M d, Y" }}</div>
                 <span class="pill {{ pay.status }}">{{ pay.get_status_display }}</span>
+                {% if pay.status == "pending" %}<a href="{% url 'payment:checkout' pay.pk %}" style="margin-left:8px;font-weight:700;color:#b7791f">{% if pay.provider_status == "awaiting_verification" %}Track payment ›{% else %}Pay now ›{% endif %}</a>{% endif %}
               </div>
             </div>
             {% empty %}

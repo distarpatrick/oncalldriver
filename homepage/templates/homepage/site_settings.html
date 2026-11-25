@@ -1,4 +1,5 @@
 {% extends "homepage/base.html" %}
+{% block global_messages %}{% endblock %}
 {% load static %}
 
 {% block title %}Site Settings - {{ site_name }}{% endblock %}
@@ -741,6 +742,15 @@ body::after{
                 </div>
 
                 <div class="form-group">
+                  <label class="form-label" for="{{ form.payment_airtel_phone.id_for_label }}">
+                    <i class="fas fa-mobile-alt" aria-hidden="true"></i> Airtel Money Number
+                  </label>
+                  {{ form.payment_airtel_phone }}
+                  {% if form.payment_airtel_phone.errors %}<div class="error-text">{{ form.payment_airtel_phone.errors }}</div>{% endif %}
+                  <div class="help-text">Number customers send Airtel Money to (leave blank to use the payment phone)</div>
+                </div>
+
+                <div class="form-group">
                   <label class="form-label" for="{{ form.payment_account.id_for_label }}">
                     <i class="fas fa-university" aria-hidden="true"></i> Account Number
                   </label>
@@ -761,7 +771,7 @@ body::after{
 
               <div class="info-banner">
                 <i class="fas fa-shield-alt" aria-hidden="true"></i>
-                <span>Any change here updates the payment details shown to customers across booking, visit, and car detail pages.</span>
+                <span>Any change here updates the payment details shown to customers on the secure checkout page. Manage bank accounts (Bank of Kigali, Equity, I&amp;M…) in <a href="{% url 'admin:payment_bankaccount_changelist' %}" style="color:inherit;text-decoration:underline">Admin → Bank accounts</a>.</span>
               </div>
             </div>
           </div>

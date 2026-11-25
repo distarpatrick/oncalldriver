@@ -1,4 +1,5 @@
-﻿{% extends "homepage/base.html" %}
+{% extends "homepage/base.html" %}
+{% block global_messages %}{% endblock %}
 {% load static %}
 
 {% block title %}{{ car.year }} {{ car.brand }} {{ car.model }} - {{ site_name }}{% endblock %}
@@ -47,7 +48,7 @@
       pointer-events:none;z-index:999;opacity:0.4;
     }
 
-    /* â”€â”€ TOPBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── TOPBAR ─────────────────────────────────────── */
     .topbar {
       position:sticky;top:0;z-index:100;
       background:rgba(255,255,255,0.92);
@@ -80,7 +81,7 @@
     .btn-login{background:var(--accent);color:var(--black)!important;padding:8px 18px;border-radius:6px;font-weight:600!important;font-size:13px!important;transition:background .2s,transform .1s!important}
     .btn-login:hover{background:#f0d050!important;transform:translateY(-1px)}
 
-    /* â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── BREADCRUMB ─────────────────────────────────── */
     .breadcrumb-bar{
       background:#fffdf8;
       border-bottom:1px solid var(--border);
@@ -93,10 +94,10 @@
     .breadcrumb-bar a:hover{color:var(--accent)}
     .breadcrumb-bar .sep{color:var(--border-light)}
 
-    /* â”€â”€ PAGE WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── PAGE WRAPPER ───────────────────────────────── */
     .page{max-width:1280px;margin:0 auto;padding:32px 32px 80px}
 
-    /* â”€â”€ CAR HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── CAR HEADER ─────────────────────────────────── */
     .car-header{
       display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;
       margin-bottom:28px;
@@ -145,7 +146,7 @@
     .price-main .cur{font-size:.45em;font-family:'DM Mono',monospace;color:var(--text-dim);letter-spacing:1px}
     .price-neg{margin-top:6px;font-size:11px;color:#b896ff;display:flex;align-items:center;gap:4px;justify-content:flex-end;font-family:'DM Mono',monospace}
 
-    /* â”€â”€ GALLERY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── GALLERY ────────────────────────────────────── */
     .gallery-grid{
       display:grid;
       grid-template-columns:2fr 1fr;
@@ -189,7 +190,7 @@
       border:1px solid var(--border);
     }
 
-    /* â”€â”€ LIGHTBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── LIGHTBOX ───────────────────────────────────── */
     .lightbox{
       position:fixed;inset:0;background:rgba(255,251,244,.96);z-index:2000;
       display:flex;align-items:center;justify-content:center;
@@ -217,10 +218,10 @@
       color:rgba(255,255,255,.4);font-size:11px;font-family:'DM Mono',monospace;
     }
 
-    /* â”€â”€ MAIN GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── MAIN GRID ──────────────────────────────────── */
     .content-grid{display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start}
 
-    /* â”€â”€ SPEC CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SPEC CARDS ─────────────────────────────────── */
     .specs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
     .spec-card{
       background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);
@@ -235,7 +236,7 @@
     .spec-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px}
     .spec-value{font-size:.95rem;font-weight:600;color:var(--text)}
 
-    /* â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── TABS ───────────────────────────────────────── */
     .tab-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:28px}
     .tab-btn{
       padding:10px 18px;font-size:12px;font-weight:500;letter-spacing:.5px;
@@ -253,7 +254,7 @@
     }
     .tab-panel{display:none}.tab-panel.active{display:block}
 
-    /* â”€â”€ SECTION HEADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SECTION HEADING ────────────────────────────── */
     .sec-head{
       display:flex;align-items:center;gap:12px;
       margin-bottom:20px;padding-bottom:12px;
@@ -265,7 +266,7 @@
       border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--accent);
     }
 
-    /* â”€â”€ DESCRIPTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── DESCRIPTION ────────────────────────────────── */
     .desc-text{font-size:.95rem;line-height:1.8;color:var(--text-muted);font-weight:300;white-space:pre-line}
     .desc-text.clamped{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
     .read-more{
@@ -276,7 +277,7 @@
     }
     .read-more:hover{opacity:.7}
 
-    /* â”€â”€ SPECS TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SPECS TABLE ────────────────────────────────── */
     .specs-table table{width:100%;border-collapse:collapse}
     .specs-table tr{border-bottom:1px solid var(--border)}
     .specs-table tr:last-child{border-bottom:none}
@@ -285,7 +286,7 @@
     .specs-table td:last-child{font-weight:500;color:var(--text)}
     .mono{font-family:'DM Mono',monospace}
 
-    /* â”€â”€ FEATURES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── FEATURES ───────────────────────────────────── */
     .feature-cats{display:flex;flex-direction:column;gap:20px}
     .feature-cat h3{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
     .feat-pills{display:flex;flex-wrap:wrap;gap:8px}
@@ -296,7 +297,7 @@
     .feat-pill.has{background:rgba(61,220,132,.08);border-color:rgba(61,220,132,.25);color:var(--green)}
     .feat-pill.no{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.2);color:var(--red);text-decoration:line-through;opacity:.6}
 
-    /* â”€â”€ LOCATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── LOCATION ───────────────────────────────────── */
     .loc-card{
       background:#fffdf8;border:1px solid var(--border);border-radius:var(--radius-sm);
       padding:18px 22px;display:flex;gap:16px;align-items:center;
@@ -309,12 +310,12 @@
     .loc-details h3{font-size:.95rem;font-weight:600;margin-bottom:2px}
     .loc-details p{font-size:.82rem;color:var(--text-dim)}
 
-    /* â”€â”€ VIDEO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── VIDEO ──────────────────────────────────────── */
     .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
     .video-card{border-radius:var(--radius-sm);overflow:hidden;background:#fffdf8;aspect-ratio:16/9;border:1px solid var(--border)}
     .video-card video{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* â”€â”€ REVIEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── REVIEWS ────────────────────────────────────── */
     .review-summary{
       display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;
       background:#fffdf8;border:1px solid var(--border);
@@ -342,7 +343,7 @@
     .rev-title{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:5px}
     .rev-body{font-size:.85rem;color:var(--text-muted);line-height:1.7}
 
-    /* â”€â”€ COMMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── COMMENTS ───────────────────────────────────── */
     .comment-card{padding:14px 0;border-bottom:1px solid var(--border)}
     .comment-card:last-child{border-bottom:none}
     .comment-head{display:flex;gap:12px;align-items:center;margin-bottom:8px}
@@ -366,7 +367,7 @@
     .comment-reply-btn:hover{opacity:.7}
     .reply-card{margin-left:46px;padding:12px 0 12px 14px;border-left:2px solid var(--border);border-bottom:none}
 
-    /* â”€â”€ FORM ELEMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── FORM ELEMENTS ──────────────────────────────── */
     .form-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px}
     .form-group{margin-bottom:16px}
     .form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
@@ -389,7 +390,7 @@
     .star-input label:hover,.star-input label:hover~label,.star-input input:checked~label{color:var(--accent)}
     .star-input label:hover{transform:scale(1.15)}
 
-    /* â”€â”€ SIDEBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SIDEBAR ────────────────────────────────────── */
     .sidebar{position:sticky;top:80px;display:flex;flex-direction:column;gap:14px}
     .sb-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
     .sb-card.action-card{border-color:rgba(232,200,74,.3);background:linear-gradient(135deg,var(--card-bg) 60%,rgba(232,200,74,.04))}
@@ -437,7 +438,7 @@
     .info-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
     .info-val{font-size:.88rem;font-weight:500;color:var(--text)}
 
-    /* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── TOAST ──────────────────────────────────────── */
     .toast-container{position:fixed;bottom:24px;right:24px;z-index:3000;display:flex;flex-direction:column;gap:10px}
     .toast{
       background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius);
@@ -453,7 +454,7 @@
     .toast-text strong{display:block;font-size:13px;color:var(--text)}
     .toast-text span{font-size:12px;color:var(--text-muted)}
 
-    /* â”€â”€ SIGN-IN PROMPT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SIGN-IN PROMPT ─────────────────────────────── */
     .sign-prompt{
       text-align:center;padding:20px;background:#fffdf8;
       border-radius:var(--radius-sm);margin-top:20px;
@@ -461,12 +462,12 @@
     }
     .sign-prompt p{color:var(--text-dim);margin-bottom:12px;font-size:.85rem;font-family:'DM Mono',monospace}
 
-    /* â”€â”€ DIVIDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── DIVIDER ────────────────────────────────────── */
     .divider{height:1px;background:var(--border);margin:28px 0}
 
-    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    /* ══════════════════════════════════════════════════
        POPUP MODALS
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    ══════════════════════════════════════════════════ */
     .modal-overlay{
       position:fixed;inset:0;z-index:1500;
       background:rgba(31,27,22,0.18);backdrop-filter:blur(10px);
@@ -557,7 +558,7 @@
       border:1px solid rgba(255,77,77,.2);display:none;
     }
 
-    /* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── FOOTER ─────────────────────────────────────── */
     .footer{background:#f7efe0;border-top:3px solid var(--accent)}
     .footer-grid{
       width:min(1180px,calc(100% - 32px));margin:0 auto;
@@ -584,11 +585,11 @@
       color:var(--text-dim);font-size:11px;font-family:'DM Mono',monospace;
     }
 
-    /* â”€â”€ SCROLL REVEAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SCROLL REVEAL ──────────────────────────────── */
     .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
     .reveal.visible{opacity:1;transform:none}
 
-    /* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── RESPONSIVE ─────────────────────────────────── */
     @media(max-width:1024px){
       .content-grid{grid-template-columns:1fr}
       .sidebar{position:static}
@@ -635,8 +636,8 @@
 
 {% block content %}
 
-  <!-- â•â• TOPBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-  <!-- â•â• BREADCRUMB â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ══ TOPBAR ═══════════════════════════════════════ -->
+  <!-- ══ BREADCRUMB ════════════════════════════════════ -->
   <div class="breadcrumb-bar">
     <a href="/">Home</a><span class="sep">/</span>
     <a href="/cars/">Cars</a><span class="sep">/</span>
@@ -644,14 +645,14 @@
     <span>{{ car.model }} {{ car.year }}</span>
   </div>
 
-  <!-- â•â• PAGE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ══ PAGE ══════════════════════════════════════════ -->
   <div class="page">
 
     <!-- HEADER -->
     <header class="car-header reveal">
       <div>
         <div class="car-eyebrow">
-          {% if car.brand %}{{ car.brand.name }}{% endif %} Â· {{ car.year }} Â· {{ car.get_condition_display }}
+          {% if car.brand %}{{ car.brand.name }}{% endif %} · {{ car.year }} · {{ car.get_condition_display }}
         </div>
         <h1 class="car-title">
           {{ car.title|default:"" }}{% if car.model %} <em>{{ car.model }}</em>{% endif %}
@@ -665,7 +666,7 @@
           <span class="views-badge"><i data-lucide="eye" style="width:11px;height:11px"></i> {{ car.views_count }} views</span>
           {% if car.total_reviews > 0 %}
           <span class="rating-pill">
-            <span class="stars-acc">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</span>
+            <span class="stars-acc">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}★{% else %}☆{% endif %}{% endfor %}</span>
             {{ car.average_rating }} ({{ car.total_reviews }})
           </span>
           {% endif %}
@@ -723,7 +724,7 @@
     <!-- CONTENT -->
     <div class="content-grid">
 
-      <!-- â•â•â• LEFT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ═══ LEFT ═══════════════════════════════════════ -->
       <main>
 
         <!-- QUICK SPEC CARDS -->
@@ -799,25 +800,25 @@
           <div class="specs-table reveal">
             <table>
               <tbody>
-                <tr><td>Brand</td><td>{% if car.brand %}{{ car.brand.name }}{% else %}â€”{% endif %}</td></tr>
-                <tr><td>Model</td><td>{{ car.model|default:"â€”" }}</td></tr>
+                <tr><td>Brand</td><td>{% if car.brand %}{{ car.brand.name }}{% else %}—{% endif %}</td></tr>
+                <tr><td>Model</td><td>{{ car.model|default:"—" }}</td></tr>
                 <tr><td>Year</td><td>{{ car.year }}</td></tr>
                 <tr><td>Condition</td><td>{{ car.get_condition_display }}</td></tr>
-                <tr><td>Colour</td><td>{{ car.color|default:"â€”" }}</td></tr>
+                <tr><td>Colour</td><td>{{ car.color|default:"—" }}</td></tr>
                 <tr><td>Mileage</td><td>{{ car.mileage_km|floatformat:0 }} km</td></tr>
-                <tr><td>Engine Size</td><td>{% if car.engine_size_cc %}{{ car.engine_size_cc }} cc{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Engine Size</td><td>{% if car.engine_size_cc %}{{ car.engine_size_cc }} cc{% else %}—{% endif %}</td></tr>
                 <tr><td>Transmission</td><td>{{ car.get_transmission_display }}</td></tr>
                 <tr><td>Fuel Type</td><td>{{ car.get_fuel_type_display }}</td></tr>
-                <tr><td>Drive Type</td><td>{% if car.drive_type %}{{ car.get_drive_type_display }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Drive Type</td><td>{% if car.drive_type %}{{ car.get_drive_type_display }}{% else %}—{% endif %}</td></tr>
                 <tr><td>Seats</td><td>{{ car.seats }}</td></tr>
                 <tr><td>Doors</td><td>{{ car.doors }}</td></tr>
-                <tr><td>Registration</td><td class="mono">{% if car.registration_plate %}{{ car.registration_plate }}{% else %}â€”{% endif %}</td></tr>
-                <tr><td>Stock Number</td><td class="mono">{% if car.stock_number %}{{ car.stock_number }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Registration</td><td class="mono">{% if car.registration_plate %}{{ car.registration_plate }}{% else %}—{% endif %}</td></tr>
+                <tr><td>Stock Number</td><td class="mono">{% if car.stock_number %}{{ car.stock_number }}{% else %}—{% endif %}</td></tr>
                 <tr><td>Province</td><td>{{ car.province }}</td></tr>
                 <tr><td>District</td><td>{{ car.district }}</td></tr>
                 <tr><td>Price</td><td><strong>RWF {{ car.price|floatformat:0 }}{% if car.is_negotiable %} (Negotiable){% endif %}</strong></td></tr>
                 <tr><td>Scheduling Fee</td><td>RWF {{ car.scheduling_fee|floatformat:0 }}</td></tr>
-                <tr><td>Listed By</td><td>{% if car.uploaded_by %}{{ car.uploaded_by.full_name }}{% else %}â€”{% endif %}</td></tr>
+                <tr><td>Listed By</td><td>{% if car.uploaded_by %}{{ car.uploaded_by.full_name }}{% else %}—{% endif %}</td></tr>
                 <tr><td>Approved By</td><td>{% if car.approved_by %}{{ car.approved_by.full_name }}{% else %}Pending{% endif %}</td></tr>
                 <tr><td>Listed On</td><td class="mono">{{ car.created_at|date:"d M Y" }}</td></tr>
               </tbody>
@@ -882,7 +883,7 @@
           <div class="review-summary reveal">
             <div class="big-rating">
               <div class="num">{{ car.average_rating }}</div>
-              <div style="color:var(--accent);font-size:16px">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</div>
+              <div style="color:var(--accent);font-size:16px">{% for i in "12345" %}{% if forloop.counter <= car.average_rating %}★{% else %}☆{% endif %}{% endfor %}</div>
               <div class="out-of">{{ car.total_reviews }} review{{ car.total_reviews|pluralize }}</div>
             </div>
             <div class="rating-bars">
@@ -901,7 +902,7 @@
             <div class="rev-header">
               <div>
                 <div class="rev-name">{{ review.customer.full_name }}</div>
-                <div style="color:var(--accent);font-size:12px;margin-top:2px">{% for i in "12345" %}{% if forloop.counter <= review.rating %}â˜…{% else %}â˜†{% endif %}{% endfor %}</div>
+                <div style="color:var(--accent);font-size:12px;margin-top:2px">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
               </div>
               <span class="rev-date">{{ review.created_at|date:"d M Y" }}</span>
             </div>
@@ -918,7 +919,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                   <label class="form-label">Your Rating</label>
-                  <div class="star-input">{% for i in "54321" %}<input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required/><label for="star{{ i }}">â˜…</label>{% endfor %}</div>
+                  <div class="star-input">{% for i in "54321" %}<input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required/><label for="star{{ i }}">★</label>{% endfor %}</div>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="rTitle">Review Title</label>
@@ -926,7 +927,7 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="rBody">Your Review</label>
-                  <textarea class="form-textarea" id="rBody" name="body" placeholder="Tell others about this carâ€¦" rows="4"></textarea>
+                  <textarea class="form-textarea" id="rBody" name="body" placeholder="Tell others about this car…" rows="4"></textarea>
                 </div>
                 <button type="submit" class="btn btn-gold" style="width:auto;padding:11px 24px"><i data-lucide="send" style="width:14px;height:14px"></i> Submit Review</button>
               </form>
@@ -960,7 +961,7 @@
             <div id="reply-{{ comment.id }}" style="display:none;margin-top:10px">
               <form method="post" action="{% url 'homepage:car_comment' car.pk %}">
                 {% csrf_token %}<input type="hidden" name="parent_id" value="{{ comment.id }}"/>
-                <textarea class="form-textarea" name="content" placeholder="Write a replyâ€¦" rows="2" style="margin-bottom:8px"></textarea>
+                <textarea class="form-textarea" name="content" placeholder="Write a reply…" rows="2" style="margin-bottom:8px"></textarea>
                 <button type="submit" class="btn btn-gold" style="width:auto;padding:7px 16px;font-size:.78rem"><i data-lucide="send" style="width:12px;height:12px"></i> Reply</button>
               </form>
             </div>
@@ -990,7 +991,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                   <label class="form-label">Your Comment or Question</label>
-                  <textarea class="form-textarea" name="content" placeholder="Leave a comment or questionâ€¦" rows="3" required></textarea>
+                  <textarea class="form-textarea" name="content" placeholder="Leave a comment or question…" rows="3" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-gold" style="width:auto;padding:11px 24px"><i data-lucide="send" style="width:14px;height:14px"></i> Post Comment</button>
               </form>
@@ -1003,7 +1004,7 @@
 
       </main>
 
-      <!-- â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ═══ SIDEBAR ══════════════════════════════════ -->
       <aside class="sidebar">
 
         <!-- ACTION CARD -->
@@ -1051,10 +1052,10 @@
             <div class="info-row"><div class="info-icon"><i data-lucide="fuel" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Fuel</div><div class="info-val">{{ car.get_fuel_type_display }}</div></div></div>
             <div class="info-row"><div class="info-icon"><i data-lucide="settings-2" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Transmission</div><div class="info-val">{{ car.get_transmission_display }}</div></div></div>
             <div class="info-row"><div class="info-icon"><i data-lucide="gauge" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Mileage</div><div class="info-val">{{ car.mileage_km|floatformat:0 }} km</div></div></div>
-            <div class="info-row"><div class="info-icon"><i data-lucide="palette" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Colour</div><div class="info-val">{{ car.color|default:"â€”" }}</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="palette" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Colour</div><div class="info-val">{{ car.color|default:"—" }}</div></div></div>
             {% if car.engine_size_cc %}<div class="info-row"><div class="info-icon"><i data-lucide="cpu" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Engine</div><div class="info-val">{{ car.engine_size_cc }} cc</div></div></div>{% endif %}
             {% if car.drive_type %}<div class="info-row"><div class="info-icon"><i data-lucide="circle-dot" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Drive</div><div class="info-val">{{ car.get_drive_type_display }}</div></div></div>{% endif %}
-            <div class="info-row"><div class="info-icon"><i data-lucide="users" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Seats / Doors</div><div class="info-val">{{ car.seats }} seats Â· {{ car.doors }} doors</div></div></div>
+            <div class="info-row"><div class="info-icon"><i data-lucide="users" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Seats / Doors</div><div class="info-val">{{ car.seats }} seats · {{ car.doors }} doors</div></div></div>
             <div class="info-row"><div class="info-icon"><i data-lucide="map-pin" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Location</div><div class="info-val">{{ car.district }}, {{ car.province }}</div></div></div>
             <div class="info-row"><div class="info-icon"><i data-lucide="calendar" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Listed On</div><div class="info-val">{{ car.created_at|date:"d F Y" }}</div></div></div>
             <div class="info-row"><div class="info-icon"><i data-lucide="eye" style="width:13px;height:13px"></i></div><div><div class="info-lbl">Total Views</div><div class="info-val">{{ car.views_count }}</div></div></div>
@@ -1065,9 +1066,9 @@
     </div><!-- end content-grid -->
   </div><!-- end page -->
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ══════════════════════════════════════════════════
        BOOK MODAL
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  ══════════════════════════════════════════════════ -->
   <div class="modal-overlay" id="bookModal">
     <div class="modal">
       <div class="modal-header">
@@ -1075,14 +1076,11 @@
           <div class="modal-title">Book This Car</div>
           <div class="modal-subtitle">Secure your reservation today</div>
           <div class="modal-pay-info">
-            <strong>Pay via Mobile Money or Bank Transfer:</strong><br>
-            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br>
-            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> | Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br>
-            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br>
-            <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
+            <strong><i class="fa-solid fa-lock"></i> Secure checkout on the next step</strong><br />
+            Pay instantly with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong>. You'll get a prompt on your phone, or our bank details with your unique payment reference.
           </div>
         </div>
-        <button class="modal-close" onclick="closeModal('bookModal')" aria-label="Close">âœ•</button>
+        <button class="modal-close" onclick="closeModal('bookModal')" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
         <div class="modal-car-info">
@@ -1091,7 +1089,7 @@
           </div>
           <div class="modal-car-details">
             <h4>{{ car.title }}</h4>
-            <p>{{ car.year }} Â· {{ car.get_transmission_display }} Â· {{ car.get_fuel_type_display }}</p>
+            <p>{{ car.year }} · {{ car.get_transmission_display }} · {{ car.get_fuel_type_display }}</p>
           </div>
           <div class="modal-car-price">{{ car.price|floatformat:0 }}<br><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)">RWF</span></div>
         </div>
@@ -1118,7 +1116,7 @@
             <label class="payment-option selected" onclick="selectPay(this,'full')" id="payFull">
               <input type="radio" name="bpaytype" value="full"/>
               <div class="pay-opt-title">Full Payment</div>
-              <div class="pay-opt-desc" id="fullLbl">100% â€” RWF {{ car.price|floatformat:0 }}</div>
+              <div class="pay-opt-desc" id="fullLbl">100% — RWF {{ car.price|floatformat:0 }}</div>
             </label>
             <label class="payment-option" onclick="selectPay(this,'half')" id="payHalf">
               <input type="radio" name="bpaytype" value="half"/>
@@ -1137,10 +1135,10 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Payment Screenshot / Receipt</label>
+          <label class="form-label">Already paid? Upload receipt (optional)</label>
           <div class="upload-area" id="bookUploadArea">
             <input type="file" id="bookReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'bookUploadArea','bookPreviewImg','bookFileName')"/>
-            <div class="upload-icon">ðŸ“¸</div>
+            <div class="upload-icon">📸</div>
             <div class="upload-label"><strong>Click to upload</strong> or drag & drop</div>
             <div class="upload-hint">PNG, JPG, PDF - Max 5 MB</div>
             <div class="upload-preview" id="bookUploadPreview">
@@ -1158,7 +1156,7 @@
           <label class="form-label">Fee Payment Screenshot</label>
           <div class="upload-area" id="schedUploadArea">
             <input type="file" id="schedReceiptUpload" accept="image/*,.pdf" onchange="handleFileSelect(this,'schedUploadArea','schedPreviewImg','schedFileName')"/>
-            <div class="upload-icon">ðŸ“¸</div>
+            <div class="upload-icon">📸</div>
             <div class="upload-label"><strong>Click to upload</strong> or drag & drop</div>
             <div class="upload-hint">PNG, JPG, PDF - Max 5 MB</div>
             <div class="upload-preview" id="schedUploadPreview">
@@ -1169,7 +1167,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Notes (optional)</label>
-          <textarea class="form-textarea" id="bookNotes" placeholder="Any special requestsâ€¦"></textarea>
+          <textarea class="form-textarea" id="bookNotes" placeholder="Any special requests…"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1181,9 +1179,9 @@
     </div>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ══════════════════════════════════════════════════
        SCHEDULE MODAL
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  ══════════════════════════════════════════════════ -->
   <div class="modal-overlay" id="schedModal">
     <div class="modal">
       <div class="modal-header">
@@ -1191,14 +1189,11 @@
           <div class="modal-title">Schedule a Visit</div>
           <div class="modal-subtitle">Come see the car in person</div>
           <div class="modal-pay-info">
-            <strong>Pay scheduling fee via:</strong><br>
-            Telephone: <strong>{{ site.payment_phone|default:"+250 792 456 127" }}</strong><br>
-            MTN Code: <strong>{{ site.payment_mtn_code|default:"1159490" }}</strong> | Account: <strong>{{ site.payment_account|default:"123456789" }}</strong><br>
-            Name: <strong>{{ site.payment_account_name|default:"OnCall Driver" }}</strong><br>
-            <small style="color:var(--text-dim)">Then upload your payment screenshot below.</small>
+            <strong><i class="fa-solid fa-lock"></i> Pay the scheduling fee securely next</strong><br />
+            After submitting, confirm the fee with <strong>MTN MoMo</strong>, <strong>Airtel Money</strong> or <strong>bank transfer</strong> on our secure checkout.
           </div>
         </div>
-        <button class="modal-close" onclick="closeModal('schedModal')" aria-label="Close">âœ•</button>
+        <button class="modal-close" onclick="closeModal('schedModal')" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
         <div class="modal-car-info">
@@ -1207,7 +1202,7 @@
           </div>
           <div class="modal-car-details">
             <h4>{{ car.title }}</h4>
-            <p>{{ car.year }} Â· {{ car.district }}, {{ car.province }}</p>
+            <p>{{ car.year }} · {{ car.district }}, {{ car.province }}</p>
           </div>
           <div class="modal-car-price" style="color:var(--blue)">
             {{ car.scheduling_fee|floatformat:0 }}<br>
@@ -1242,7 +1237,7 @@
           <input type="text" class="form-input" id="schedDistrict" placeholder="Where you'd like to meet"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Fee Payment Method â€” <span style="color:var(--blue)">RWF {{ car.scheduling_fee|floatformat:0 }}</span></label>
+          <label class="form-label">Fee Payment Method — <span style="color:var(--blue)">RWF {{ car.scheduling_fee|floatformat:0 }}</span></label>
           <select class="form-select" id="schedFeeMethod">
             <option value="mtn_momo">MTN Mobile Money</option>
             <option value="airtel_money">Airtel Money</option>
@@ -1252,7 +1247,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Notes (optional)</label>
-          <textarea class="form-textarea" id="schedNotes" placeholder="Any special requestsâ€¦" rows="2"></textarea>
+          <textarea class="form-textarea" id="schedNotes" placeholder="Any special requests…" rows="2"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1264,17 +1259,17 @@
     </div>
   </div>
 
-  <!-- â•â• TOAST â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ══ TOAST ═════════════════════════════════════════ -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ══ FOOTER ════════════════════════════════════════ -->
 {% include "homepage/partials/footer.html" %}
 
-  <!-- â•â• JS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ══ JS ════════════════════════════════════════════ -->
   <script>
     lucide.createIcons();
 
-    /* â”€â”€ LIGHTBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── LIGHTBOX ─────────────────────────────── */
     const photos = [{% for photo in car.photos.all %}{src:"{{ photo.photo.url }}",alt:"{{ photo.caption|default:car.title }}"}{% if not forloop.last %},{% endif %}{% endfor %}];
     let lbIdx = 0;
     function openLb(i){lbIdx=i;updateLb();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden'}
@@ -1284,7 +1279,7 @@
     function updateLb(){if(!photos.length)return;document.getElementById('lbImg').src=photos[lbIdx].src;document.getElementById('lbImg').alt=photos[lbIdx].alt;document.getElementById('lbCounter').textContent=`${lbIdx+1} / ${photos.length}`}
     document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbNav(-1);if(e.key==='ArrowRight')lbNav(1)});
 
-    /* â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── TABS ─────────────────────────────────── */
     function switchTab(name,btn){
       document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1293,7 +1288,7 @@
       setTimeout(()=>lucide.createIcons(),50);
     }
 
-    /* â”€â”€ READ MORE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── READ MORE ────────────────────────────── */
     function toggleReadMore(){
       const t=document.getElementById('descText'),b=document.getElementById('readMoreBtn');
       const open=!t.classList.contains('clamped');
@@ -1302,49 +1297,49 @@
       lucide.createIcons();
     }
 
-    /* â”€â”€ REPLY TOGGLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── REPLY TOGGLE ─────────────────────────── */
     function showReply(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none'}
 
-    /* â”€â”€ SCROLL REVEAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SCROLL REVEAL ────────────────────────── */
     const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:.08});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-    /* â”€â”€ RATING BARS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── RATING BARS ──────────────────────────── */
     setTimeout(()=>{document.querySelectorAll('.bar-fill').forEach(b=>{b.style.width=b.dataset.width||'0%'})},400);
 
-    /* â”€â”€ CSRF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── CSRF ─────────────────────────────────── */
     function getCookie(n){let v=null;document.cookie.split(';').forEach(c=>{c=c.trim();if(c.startsWith(n+'='))v=decodeURIComponent(c.slice(n.length+1))});return v}
     const CSRF=getCookie('csrftoken');
 
-    /* â”€â”€ WISHLIST AJAX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── WISHLIST AJAX ────────────────────────── */
     document.getElementById('wishlistForm').addEventListener('submit',function(e){
       e.preventDefault();
       const btn=document.getElementById('wishlistBtn');
       fetch(this.action,{method:'POST',headers:{'X-CSRFToken':CSRF,'X-Requested-With':'XMLHttpRequest'}})
         .then(r=>r.json()).then(data=>{
-          if(data.in_wishlist){btn.classList.add('active');btn.innerHTML='<i data-lucide="heart" style="width:14px;height:14px"></i> Saved to Wishlist';showToast('success','Added to wishlist â™¥','')}
+          if(data.in_wishlist){btn.classList.add('active');btn.innerHTML='<i data-lucide="heart" style="width:14px;height:14px"></i> Saved to Wishlist';showToast('success','Added to wishlist ♥','')}
           else{btn.classList.remove('active');btn.innerHTML='<i data-lucide="heart" style="width:14px;height:14px"></i> Save to Wishlist';showToast('info','Removed from wishlist','')}
           lucide.createIcons();
         });
     });
 
-    /* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── TOAST ────────────────────────────────── */
     function showToast(type,title,msg){
-      const icons={success:'âœ“',error:'âœ•',info:'â„¹'};
+      const icons={success:'✓',error:'✕',info:'ℹ'};
       const c=document.getElementById('toastContainer');
       const t=document.createElement('div');
       t.className=`toast ${type}`;
-      t.innerHTML=`<span style="font-size:16px">${icons[type]||'â„¹'}</span><div class="toast-text"><strong>${title}</strong>${msg?`<span>${msg}</span>`:''}</div>`;
+      t.innerHTML=`<span style="font-size:16px">${icons[type]||'ℹ'}</span><div class="toast-text"><strong>${title}</strong>${msg?`<span>${msg}</span>`:''}</div>`;
       c.appendChild(t);
       setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},4500);
     }
 
-    /* â”€â”€ DJANGO MESSAGES AS TOASTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── DJANGO MESSAGES AS TOASTS ────────────── */
     {% for message in messages %}
     showToast("{% if message.tags == 'error' %}error{% else %}success{% endif %}","{{ message|escapejs }}","");
     {% endfor %}
 
-    /* â”€â”€ MODAL HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── MODAL HELPERS ────────────────────────── */
     function handleFileSelect(input,areaId,previewImgId,fileNameId){
       const file=input.files[0];
       if(!file)return;
@@ -1353,7 +1348,7 @@
       const img=document.getElementById(previewImgId);
       const fileName=document.getElementById(fileNameId);
       area.classList.add('has-file');
-      fileName.textContent='âœ“ ' + file.name;
+      fileName.textContent='✓ ' + file.name;
       preview.style.display='block';
       if(file.type.startsWith('image/')){
         const reader=new FileReader();
@@ -1387,7 +1382,7 @@
       o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')})
     });
 
-    /* â”€â”€ BOOK MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── BOOK MODAL ───────────────────────────── */
     function openBookModal(){
       document.getElementById('bookErr').style.display='none';
       document.getElementById('visitDate').min=new Date().toISOString().split('T')[0];
@@ -1409,7 +1404,7 @@
       errEl.style.display='none';
       if(!name||!phone){errEl.textContent='Full name and phone are required.';errEl.style.display='block';return}
       const btn=document.getElementById('bookSubmit');
-      btn.disabled=true;btn.textContent='Submittingâ€¦';
+      btn.disabled=true;btn.textContent='Submitting…';
       const body=new FormData();
       body.append('full_name',name);
       body.append('phone',phone);
@@ -1440,7 +1435,7 @@
       }).catch(()=>{btn.disabled=false;btn.textContent='Confirm Booking';showToast('error','Network Error','Check your connection and try again.')});
     }
 
-    /* â”€â”€ SCHEDULE MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── SCHEDULE MODAL ───────────────────────── */
     function openSchedModal(){
       document.getElementById('schedErr').style.display='none';
       document.getElementById('visitDate').min=new Date().toISOString().split('T')[0];
@@ -1464,7 +1459,7 @@
       if(!name||!phone){errEl.textContent='Full name and phone are required.';errEl.style.display='block';return}
       if(!date||!time){errEl.textContent='Please select a visit date and time.';errEl.style.display='block';return}
       const btn=document.getElementById('schedSubmit');
-      btn.disabled=true;btn.textContent='Submittingâ€¦';
+      btn.disabled=true;btn.textContent='Submitting…';
       const body=new FormData();
       body.append('full_name',name);
       body.append('phone',phone);

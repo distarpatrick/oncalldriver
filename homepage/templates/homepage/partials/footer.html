@@ -1,41 +1,70 @@
-<footer id="contact" style="background:#050609;border-top:3px solid #e8c84a;margin-top:0;">
-  <div style="width:min(1180px,calc(100% - 32px));margin:0 auto;padding:60px 0 36px;display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:32px;">
+<footer id="contact" class="oc-footer">
+  <div class="oc-footer-cta">
     <div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:#e8c84a;margin-bottom:12px;">{{ site_name }}</div>
-      <p style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;margin:0;">{{ site.tagline|default:"Reliable cars, guided booking, and support whenever customers need a better way to move." }}</p>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">
-        <a href="{{ site.facebook_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Facebook</a>
-        <a href="{{ site.instagram_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Instagram</a>
-        <a href="{{ site.twitter_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">Twitter</a>
-        <a href="{{ site.youtube_url|default:'#' }}" style="display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border:1px solid rgba(255,255,255,0.08);border-radius:999px;color:rgba(255,255,255,0.6);font-size:12px;text-decoration:none;transition:color .2s,border-color .2s;">YouTube</a>
-      </div>
+      <h3>Ready to find your next car? <span>Let's get you moving.</span></h3>
+      <p>Browse verified cars, book a viewing and pay safely with MTN MoMo, Airtel Money or bank transfer.</p>
     </div>
-    <div>
-      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">Services</h4>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Car listings</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Visit scheduling</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Booking support</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Driver requests</li>
-      </ul>
-    </div>
-    <div>
-      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">FAQ</h4>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">How do I schedule a visit?</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Can I reserve with half payment?</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Are cars verified?</li>
-        <li style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;">Can I request a driver?</li>
-      </ul>
-    </div>
-    <div>
-      <h4 style="color:#f0ede8;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 14px;font-family:'DM Mono',monospace;">Contact</h4>
-      <p style="color:rgba(255,255,255,0.6);font-size:13px;line-height:1.9;margin:0;">
-        {{ site.contact_phone|default:"+250 000 000 000" }}<br />
-        {{ site.contact_email|default:"support@oncalldriver.com" }}<br />
-        {{ site.address|default:"Kigali, Rwanda" }}
-      </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="oc-btn oc-btn-gold" href="{% url 'homepage:car_list' %}"><i class="fa-solid fa-car-side"></i> Browse cars</a>
+      <a class="oc-btn oc-btn-ghost" href="{% url 'homepage:make_book_visit' %}"><i class="fa-solid fa-calendar-check"></i> Book a visit</a>
     </div>
   </div>
-  <div style="width:min(1180px,calc(100% - 32px));margin:0 auto;padding:18px 0 32px;border-top:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);font-size:12px;font-family:'DM Mono',monospace;">© {% now "Y" %} {{ site_name }}. All rights reserved.</div>
+
+  <div class="oc-footer-grid">
+    <div>
+      <div class="oc-footer-brand">
+        <span style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#ffd27a,#f5b83d 45%,#ff8a3d);color:#1a1205;font-size:14px;font-weight:900">OD</span>
+        {{ site_name }}
+      </div>
+      <p class="oc-footer-about">{{ site.tagline|default:"Rwanda's trusted marketplace for verified cars, guided visits, secure booking and on-call drivers." }}</p>
+      <div class="oc-socials">
+        {% if site.facebook_url %}<a href="{{ site.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>{% endif %}
+        {% if site.instagram_url %}<a href="{{ site.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>{% endif %}
+        {% if site.twitter_url %}<a href="{{ site.twitter_url }}" target="_blank" rel="noopener" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>{% endif %}
+        {% if site.youtube_url %}<a href="{{ site.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>{% endif %}
+        {% if site.whatsapp_number %}<a href="https://wa.me/{{ site.whatsapp_number|cut:'+'|cut:' ' }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>{% endif %}
+      </div>
+    </div>
+
+    <div>
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="{% url 'homepage:index' %}">Home</a></li>
+        <li><a href="{% url 'homepage:car_list' %}">Cars on the market</a></li>
+        <li><a href="{% url 'homepage:services' %}">Our services</a></li>
+        <li><a href="{% url 'homepage:about_us' %}">About us</a></li>
+        <li><a href="{% url 'homepage:contact' %}">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="{% url 'homepage:make_book_visit' %}">Visit scheduling</a></li>
+        <li><a href="{% url 'homepage:make_book_visit' %}">Full or 50% booking</a></li>
+        <li><a href="{% url 'homepage:services' %}">Driver requests</a></li>
+        <li><a href="{% url 'homepage:services' %}">Sell your car</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Get in touch</h4>
+      <ul>
+        <li class="oc-contact-line"><i class="fa-solid fa-phone"></i><span>{{ site.contact_phone|default:"+250 791 273 368" }}</span></li>
+        <li class="oc-contact-line"><i class="fa-solid fa-envelope"></i><span>{{ site.contact_email|default:"support@oncalldriver.rw" }}</span></li>
+        <li class="oc-contact-line"><i class="fa-solid fa-location-dot"></i><span>{{ site.address|default:"Kigali, Rwanda" }}</span></li>
+        <li class="oc-contact-line"><i class="fa-solid fa-clock"></i><span>Mon – Sat · 8:00 – 19:00</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="oc-paybar">
+    <span>© {% now "Y" %} {{ site_name }}. All rights reserved.</span>
+    <div class="oc-paybadges" aria-label="Accepted payment methods">
+      <span class="oc-badge mtn"><span class="mark">MTN</span>MoMo</span>
+      <span class="oc-badge airtel"><span class="mark">a</span>Airtel Money</span>
+      <span class="oc-badge bank"><span class="mark"><i class="fa-solid fa-building-columns"></i></span>Bank transfer</span>
+      <span class="oc-badge secure"><span class="mark"><i class="fa-solid fa-lock"></i></span>Secure checkout</span>
+    </div>
+  </div>
 </footer>

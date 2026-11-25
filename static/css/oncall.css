@@ -1,0 +1,184 @@
+/* ==========================================================================
+   On Call Driver — shared design layer
+   Namespaced (--oc-*, .oc-*) so it never collides with page-level styles.
+   ========================================================================== */
+:root {
+  --oc-ink: #070a10;
+  --oc-ink-2: #0c1018;
+  --oc-surface: #111622;
+  --oc-surface-2: #161c2a;
+  --oc-line: rgba(255, 255, 255, 0.08);
+  --oc-line-2: rgba(255, 255, 255, 0.14);
+  --oc-text: #eef2f8;
+  --oc-muted: #9aa4b8;
+  --oc-dim: #687286;
+  --oc-gold: #f5b83d;
+  --oc-gold-2: #ffd27a;
+  --oc-gold-glow: rgba(245, 184, 61, 0.22);
+  --oc-mtn: #ffcc00;
+  --oc-airtel: #ed1c24;
+  --oc-bank: #2f6bff;
+  --oc-green: #22c55e;
+  --oc-red: #f43f5e;
+  --oc-blue: #3b82f6;
+  --oc-radius: 16px;
+  --oc-radius-sm: 10px;
+  --oc-shadow: 0 24px 60px rgba(2, 6, 23, 0.35);
+  --oc-font: "Plus Jakarta Sans", "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --oc-display: "Bebas Neue", "Plus Jakarta Sans", sans-serif;
+  --oc-mono: "DM Mono", ui-monospace, monospace;
+}
+
+::selection { background: var(--oc-gold); color: #111; }
+:focus-visible { outline: 2px solid var(--oc-gold); outline-offset: 2px; }
+html { scroll-padding-top: 84px; }
+
+/* ── Scroll progress & back-to-top ─────────────────────────────────────── */
+.oc-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 140;
+  background: linear-gradient(90deg, var(--oc-gold), #ff8a3d, #22d3ee);
+  box-shadow: 0 0 12px var(--oc-gold-glow);
+  transition: width .1s linear;
+}
+.oc-top-btn {
+  position: fixed; right: 20px; bottom: 22px; z-index: 120;
+  width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--oc-line-2);
+  background: rgba(12, 16, 24, .86); color: var(--oc-gold); backdrop-filter: blur(12px);
+  display: grid; place-items: center; cursor: pointer; font-size: 16px;
+  box-shadow: var(--oc-shadow);
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity .25s, transform .25s, border-color .2s;
+}
+.oc-top-btn.show { opacity: 1; transform: none; pointer-events: auto; }
+.oc-top-btn:hover { border-color: var(--oc-gold); }
+.oc-wa-btn {
+  position: fixed; left: 20px; bottom: 22px; z-index: 120;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #25d366; color: #fff; display: grid; place-items: center;
+  font-size: 26px; text-decoration: none;
+  box-shadow: 0 12px 30px rgba(37, 211, 102, .35);
+  transition: transform .2s;
+}
+.oc-wa-btn:hover { transform: scale(1.07); }
+
+/* ── Reveal on scroll ──────────────────────────────────────────────────── */
+.oc-reveal-init { opacity: 0; transform: translateY(22px); }
+.oc-reveal-in { opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+@media (prefers-reduced-motion: reduce) {
+  .oc-reveal-init { opacity: 1; transform: none; }
+  .oc-progress, .oc-top-btn { transition: none; }
+}
+
+/* ── Global toasts (Django messages) ───────────────────────────────────── */
+.oc-toasts {
+  position: fixed; top: 80px; right: 16px; z-index: 160;
+  display: grid; gap: 10px; width: min(380px, calc(100vw - 32px));
+}
+.oc-toast {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 14px;
+  background: rgba(12, 16, 24, .96); color: var(--oc-text);
+  border: 1px solid var(--oc-line-2); border-left: 4px solid var(--oc-gold);
+  box-shadow: var(--oc-shadow); font: 500 14px/1.5 var(--oc-font);
+  animation: oc-toast-in .35s cubic-bezier(.2,.8,.2,1);
+}
+.oc-toast.success { border-left-color: var(--oc-green); }
+.oc-toast.error { border-left-color: var(--oc-red); }
+.oc-toast.warning { border-left-color: #f59e0b; }
+.oc-toast.info { border-left-color: var(--oc-blue); }
+.oc-toast i { margin-top: 3px; }
+.oc-toast.success i { color: var(--oc-green); }
+.oc-toast.error i { color: var(--oc-red); }
+.oc-toast.warning i { color: #f59e0b; }
+.oc-toast.info i { color: var(--oc-blue); }
+.oc-toast button { margin-left: auto; background: none; border: 0; color: var(--oc-muted); cursor: pointer; font-size: 16px; }
+.oc-toast.hide { opacity: 0; transform: translateX(20px); transition: all .3s; }
+@keyframes oc-toast-in { from { opacity: 0; transform: translateY(-10px) scale(.98); } }
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+.oc-footer {
+  position: relative; background: var(--oc-ink); color: var(--oc-muted);
+  font-family: var(--oc-font); overflow: hidden;
+}
+.oc-footer::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--oc-gold), transparent);
+}
+.oc-footer::after {
+  content: ""; position: absolute; width: 520px; height: 520px; right: -160px; top: -260px;
+  background: radial-gradient(circle, rgba(245,184,61,.12), transparent 65%); pointer-events: none;
+}
+.oc-footer-cta {
+  width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 8px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.oc-footer-cta h3 { margin: 0; color: var(--oc-text); font: 800 clamp(22px, 3vw, 32px)/1.2 var(--oc-font); letter-spacing: -.02em; }
+.oc-footer-cta h3 span { color: var(--oc-gold); }
+.oc-footer-cta p { margin: 8px 0 0; font-size: 14px; }
+.oc-footer-grid {
+  position: relative; z-index: 1;
+  width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 36px;
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 36px;
+}
+.oc-footer h4 { margin: 0 0 16px; color: var(--oc-text); font: 700 12px/1 var(--oc-font); text-transform: uppercase; letter-spacing: .14em; }
+.oc-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.oc-footer a { color: var(--oc-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+.oc-footer a:hover { color: var(--oc-gold); }
+.oc-footer-brand { display: flex; align-items: center; gap: 12px; color: var(--oc-text); font: 800 20px/1 var(--oc-font); letter-spacing: -.01em; }
+.oc-footer-about { margin: 14px 0 18px; font-size: 14px; line-height: 1.75; max-width: 340px; }
+.oc-socials { display: flex; gap: 8px; }
+.oc-socials a {
+  width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
+  border: 1px solid var(--oc-line-2); color: var(--oc-text); font-size: 15px;
+  transition: all .2s;
+}
+.oc-socials a:hover { border-color: var(--oc-gold); color: var(--oc-gold); transform: translateY(-2px); }
+.oc-contact-line { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; }
+.oc-contact-line i { color: var(--oc-gold); margin-top: 3px; width: 14px; }
+.oc-paybar {
+  position: relative; z-index: 1;
+  width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 18px 0;
+  border-top: 1px solid var(--oc-line);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  font-size: 12.5px;
+}
+.oc-paybadges { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* ── Payment brand badges (reusable) ───────────────────────────────────── */
+.oc-badge {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 6px;
+  border-radius: 9px; border: 1px solid var(--oc-line-2); background: rgba(255,255,255,.03);
+  color: var(--oc-text); font: 700 12px/1 var(--oc-font); white-space: nowrap;
+}
+.oc-badge .mark { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
+.oc-badge.mtn .mark { background: var(--oc-mtn); color: #1a1a1a; }
+.oc-badge.airtel .mark { background: var(--oc-airtel); color: #fff; }
+.oc-badge.bank .mark { background: var(--oc-bank); color: #fff; }
+.oc-badge.secure .mark { background: rgba(34,197,94,.16); color: var(--oc-green); }
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+.oc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 50px; padding: 0 24px; border-radius: 12px; border: 1px solid transparent;
+  font: 700 14.5px/1 var(--oc-font); text-decoration: none; cursor: pointer;
+  transition: transform .15s, box-shadow .2s, background .2s, border-color .2s, opacity .2s;
+}
+.oc-btn:active { transform: translateY(1px) scale(.99); }
+.oc-btn[disabled] { opacity: .55; cursor: not-allowed; }
+.oc-btn-gold { background: linear-gradient(135deg, var(--oc-gold-2), var(--oc-gold)); color: #1a1205; box-shadow: 0 14px 34px var(--oc-gold-glow); }
+.oc-btn-gold:hover { box-shadow: 0 18px 44px rgba(245,184,61,.35); transform: translateY(-1px); }
+.oc-btn-ghost { background: rgba(255,255,255,.05); color: var(--oc-text); border-color: var(--oc-line-2); }
+.oc-btn-ghost:hover { border-color: var(--oc-gold); color: var(--oc-gold); }
+.oc-btn-block { width: 100%; }
+
+@media (max-width: 900px) {
+  .oc-footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .oc-footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .oc-wa-btn { width: 46px; height: 46px; font-size: 22px; left: 14px; bottom: 16px; }
+  .oc-top-btn { right: 14px; bottom: 16px; }
+}
+.oc-footer a.oc-btn-gold { color: #1a1205; }
+.oc-footer a.oc-btn-ghost { color: var(--oc-text); }
+.oc-footer a.oc-btn-ghost:hover { color: var(--oc-gold); }

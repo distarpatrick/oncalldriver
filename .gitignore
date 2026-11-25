@@ -1,7 +1,28 @@
-venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+venv/
+.venv/
+myenviron/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local data (never commit the dev database or user uploads)
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Generated
 staticfiles/
 logs/
-.env
-media/cars/videos/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+.claude/
+Thumbs.db
+.DS_Store

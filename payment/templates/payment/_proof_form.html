@@ -1,0 +1,32 @@
+{% if is_owner %}
+<form method="post" action="{{ proof_url }}" enctype="multipart/form-data" class="ck-proof" style="margin-top:6px">
+  {% csrf_token %}
+  <input type="hidden" name="method" value="{{ method }}">
+  {% if method == "bank_transfer" %}
+    <div class="ck-row">
+      <div class="ck-field">
+        <label class="ck-label" for="bank-{{ method }}">Bank you paid into</label>
+        <select class="ck-select" id="bank-{{ method }}" name="bank_account">
+          {% for bank in banks %}{% if bank.pk %}<option value="{{ bank.pk }}">{{ bank.bank_name }} — {{ bank.account_number }}</option>{% endif %}{% empty %}<option value="">—</option>{% endfor %}
+        </select>
+      </div>
+      <div class="ck-field">
+        <label class="ck-label" for="payer-{{ method }}">Name on the transfer</label>
+        <input class="ck-input" id="payer-{{ method }}" name="payer_name" maxlength="150" value="{{ payment.payer_name|default:payment.customer.full_name }}">
+      </div>
+    </div>
+  {% endif %}
+  <div class="ck-field">
+    <label class="ck-label" for="txn-{{ method }}">{% if method == "bank_transfer" %}Bank reference / slip number{% else %}Transaction ID (from the SMS){% endif %}</label>
+    <input class="ck-input" id="txn-{{ method }}" name="transaction_id" maxlength="100" autocomplete="off" placeholder="{% if method == 'bank_transfer' %}e.g. FT26330XXXXX{% else %}e.g. 1234567890{% endif %}" value="">
+  </div>
+  <div class="ck-field">
+    <label class="ck-drop">
+      <input type="file" name="receipt" accept="image/png,image/jpeg,image/webp">
+      <span class="ic"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+      <span><strong>Upload receipt screenshot (optional)</strong><span>PNG, JPG or WEBP · max 5 MB</span></span>
+    </label>
+  </div>
+  <button class="ck-btn dark" type="submit"><i class="fa-solid fa-paper-plane"></i> I've paid — submit for verification</button>
+</form>
+{% endif %}

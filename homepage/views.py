@@ -326,8 +326,15 @@ def index(request):
         if media_url(video.video)
     ][:2]
 
+    stats = {
+        "cars_live": Car.objects.filter(status__in=["available", "scheduled"]).count(),
+        "districts": Car.objects.exclude(district="").values("district").distinct().count() or 30,
+        "customers": CustomUser.objects.filter(role="customer", is_active=True).count(),
+    }
+
     context = {
         **site_context,
+        "stats": stats,
         "hero_slides": hero_slides,
         "featured_cars": car_cards,
         "videos": videos,
@@ -647,28 +654,8 @@ def confirm_payment(request, payment_id):
         Payment.objects.select_related("booking", "schedule"),
         id=payment_id,
     )
-    payment.status = "success"
-    payment.processed_by = request.user
-    payment.failure_reason = ""
-    payment.save(update_fields=["status", "processed_by", "failure_reason", "paid_at"])
-
-    if payment.schedule:
-        payment.schedule.fee_paid = True
-        if payment.schedule.status == "pending":
-            payment.schedule.status = "confirmed"
-        payment.schedule.confirmed_by = request.user
-        payment.schedule.save(update_fields=["fee_paid", "status", "confirmed_by", "updated_at"])
-
-    if payment.booking and payment.booking.status == "pending":
-        payment.booking.status = "confirmed"
-        payment.booking.handled_by = request.user
-        payment.booking.save(update_fields=["status", "handled_by", "updated_at"])
-
-    _ensure_invoice_for_payment(payment, request.user, request=request)
-
-    twilio_sent = twilio_whatsapp_service.send_payment_confirmation(payment, request=request)
-    if not twilio_sent:
-        messages.warning(request, "Payment was confirmed, but the WhatsApp confirmation could not be sent. Please check the Twilio settings and WhatsApp logs.")
+    from payment.services import mark_payment_successful
+    payment, _changed = mark_payment_successful(payment, processed_by=request.user, request=request, source="staff")
 
     messages.success(request, f"Payment {payment.payment_number} has been confirmed.")
     return _redirect_after_payment_confirmation(payment, "homepage:profile")
@@ -1332,7 +1319,10 @@ def car_booking(request, pk):
         "email":     request.user.email,
     })
 
-    if request.method == "POST" and form.is_valid():
+    if request.method != "POST":
+        return redirect("homepage:car_detail", pk=pk)
+
+    if form.is_valid():
         cd = form.cleaned_data
 
         payment_type = cd["payment_type"]
@@ -1349,32 +1339,30 @@ def car_booking(request, pk):
             remaining_balance = total_price - amount_paid,
             driver_needed   = cd.get("driver_needed", False),
             notes           = cd.get("notes", ""),
-            status          = "confirmed",        # triggers car.mark_as_booked()
+            status          = "pending",          # confirmed once payment is verified
         )
 
         # Create Payment record
-        Payment.objects.create(
+        payment = Payment.objects.create(
             booking        = booking,
             customer       = request.user,
             amount         = amount_paid,
             payment_method = cd["payment_method"],
             purpose        = "full_payment" if payment_type == "full" else "half_payment",
             phone_number   = cd["phone"],
-            status         = "pending",           # awaits accountant confirmation
+            payer_name     = cd["full_name"],
+            status         = "pending",
         )
 
         messages.success(
             request,
-            f"Booking {booking.booking_number} confirmed! "
-            f"RWF {amount_paid:,.0f} payment is pending verification."
+            f"Booking {booking.booking_number} created. "
+            f"Complete your RWF {amount_paid:,.0f} payment to secure the car."
         )
-        return redirect("homepage:booking_detail", pk=booking.pk)
+        return redirect("payment:checkout", pk=payment.pk)
 
-    context = {
-        "car":  car,
-        "form": form,
-    }
-    return render(request, "homepage/booking_detail.html", context)
+    messages.error(request, "Please fix the errors in the booking form.")
+    return redirect("homepage:car_detail", pk=pk)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1398,7 +1386,10 @@ def car_schedule(request, pk):
         "phone":     request.user.phone,
     })
 
-    if request.method == "POST" and form.is_valid():
+    if request.method != "POST":
+        return redirect("homepage:car_detail", pk=pk)
+
+    if form.is_valid():
         cd = form.cleaned_data
 
         schedule = VisitSchedule.objects.create(
@@ -1415,14 +1406,16 @@ def car_schedule(request, pk):
         )
 
         # Create scheduling-fee Payment record if fee > 0
+        fee_payment = None
         if car.scheduling_fee > 0:
-            Payment.objects.create(
+            fee_payment = Payment.objects.create(
                 schedule       = schedule,
                 customer       = request.user,
                 amount         = car.scheduling_fee,
                 payment_method = cd["fee_payment_method"],
                 purpose        = "scheduling_fee",
                 phone_number   = cd["phone"],
+                payer_name     = cd["full_name"],
                 status         = "pending",
             )
 
@@ -1431,15 +1424,14 @@ def car_schedule(request, pk):
             f"Visit {schedule.schedule_number} scheduled for "
             f"{schedule.visit_date.strftime('%d %B %Y')} at "
             f"{schedule.visit_time.strftime('%H:%M')}. "
-            "We will confirm your appointment shortly."
+            "Pay the scheduling fee to confirm your appointment."
         )
+        if fee_payment:
+            return redirect("payment:checkout", pk=fee_payment.pk)
         return redirect("homepage:schedule_detail", pk=schedule.pk)
 
-    context = {
-        "car":  car,
-        "form": form,
-    }
-    return render(request, "homepage/schedule_form.html", context)
+    messages.error(request, "Please fix the errors in the schedule form.")
+    return redirect("homepage:car_detail", pk=pk)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1551,31 +1543,35 @@ def book_car(request, pk):
         )
 
         # Record the payment
-        Payment.objects.create(
+        receipt = cd.get("payment_receipt")
+        payment = Payment.objects.create(
             booking=booking,
             customer=customer,
             amount=amount_paid,
             payment_method=cd["payment_method"],
             purpose="full_payment" if payment_type == "full" else "half_payment",
             phone_number=cd["phone"],
-            receipt_image=request.FILES.get('payment_receipt'),
-            status="pending",   # accountant will verify and mark as success
+            payer_name=cd["full_name"],
+            receipt_image=receipt,
+            provider_status="awaiting_verification" if receipt else "",
+            status="pending",   # confirmed by MTN/Airtel API or by finance staff
         )
 
+    checkout_url = reverse("payment:checkout", args=[payment.pk])
     if is_ajax:
         return JsonResponse({
             "success": True,
-            "message": f"Booking submitted! Booking #{booking.booking_number} is pending payment verification.",
+            "message": f"Booking #{booking.booking_number} created. Complete your payment to secure the car.",
             "booking_number": booking.booking_number,
-            "detail_url": reverse("homepage:booking_detail", args=[booking.pk]),
+            "detail_url": checkout_url,
+            "checkout_url": checkout_url,
         })
 
     messages.success(
         request,
-        f"🎉 Booking submitted! Your booking number is {booking.booking_number}. "
-        f"Please upload your payment screenshot and wait for staff verification.",
+        f"Booking {booking.booking_number} created. Complete your payment below to secure the car.",
     )
-    return redirect("homepage:booking_detail", pk=booking.pk)
+    return redirect(checkout_url)
 
 
 # ──────────────────────────────────────────────
@@ -1628,17 +1624,23 @@ def schedule_visit(request, pk):
         )
 
         # Record scheduling fee payment intent
+        fee_payment = None
         if car.scheduling_fee > 0:
-            Payment.objects.create(
+            fee_payment = Payment.objects.create(
                 schedule=schedule,
                 customer=request.user,
                 amount=car.scheduling_fee,
                 payment_method=cd["fee_payment_method"],
                 purpose="scheduling_fee",
                 phone_number=cd["phone"],
+                payer_name=cd["full_name"],
                 status="pending",
             )
 
+    next_url = (
+        reverse("payment:checkout", args=[fee_payment.pk]) if fee_payment
+        else reverse("homepage:schedule_detail", args=[schedule.pk])
+    )
     if is_ajax:
         return JsonResponse({
             "success": True,
@@ -1647,15 +1649,15 @@ def schedule_visit(request, pk):
                 f"Reference: {schedule.schedule_number}"
             ),
             "schedule_number": schedule.schedule_number,
-            "detail_url": reverse("homepage:schedule_detail", args=[schedule.pk]),
+            "detail_url": next_url,
         })
 
     messages.success(
         request,
-        f"📅 Visit scheduled! Reference: {schedule.schedule_number}. "
-        f"We'll confirm your appointment shortly.",
+        f"Visit scheduled! Reference: {schedule.schedule_number}. "
+        f"Pay the scheduling fee to confirm your appointment.",
     )
-    return redirect("homepage:schedule_detail", pk=schedule.pk)
+    return redirect(next_url)
 
 
 # ──────────────────────────────────────────────
@@ -2610,34 +2612,8 @@ def confirm_payment_dashboard(request, pk):
         messages.error(request, "Forbidden.")
         return redirect("homepage:dashboard")
     payment = get_object_or_404(Payment, pk=pk)
-    payment.status = "success"
-    payment.processed_by = request.user
-    payment.paid_at = timezone.now()
-    payment.save(update_fields=["status", "processed_by", "paid_at"])
-
-    # Auto-confirm booking or schedule
-    if payment.booking and payment.booking.status == "pending":
-        payment.booking.status = "confirmed"
-        payment.booking.handled_by = request.user
-        payment.booking.save(update_fields=["status", "handled_by"])
-    if payment.schedule and payment.schedule.status == "pending":
-        payment.schedule.status = "confirmed"
-        payment.schedule.fee_paid = True
-        payment.schedule.confirmed_by = request.user
-        payment.schedule.save(update_fields=["status", "fee_paid", "confirmed_by"])
-
-    _ensure_invoice_for_payment(payment, request.user, request=request)
-
-    twilio_sent = twilio_whatsapp_service.send_payment_confirmation(payment, request=request)
-    if not twilio_sent:
-        messages.warning(request, "Payment was confirmed, but the WhatsApp confirmation could not be sent. Please check the Twilio settings and WhatsApp logs.")
-
-    AuditLog.objects.create(
-        user=request.user, action="updated", model_affected="Payment",
-        object_id=str(payment.pk),
-        description=f"Confirmed payment {payment.payment_number} — {payment.amount} RWF",
-        ip_address=request.META.get("REMOTE_ADDR"),
-    )
+    from payment.services import mark_payment_successful
+    payment, _changed = mark_payment_successful(payment, processed_by=request.user, request=request, source="staff")
     messages.success(request, f"Payment {payment.payment_number} confirmed.")
     return _redirect_after_payment_confirmation(payment, "homepage:dashboard")
 
