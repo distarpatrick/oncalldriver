@@ -11,7 +11,7 @@ services:
     plan: free
     buildCommand: ./build.sh
     startCommand: gunicorn E_marketing.wsgi:application --bind 0.0.0.0:$PORT --workers 2
-    healthCheckPath: /
+    healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.7

@@ -104,3 +104,17 @@ class LoginRateLimitMiddleware:
                 except ValueError:
                     cache.set(key, 1, self.window)
         return response
+
+
+class HealthCheckMiddleware:
+    """Answer Render's health check at /healthz before host validation and the
+    HTTPS redirect run, so internal probes (plain HTTP, internal Host header)
+    always get a 200."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path == "/healthz":
+            return HttpResponse("ok", content_type="text/plain")
+        return self.get_response(request)
